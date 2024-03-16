@@ -3,10 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../account/login_screen.dart';
-import '../account/signup_screen.dart';
+import '../account/login_page.dart';
+import '../account/signup_page.dart';
 
-class StartScreen extends StatelessWidget {
+class StartPage extends StatelessWidget {
   late double screenWidth;
   late double screenHeight;
 
@@ -63,7 +63,7 @@ class StartScreen extends StatelessWidget {
             backgroundColor: Colors.white),
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => LoginScreen()),
+            MaterialPageRoute(builder: (context) => LoginPage()),
           );
         },
         child: Text(
@@ -106,7 +106,7 @@ class StartScreen extends StatelessWidget {
                 ..onTap = () {
                   // Chuyển đến trang LoginScreen()
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SignupScreen()),
+                    MaterialPageRoute(builder: (context) => SignupPage()),
                   );
                 },
             ),

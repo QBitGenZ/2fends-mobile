@@ -1,3 +1,6 @@
+
+import 'package:fends_mobile/pages/home/home_page.dart';
+import 'package:fends_mobile/pages/home/start_page.dart';
 import 'package:fends_mobile/pages/home/index.dart';
 import 'package:fends_mobile/widgets/navbar.dart';
 import 'package:fends_mobile/pages/home/start_screen.dart';
@@ -24,7 +27,8 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white
       ),
       color: Colors.white,
-      home: MainPage(),
+
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

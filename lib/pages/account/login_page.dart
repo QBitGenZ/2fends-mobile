@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../home/start_screen.dart';
-import '../verify/accountAuth_screen.dart';
+import '../home/home_page.dart';
+import '../home/intro_page.dart';
+import '../home/start_page.dart';
+import '../verify/accountAuth_page.dart';
 
 /**
  * Class khung nhap password
@@ -59,9 +61,15 @@ class _PasswordContainerState extends State<PasswordContainer> {
   }
 }
 
-class LoginScreen extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   late double screenWidth;
   late double screenHeight;
+  void navigateToStartScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => StartPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +85,7 @@ class LoginScreen extends StatelessWidget {
                 Positioned(
                   child: GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => StartScreen()),
-                        );
+                        navigateToStartScreen(context);
                       },
                       child: Container(
                           margin: EdgeInsets.only(
@@ -100,25 +105,6 @@ class LoginScreen extends StatelessWidget {
                     loginbtnContainer(context)
                   ],
                 ),
-                Positioned(
-                    child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => StartScreen()),
-                    );
-                  },
-                  child: Text(
-                    'Quên mật khẩu?',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
-                    ),
-                  ),
-                )),
                 Positioned(
                   left: 0,
                   right: 0,
@@ -191,7 +177,7 @@ class LoginScreen extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => AccountAuthScreen()),
+            MaterialPageRoute(builder: (context) => IntroPage()),
           );
         },
         child: Text(
