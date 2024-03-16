@@ -1,4 +1,5 @@
-import 'package:fends_mobile/pages/home/start_screen.dart';
+import 'package:fends_mobile/pages/home/home_page.dart';
+import 'package:fends_mobile/pages/home/start_page.dart';
 import 'package:flutter/material.dart';
 
 
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white
       ),
       color: Colors.white,
-      home: StartScreen(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

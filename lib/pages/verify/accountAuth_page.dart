@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../account/signup_screen.dart';
-import '../home/start_screen.dart';
+import '../account/signup_page.dart';
+import '../home/start_page.dart';
 
-class AccountAuthScreen extends StatelessWidget {
+class AccountAuthPage extends StatelessWidget {
   late double screenWidth;
   late double screenHeight;
 
@@ -26,7 +26,7 @@ class AccountAuthScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignupScreen()),
+                    MaterialPageRoute(builder: (context) => SignupPage()),
                   );
                 },
                 child: Container(
@@ -130,7 +130,7 @@ class AccountAuthScreen extends StatelessWidget {
                                 ..onTap = () {
                                   // Chuyển đến trang LoginScreen()
                                   Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => StartScreen()),
+                                    MaterialPageRoute(builder: (context) => StartPage()),
                                   );
                                 },
                             ),
