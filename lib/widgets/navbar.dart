@@ -2,29 +2,25 @@ import 'package:fends_mobile/constants/navbar.dart';
 import 'package:flutter/material.dart';
 
 class Navbar extends StatefulWidget {
+  final selectedTitle;
+  final Function(String) updateSelectedTitle;
+
+  Navbar({
+    Key? key,
+    required this.selectedTitle,
+    required this.updateSelectedTitle
+  });
+
   @override
   State<Navbar> createState() => _NavbarState();
 }
 
 class _NavbarState extends State<Navbar> {
   late double screenWidth;
-  late String selectedTitle;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedTitle = navbar[0].title;
-  }
 
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
-
-    void updateSelectedTitle(String title) {
-      setState(() {
-        selectedTitle = title;
-      });
-    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
@@ -47,12 +43,12 @@ class _NavbarState extends State<Navbar> {
         children: navbar
             .map(
               (e) => InkWell(
-            onTap: () => updateSelectedTitle(e.title),
+            onTap: () => widget.updateSelectedTitle(e.title),
             child: NavbarItem(
               title: e.title,
               icon: e.icon,
-              selectedTitle: selectedTitle,
-              updateSelectedTitle: updateSelectedTitle,
+              selectedTitle: widget.selectedTitle,
+              updateSelectedTitle: widget.updateSelectedTitle,
             ),
           ),
         )
@@ -86,6 +82,7 @@ class _NavbarItemState extends State<NavbarItem> {
     return Container(
       height: 68,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Icon(
             widget.icon,

@@ -1,4 +1,4 @@
-import 'package:fends_mobile/pages/home/index.dart';
+import 'package:fends_mobile/pages/index.dart';
 import 'package:fends_mobile/widgets/navbar.dart';
 import 'package:fends_mobile/pages/home/start_screen.dart';
 import 'package:flutter/material.dart';
