@@ -1,5 +1,9 @@
+
 import 'package:fends_mobile/pages/home/home_page.dart';
 import 'package:fends_mobile/pages/home/start_page.dart';
+import 'package:fends_mobile/pages/home/index.dart';
+import 'package:fends_mobile/widgets/navbar.dart';
+import 'package:fends_mobile/pages/home/start_screen.dart';
 import 'package:flutter/material.dart';
 
 
@@ -13,14 +17,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       supportedLocales: const [
         Locale('en', 'US'),
         // Add other supported locales as needed
       ],
       theme: ThemeData(
+
           scaffoldBackgroundColor: Colors.white
       ),
       color: Colors.white,
+
       home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
