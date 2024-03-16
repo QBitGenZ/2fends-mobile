@@ -1,3 +1,4 @@
+import 'package:fends_mobile/widgets/navbar.dart';
 import 'package:fends_mobile/pages/home/start_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
         // Add other supported locales as needed
       ],
       theme: ThemeData(
+
           scaffoldBackgroundColor: Colors.white
       ),
       color: Colors.white,
