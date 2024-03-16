@@ -44,8 +44,7 @@ class _NavbarState extends State<Navbar> {
       height: 68,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: navbar
-            .map(
+        children: navbar.map(
               (e) => InkWell(
             onTap: () => updateSelectedTitle(e.title),
             child: NavbarItem(
