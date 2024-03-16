@@ -2,8 +2,8 @@
 import 'package:fends_mobile/pages/home/home_page.dart';
 import 'package:fends_mobile/pages/home/start_page.dart';
 import 'package:fends_mobile/pages/home/index.dart';
+import 'package:fends_mobile/sections/recomment_product_section.dart';
 import 'package:fends_mobile/widgets/navbar.dart';
-import 'package:fends_mobile/pages/home/start_screen.dart';
 import 'package:flutter/material.dart';
 
 
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       ),
       color: Colors.white,
 
-      home: HomePage(),
+      home: RecommentProductSection(),
       debugShowCheckedModeBanner: false,
     );
   }
