@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../home/start_screen.dart';
-import '../verify/accountAuth_screen.dart';
+import '../home/start_page.dart';
+import '../verify/accountAuth_page.dart';
 
 
 
@@ -192,7 +192,7 @@ class _RepasswordContainerState extends State<RepasswordContainer> {
   }
 }
 
-class SignupScreen extends StatelessWidget {
+class SignupPage extends StatelessWidget {
   late double screenWidth;
   late double screenHeight;
 
@@ -212,7 +212,7 @@ class SignupScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => StartScreen()),
+                          MaterialPageRoute(builder: (context) => StartPage()),
                         );
                       },
                       child: Container(
@@ -392,7 +392,7 @@ class SignupScreen extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => AccountAuthScreen()),
+            MaterialPageRoute(builder: (context) => AccountAuthPage()),
           );
         },
         child: Text(
