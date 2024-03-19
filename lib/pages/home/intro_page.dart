@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../index.dart';
+
+
+
 class IntroPage extends StatelessWidget {
   late double screenHeight;
   late double screenWidth;
@@ -77,7 +81,7 @@ class IntroPage extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => IntroPage()),
+            MaterialPageRoute(builder: (context) => MainPage()),
           );
         },
         child: Text(

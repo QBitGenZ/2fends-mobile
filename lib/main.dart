@@ -1,10 +1,11 @@
 
+import 'package:fends_mobile/pages/home/cart_page.dart';
 import 'package:fends_mobile/pages/index.dart';
 
 
 import 'package:fends_mobile/pages/home/home_page.dart';
 import 'package:fends_mobile/pages/home/start_page.dart';
-import 'package:fends_mobile/pages/home/index.dart';
+
 import 'package:fends_mobile/sections/recomment_product_section.dart';
 
 import 'package:fends_mobile/widgets/navbar.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       ),
       color: Colors.white,
 
-      home: RecommentProductSection(),
+      home: CartPage(),
       debugShowCheckedModeBanner: false,
     );
   }
