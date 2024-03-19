@@ -1,3 +1,5 @@
+import 'package:fends_mobile/pages/index.dart';
+import 'package:fends_mobile/sections/recomment_product_section.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +35,13 @@ class HorizontalList extends StatelessWidget {
                     height: 0,
                   ),
                 ),
-                const InkWell(
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RecommentProductSection()),
+                    );
+                  },
                   child: Text(
                     'Xem tất cả',
                     style: TextStyle(

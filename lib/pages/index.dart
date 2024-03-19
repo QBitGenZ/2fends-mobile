@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../constants/navbar.dart';
+import '../sections/recomment_product_section.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -40,7 +41,11 @@ class _MainPageState extends State<MainPage> {
             ),
             Positioned(
               top: 0,
-                child: renderSection()
+                child: Column(
+                  children: [
+                    renderSection(),
+                  ],
+                )
             ),
           ],
     ));
