@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../account/signup_page.dart';
 import '../home/start_page.dart';
+import '../index.dart';
 
 class AccountAuthPage extends StatelessWidget {
   late double screenWidth;
@@ -145,7 +146,9 @@ class AccountAuthPage extends StatelessWidget {
                   height: screenHeight * 0.075,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Xử lý khi nhấn nút đăng nhập
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => MainPage()),
+                      );
                     },
                     child: Text(
                       'Xác nhận',
