@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../home/home_page.dart';
 import '../home/intro_page.dart';
 import '../home/start_page.dart';
+import '../index.dart';
 import '../verify/accountAuth_page.dart';
 
 /**
@@ -177,7 +178,7 @@ class LoginPage extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => IntroPage()),
+            MaterialPageRoute(builder: (context) => MainPage()),
           );
         },
         child: Text(
