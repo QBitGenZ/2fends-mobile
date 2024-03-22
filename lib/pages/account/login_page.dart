@@ -1,8 +1,11 @@
+import 'package:fends_mobile/models/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../app_config.dart';
+import '../../networks/login_request.dart';
 import '../home/home_page.dart';
 import '../home/intro_page.dart';
 import '../home/start_page.dart';
@@ -12,59 +15,23 @@ import '../verify/accountAuth_page.dart';
 /**
  * Class khung nhap password
  */
-class PasswordContainer extends StatefulWidget {
+
+
+class LoginPage extends StatefulWidget {
   @override
-  _PasswordContainerState createState() => _PasswordContainerState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _PasswordContainerState extends State<PasswordContainer> {
+class _LoginPageState extends State<LoginPage> {
   bool _obscureText = true;
-  late double screenHeight;
-
-  @override
-  Widget build(BuildContext context) {
-    screenHeight = MediaQuery.of(context).size.height;
-
-    return Container(
-      margin: EdgeInsets.only(bottom: screenHeight * 0.0925),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 40.0),
-        child: TextFormField(
-          keyboardType: TextInputType.visiblePassword,
-          obscureText: _obscureText,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            labelText: 'Mật khẩu',
-            suffixIcon: IconButton(
-              icon:
-                  Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
-              onPressed: () {
-                setState(() {
-                  _obscureText = !_obscureText;
-                });
-              },
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(10.0),
-                bottomRight: Radius.circular(10.0),
-              ),
-              borderSide: BorderSide(
-                style: BorderStyle.none,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class LoginPage extends StatelessWidget {
+  late Login login;
+  late String password;
   late double screenWidth;
+
   late double screenHeight;
+
+  late String username;
+
   void navigateToStartScreen(BuildContext context) {
     Navigator.push(
       context,
@@ -102,7 +69,7 @@ class LoginPage extends StatelessWidget {
                       height: 1,
                       color: Color(0x00D9D9D9),
                     ),
-                    PasswordContainer(),
+                    passwordContainer(context),
                     loginbtnContainer(context)
                   ],
                 ),
@@ -146,6 +113,9 @@ class LoginPage extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 40.0),
         child: TextFormField(
+          onChanged: (value) => {
+            username = value
+          },
           // keyboardType: TextInputType.phone,
           decoration: InputDecoration(
             filled: true,
@@ -167,7 +137,45 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
-
+Container passwordContainer(BuildContext context){
+    return Container(
+      margin: EdgeInsets.only(bottom: screenHeight * 0.0925),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 40.0),
+        child: TextFormField(
+          onChanged: (value) => {
+            password = value
+          },
+          keyboardType: TextInputType.visiblePassword,
+          obscureText: _obscureText,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            labelText: 'Mật khẩu',
+            suffixIcon: IconButton(
+              icon:
+              Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
+              onPressed: () {
+                setState(() {
+                  _obscureText = !_obscureText;
+                });
+              },
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(10.0),
+                bottomRight: Radius.circular(10.0),
+              ),
+              borderSide: BorderSide(
+                style: BorderStyle.none,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+}
   /**
    * Widget button đăng nhập
    */
@@ -177,9 +185,29 @@ class LoginPage extends StatelessWidget {
       height: screenHeight * 0.075,
       child: ElevatedButton(
         onPressed: () {
-          Navigator.of(context).push(
+          LoginRequest.loginToken(username, password).then((value) => {
+            AppConfig.ACCESS_TOKEN = value.access,
+              Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => MainPage()),
-          );
+          )
+          }).catchError((err) => {
+            AlertDialog(
+            shadowColor: Colors.grey[300],
+            alignment: Alignment.center,
+            content: Text(
+              "Sai Tài khoản/Mật khẩu... Dăng nhập lại",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w400,
+                height: 0,
+              ),
+            ),
+          )
+          });
+
         },
         child: Text(
           'Đăng nhập',

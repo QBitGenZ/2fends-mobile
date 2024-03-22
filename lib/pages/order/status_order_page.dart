@@ -1,3 +1,4 @@
+import 'package:fends_mobile/pages/order/comment_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -40,7 +41,7 @@ class StatusOrderPage extends StatelessWidget {
                 _totalRow("Giá vận chuyển", "0"),
                 _totalRow("Giá đơn hàng", "250.000", Colors.black),
 
-                _submitButton("Đánh giá đơn hàng")
+                _submitButton("Đánh giá đơn hàng", context)
 
               ],
             ),
@@ -246,8 +247,13 @@ class StatusOrderPage extends StatelessWidget {
     );
   }
 
-  Widget _submitButton(String title) {
+  Widget _submitButton(String title, BuildContext context) {
     return InkWell(
+      onTap: () => {
+      Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => CommentPage()),
+      )
+      },
       child: Row(
         children: [
           Expanded(

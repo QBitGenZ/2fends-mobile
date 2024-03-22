@@ -1,3 +1,5 @@
+
+import 'package:fends_mobile/pages/order/status_order_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +34,7 @@ class OrderPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                _orderList(),
+                _orderList(context),
                 Padding(
                   padding:
                       const EdgeInsets.only(left: 20.0, bottom: 10, top: 30),
@@ -47,7 +49,7 @@ class OrderPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                _orderList(),
+                _orderList(context),
                 Padding(
                   padding:
                       const EdgeInsets.only(left: 20.0, bottom: 10, top: 30),
@@ -62,7 +64,7 @@ class OrderPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                _orderList(),
+                _orderList(context),
               ],
             ),
           ),
@@ -91,16 +93,16 @@ class OrderPage extends StatelessWidget {
     );
   }
 
-  Widget _orderList() {
+  Widget _orderList(BuildContext context) {
     return Column(
       children: List.generate(
         10,
-        (index) => _orderListItem(),
+        (index) => _orderListItem(context),
       ),
     );
   }
 
-  Widget _orderListItem() {
+  Widget _orderListItem(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Container(
@@ -165,7 +167,13 @@ class OrderPage extends StatelessWidget {
                   ),
                 ),
               ),
-              Icon(Icons.arrow_forward_ios)
+              InkWell(
+                onTap: () => {
+                Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => StatusOrderPage()),
+                )
+                },
+                  child: Icon(Icons.arrow_forward_ios))
             ],
           ),
         ),

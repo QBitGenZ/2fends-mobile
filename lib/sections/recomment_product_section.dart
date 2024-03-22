@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/recomment_product.dart';
+import '../pages/product/product_detail_page.dart';
 
 class RecommentProductSection extends StatefulWidget {
   @override
@@ -32,7 +33,11 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
                         if (i < recommentproduct.length)
                           InkWell(
                             onTap: () {
-                              // Xử lý khi người dùng nhấn vào sản phẩm
+                              // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProductDetailPage(product: recommentproduct[i])), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
+                              );
                             },
                             child: ItemList(
                               imagePath: recommentproduct[i].imagePath,
@@ -43,7 +48,11 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
                         if (i + 1 < recommentproduct.length)
                           InkWell(
                             onTap: () {
-                              // Xử lý khi người dùng nhấn vào sản phẩm
+                              // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProductDetailPage(product: recommentproduct[i+1])), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
+                              );
                             },
                             child: ItemList(
                               imagePath: recommentproduct[i + 1].imagePath,
