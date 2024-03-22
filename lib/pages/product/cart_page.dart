@@ -1,12 +1,22 @@
-import 'package:fends_mobile/constants/recomment_product.dart';
+import 'package:fends_mobile/constants/recomment_product.dart' as Constains ;
 import 'package:fends_mobile/constants/user_data.dart';
 import 'package:fends_mobile/models/index.dart';
+import 'package:fends_mobile/networks/cart_request.dart';
+import 'package:fends_mobile/networks/product_request.dart';
+import 'package:fends_mobile/pages/order/order_page.dart';
+import 'package:fends_mobile/pages/product/product_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../constants/recomment_product.dart';
+import '../../constants/recomment_product.dart';
+import '../../models/cart.dart';
+import '../../models/product.dart';
+
 class CartPage extends StatefulWidget {
+
   @override
   State<CartPage> createState() => _CartPageState();
 }
@@ -14,6 +24,20 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   late double screenHeight;
   late double screenWidth;
+  late List<Cart> cart;
+
+  @override
+  void initState()  {
+    super.initState();
+    fetchCart();
+  }
+
+  Future<void> fetchCart() async {
+    List<Cart> fetchedCart = await CartRequest.GetCarts() ??  [Cart()];
+    setState(() {
+      cart = fetchedCart; // Cập nhật danh sách giỏ hàng
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +55,11 @@ class _CartPageState extends State<CartPage> {
       home: Scaffold(
         body: Stack(
           children: [
+            cart == [] ? SizedBox():
             ListView(
-              children: [
-                ...recommentproduct.map((e) => list(e)).toList(),
-              ],
+              children:
+                cart.map((e) => list(e)).toList()
+              ,
             ),
             Positioned(
               left: 0,
@@ -50,9 +75,10 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget list(RecommentProduct? recommentproduct) {
+  Widget list(Cart cart)  {
+
     return Dismissible(
-      key: Key(recommentproduct!.productName),
+      key: Key(cart.id.toString()),
       background: Container(
         color: Colors.green,
         child: Icon(Icons.add),
@@ -67,7 +93,7 @@ class _CartPageState extends State<CartPage> {
       ),
       onDismissed: (direction) {
         setState(() {
-          recommentproduct = null;
+
         });
         if (direction == DismissDirection.startToEnd) {
           // Add item back
@@ -80,56 +106,67 @@ class _CartPageState extends State<CartPage> {
         }
       },
       child: ListTile(
-        title: Container(
-          child: Row(
-            children: [
-              Image.asset(recommentproduct.imagePath),
-              Container(
-                child: Column(
-                  children: [
-                    Text(
-                      recommentproduct.productName,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                        height: 0,
+        title: InkWell(
+          onTap: () {
+            // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProductDetailPage(product: cart.product?? new Product())), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
+            );
+          },
+          child: Container(
+            child: Row(
+              children: [
+                Image.asset("assets/images/fake.png"),
+                Container(
+                  margin: EdgeInsets.only(left: 20),
+                  child: Column(
+                    children: [
+                      Text(
+                        cart.product!.name.toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          height: 0,
+                        ),
                       ),
-                    ),
-                    Text(
-                      formatPrice(recommentproduct.price),
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                        height: 0,
+                      Text(
+                        formatPrice(cart.product!.price??0),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          height: 0,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Kích cỡ:  ' + recommentproduct.size,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                        height: 0,
+                      Text(
+                        'Kích cỡ:  '+cart.product!.size.toString() ,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          height: 0,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              )
-            ],
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Container payContainer(RecommentProduct recommentproduct) {
+  Container payContainer(Constains.RecommentProduct recommentproduct) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
 
       decoration: BoxDecoration(color: Color(0xFFFAFAFA)),
@@ -184,7 +221,9 @@ class _CartPageState extends State<CartPage> {
          Container(
            height: screenHeight*0.075,
            child:
+
            Row(
+
              children: [
                Container(
                  margin: EdgeInsets.fromLTRB( 0.045*screenWidth,0,125,0),
@@ -223,29 +262,34 @@ class _CartPageState extends State<CartPage> {
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 0.04125*screenHeight),
-            width: 0.83333*screenWidth,
-            height: screenHeight*0.0625,
-            decoration: ShapeDecoration(
-              color: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),
-            alignment: Alignment.center,
-            child:  Text(
-                'Thanh toán',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w400,
-                  height: 0,
+          InkWell(
+            onTap: () => {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderPage()))
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 0.04125*screenHeight),
+              width: 0.83333*screenWidth,
+              height: screenHeight*0.0625,
+              decoration: ShapeDecoration(
+                color: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
                 ),
               ),
-            ),
+              alignment: Alignment.center,
+              child:  Text(
+                  'Thanh toán',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                ),
+              ),
+          ),
         ],
       ),
     );

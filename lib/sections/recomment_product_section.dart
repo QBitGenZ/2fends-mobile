@@ -1,11 +1,18 @@
+import 'package:fends_mobile/constants/recomment_product.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constants/recomment_product.dart';
+// import '../constants/recomment_product.dart';
+import '../pages/product/product_detail_page.dart';
+
+import '../models/product.dart';
 
 class RecommentProductSection extends StatefulWidget {
+  final List<Product> Products;
+  RecommentProductSection({Key? key, required this.Products}) : super(key: key);
   @override
-  State<RecommentProductSection> createState() => _RecommentProductSectionState();
+  State<RecommentProductSection> createState() =>
+      _RecommentProductSectionState();
 }
 
 class _RecommentProductSectionState extends State<RecommentProductSection> {
@@ -17,49 +24,75 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
 
-    return MaterialApp(
-      home: Scaffold(
-        body: ListView(
-          children: [
-            Container(
-              margin: EdgeInsets.only(top: 90),
-              child: Column(
-                children: [
-                  for (int i = 0; i < recommentproduct.length; i += 2)
-                    Row(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.fromLTRB(60, 90, 60, 0),
+            child: Column(
+              // children: widget.Products.map((e) => {
+              //   ItemList(
+              //     imagePath: "https://product.hstatic.net/1000026602/product/img_5435_6afcdabbf16448eca040cc4bdcf0ba23_master.jpg",
+              //     formatPrice: formatPrice(e.price.toString()),
+              //     productName: e.name.toString(),
+              //   )
+              // }).toList(),
+              children: [
+                for (int i = 0; i < widget.Products.length; i += 2)
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        if (i < recommentproduct.length)
+                        if (i < widget.Products.length)
                           InkWell(
                             onTap: () {
-                              // Xử lý khi người dùng nhấn vào sản phẩm
+                              // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductDetailPage(
+                                        product: widget.Products[i])), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
+                              );
                             },
-                            child: ItemList(
-                              imagePath: recommentproduct[i].imagePath,
-                              productName: recommentproduct[i].productName,
-                              formatPrice: formatPrice(recommentproduct[i].price),
+                            child: Container(
+                              padding: EdgeInsets.only(right: 20),
+                              child: ItemList(
+                                imagePath: "assets/images/fake.png",
+                                productName: widget.Products[i].name.toString(),
+                                formatPrice:
+                                    formatPrice(widget.Products[i].price ?? 0)
+                                        .toString(),
+                              ),
                             ),
                           ),
-                        if (i + 1 < recommentproduct.length)
+                        if (i + 1 < widget.Products.length)
                           InkWell(
                             onTap: () {
-                              // Xử lý khi người dùng nhấn vào sản phẩm
+                              // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductDetailPage(
+                                        product: widget.Products[i + 1])), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
+                              );
                             },
                             child: ItemList(
-                              imagePath: recommentproduct[i + 1].imagePath,
-                              productName: recommentproduct[i + 1].productName,
-                              formatPrice: formatPrice(recommentproduct[i + 1].price),
+                              imagePath: "assets/images/fake.png",
+                              productName: widget.Products[i+1].name.toString(),
+                              formatPrice:
+                                  formatPrice(widget.Products[i+1].price ?? 0)
+                                      .toString(),
                             ),
                           ),
                       ],
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

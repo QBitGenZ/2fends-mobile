@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/index.dart';
+import '../models/product.dart';
 
 class HorizontalList extends StatelessWidget {
   final String title;
@@ -39,7 +40,7 @@ class HorizontalList extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RecommentProductSection()),
+                      MaterialPageRoute(builder: (context) => RecommentProductSection(Products: products)),
                     );
                   },
                   child: Text(
@@ -82,9 +83,11 @@ class ProductItem extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ListView(
         children: [
-          Image(image: AssetImage('assets/images/fake.png'), ),
+          // Image(image: AssetImage(product.productImage[0].toString()), ),
+          Image.network("https://bizweb.dktcdn.net/100/393/859/products/aa05eb0d94a869c571dfbc5a04c2dcc0-1664351250542.jpg?v=1680139537870",
+          height: 100),
           Text(
-            product.name,
+            product.name.toString(),
             style: TextStyle(
               color: Colors.black,
               fontSize: 13,
@@ -94,7 +97,7 @@ class ProductItem extends StatelessWidget {
             ),
           ),
           Text(
-            product.price,
+            product.price.toString(),
             style: TextStyle(
               color: Colors.black,
               fontSize: 13,

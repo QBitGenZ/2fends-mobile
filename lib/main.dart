@@ -1,5 +1,5 @@
 
-import 'package:fends_mobile/pages/home/cart_page.dart';
+import 'package:fends_mobile/pages/product/cart_page.dart';
 import 'package:fends_mobile/pages/index.dart';
 
 
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       ),
       color: Colors.white,
 
-      home: CartPage(),
+      home: StartPage(),
       debugShowCheckedModeBanner: false,
     );
   }
