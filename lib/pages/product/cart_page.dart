@@ -1,6 +1,8 @@
 import 'package:fends_mobile/constants/recomment_product.dart' as Constains ;
 import 'package:fends_mobile/constants/user_data.dart';
 import 'package:fends_mobile/models/index.dart';
+import 'package:fends_mobile/networks/cart_request.dart';
+import 'package:fends_mobile/networks/product_request.dart';
 import 'package:fends_mobile/pages/order/order_page.dart';
 import 'package:fends_mobile/pages/product/product_detail_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,8 +12,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants/recomment_product.dart';
 import '../../constants/recomment_product.dart';
+import '../../models/cart.dart';
+import '../../models/product.dart';
 
 class CartPage extends StatefulWidget {
+
   @override
   State<CartPage> createState() => _CartPageState();
 }
@@ -19,6 +24,20 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   late double screenHeight;
   late double screenWidth;
+  late List<Cart> cart;
+
+  @override
+  void initState()  {
+    super.initState();
+    fetchCart();
+  }
+
+  Future<void> fetchCart() async {
+    List<Cart> fetchedCart = await CartRequest.GetCarts() ??  [Cart()];
+    setState(() {
+      cart = fetchedCart; // Cập nhật danh sách giỏ hàng
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +55,11 @@ class _CartPageState extends State<CartPage> {
       home: Scaffold(
         body: Stack(
           children: [
+            cart == [] ? SizedBox():
             ListView(
-              children: [
-                ...recommentproduct.map((e) => list(e)).toList(),
-              ],
+              children:
+                cart.map((e) => list(e)).toList()
+              ,
             ),
             Positioned(
               left: 0,
@@ -55,9 +75,10 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget list(Constains.RecommentProduct recommentproduct) {
+  Widget list(Cart cart)  {
+
     return Dismissible(
-      key: Key(recommentproduct.productName),
+      key: Key(cart.id.toString()),
       background: Container(
         color: Colors.green,
         child: Icon(Icons.add),
@@ -72,7 +93,7 @@ class _CartPageState extends State<CartPage> {
       ),
       onDismissed: (direction) {
         setState(() {
-          recommentproduct = recommentproduct;
+
         });
         if (direction == DismissDirection.startToEnd) {
           // Add item back
@@ -90,18 +111,19 @@ class _CartPageState extends State<CartPage> {
             // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProductDetailPage(product: recommentproduct)), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
+              MaterialPageRoute(builder: (context) => ProductDetailPage(product: cart.product?? new Product())), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
             );
           },
           child: Container(
             child: Row(
               children: [
-                Image.asset(recommentproduct.imagePath),
+                Image.asset("assets/images/fake.png"),
                 Container(
+                  margin: EdgeInsets.only(left: 20),
                   child: Column(
                     children: [
                       Text(
-                        recommentproduct.productName,
+                        cart.product!.name.toString(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15,
@@ -111,7 +133,7 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
                       Text(
-                        formatPrice(recommentproduct.price),
+                        formatPrice(cart.product!.price??0),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15,
@@ -121,7 +143,7 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
                       Text(
-                        'Kích cỡ:  ' + recommentproduct.size,
+                        'Kích cỡ:  '+cart.product!.size.toString() ,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15,

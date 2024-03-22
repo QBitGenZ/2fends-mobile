@@ -1,9 +1,12 @@
+import 'package:fends_mobile/app_config.dart';
+import 'package:fends_mobile/models/product.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../constants/navbar.dart';
 import '../../constants/recomment_product.dart';
+import '../../models/product_image.dart';
 import '../../widgets/navbar.dart';
 import '../index.dart';
 import 'cart_page.dart';
@@ -11,7 +14,8 @@ import 'cart_page.dart';
 class ProductDetailPage extends StatefulWidget {
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
-  final RecommentProduct product;
+  final Product product;
+  // final List<ProductImage> productImage;
 
   ProductDetailPage({Key? key, required this.product}) : super(key: key);
 }
@@ -55,8 +59,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    child: Image.asset(
-                      widget.product.imagePath,
+                    child: Image.network(AppConfig.IMAGE_API_URL +
+                      widget.product.productImage![0].src.toString(),
                       width: screenWidth,
                       height: screenHeight * 0.49,
                       fit: BoxFit.cover,
@@ -72,7 +76,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           Container(
                             margin: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              widget.product.productName,
+                              widget.product.name.toString(),
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 18,
@@ -85,7 +89,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           Container(
                             margin: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              widget.product.size,
+                              widget.product.size.toString(),
                               style: TextStyle(
                                 color: Color(0xFF5A5A5A),
                                 fontSize: 14,
@@ -99,7 +103,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             margin: EdgeInsets.only(
                                 bottom: screenHeight * 0.021686),
                             child: Text(
-                              '${formatPrice(widget.product.price)}',
+                              formatPrice(widget.product.price!.toDouble()),
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 18,
@@ -142,7 +146,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 ),
                                 Container(
                                   child: Text(
-                                    widget.product.description,
+                                    widget.product.productDetail![0].text.toString(),
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -172,6 +176,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   children: [
                     InkWell(
                       onTap: () {
+
+                        widget.product.id;
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -179,7 +185,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               shadowColor: Colors.grey[300],
                               alignment: Alignment.center,
                               content: Text(
-                                "Bạn đã chọn ${widget.product.productName}",
+                                "Bạn đã chọn ${widget.product.name}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.black,

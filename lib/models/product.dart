@@ -9,13 +9,16 @@ class Product {
   String? id;
   String? name;
   int? quantity;
-  int? price;
+  double? price;
   String? productType;
   List<ProductDetail>? productDetail;
   List<ProductImage>? productImage;
   String? createdAt;
   String? user;
   List<ProductFeedback>? productFeedback;
+  String? status;
+  String? size;
+  String? description;
 
   Product(
       {this.id,
@@ -27,7 +30,11 @@ class Product {
         this.productImage,
         this.createdAt,
         this.user,
-        this.productFeedback});
+        this.productFeedback,
+        this.status,
+        this.size,
+        this.description
+      });
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -55,7 +62,9 @@ class Product {
         productFeedback!.add(new ProductFeedback.fromJson(v));
       });
     }
-
+    status = json['status'];
+    size = json['size'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -79,6 +88,9 @@ class Product {
       data['product_feedback'] =
           this.productFeedback!.map((v) => v.toJson()).toList();
     }
+    data['status'] = this.status;
+    data['size'] = this.size;
+    data['description'] = this.description;
     return data;
   }
 }

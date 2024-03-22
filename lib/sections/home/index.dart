@@ -8,6 +8,8 @@ import 'package:flutter/widgets.dart';
 import '../../models/index.dart';
 import '../../models/product.dart';
 
+import '../recomment_product_section.dart';
+
 class HomeSection extends StatefulWidget {
   @override
   State<HomeSection> createState() => _HomeSectionState();
@@ -43,16 +45,18 @@ class _HomeSectionState extends State<HomeSection> {
                   }
                   var products = snapshot.data;
                   var horizontalLists = <Widget>[];
-                  // for (var product in products!) {
-                  //   horizontalLists.add(
-                  //     HorizontalList(
-                  //       title: 'Sản phẩm bạn có thể thích',
-                  //       products: product,
-                  //     ),
-                  //   );
-                  // }
-                  return ListView(
-                    children: horizontalLists,
+                  for (var product in products!) {
+                    horizontalLists.add(
+                      HorizontalList(
+                        title: 'Sản phẩm bạn có thể thích',
+                        products: products,
+                      ),
+                    );
+                  }
+                  // return HorizontalList(title: 'Sản phẩm bạn có thể thích',
+                  //     products: products);
+                  return RecommentProductSection(
+                    Products: products
                   );
                   // return snapshot.data.map((product) => { HorizontalList(
                   // title: 'Sản phẩm bạn có thể thích',

@@ -6,7 +6,7 @@ import 'package:fends_mobile/models/token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginRequest {
-  static const String URLS = AppConfig.SERVER_API_URL + 'login';
+  static const String URLS = AppConfig.SERVER_API_URL + '/login';
   static Token parseToken(String res) {
     return (Token.fromJson(json.decode(res)));
   }
@@ -15,11 +15,13 @@ class LoginRequest {
     final res = await http.post(Uri.parse(URLS),
         body: {"username": username, "password": password});
     final responseBody = json.decode(res.body);
+    print(responseBody);
     if (res.statusCode == 200) {
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       // final Token token = parseToken(responseBody);
       // await prefs.setString('token', token.access.toString());
       return compute(parseToken, res.body);
+
     } else {
       throw Exception(responseBody);
     }

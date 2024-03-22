@@ -185,6 +185,8 @@ Container passwordContainer(BuildContext context){
       height: screenHeight * 0.075,
       child: ElevatedButton(
         onPressed: () {
+          print(username);
+          print(password);
           LoginRequest.loginToken(username, password).then((value) => {
             AppConfig.ACCESS_TOKEN = value.access,
               Navigator.of(context).push(
