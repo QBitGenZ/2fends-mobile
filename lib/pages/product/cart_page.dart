@@ -38,7 +38,6 @@ class _CartPageState extends State<CartPage> {
       cart = fetchedCart; // Cập nhật danh sách giỏ hàng
     });
   }
-
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery

@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../constants/navbar.dart';
 import '../../constants/recomment_product.dart';
+import '../../models/cart.dart';
 import '../../models/product_image.dart';
 import '../../widgets/navbar.dart';
 import '../index.dart';
