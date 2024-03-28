@@ -1,11 +1,22 @@
 
+
 import 'package:fends_mobile/pages/product/cart_page.dart';
+
+import 'package:fends_mobile/pages/chat/chat_page.dart';
+
 import 'package:fends_mobile/pages/index.dart';
 
 
 import 'package:fends_mobile/pages/home/home_page.dart';
 import 'package:fends_mobile/pages/home/start_page.dart';
+
 import 'package:fends_mobile/pages/sales/addproduct.dart';
+
+
+import 'package:fends_mobile/pages/order/comment_page.dart';
+import 'package:fends_mobile/pages/order/order_page.dart';
+import 'package:fends_mobile/pages/order/status_order_page.dart';
+// import 'package:fends_mobile/pages/home/index.dart';
 
 import 'package:fends_mobile/sections/recomment_product_section.dart';
 
@@ -34,7 +45,12 @@ class MyApp extends StatelessWidget {
       ),
       color: Colors.white,
 
-      home: AddProductPage(),
+
+      // home: AddProductPage(),
+home: StartPage(),
+      // home: RecommentProductSection(),
+      // home: ChatPage(),
+      // home: CommentPage(),
       debugShowCheckedModeBanner: false,
     );
   }
