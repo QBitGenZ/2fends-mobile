@@ -103,6 +103,12 @@ class _CartPageState extends State<CartPage> {
         if (direction == DismissDirection.startToEnd) {
           // Add item back
 
+          var success = await CartRequest.addToCart(cart.product!.id.toString(), '1');
+          if (success){
+            setState(() {
+
+            });
+          }
           // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           //     content: Text(" added"), duration: Duration(seconds: 1)));
         } else if (direction == DismissDirection.endToStart) {
@@ -170,6 +176,16 @@ class _CartPageState extends State<CartPage> {
                       ),
                       Text(
                         'Kích cỡ:  ' + cart.product!.size.toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          height: 0,
+                        ),
+                      ),
+                      Text(
+                        'Số lượng:  ' + cart.quantity.toString(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15,

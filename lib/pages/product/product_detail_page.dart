@@ -280,7 +280,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ],
                 ),
               ),
-            )
+            ),
+            Positioned(
+              top: 20,
+                left: 10,
+                child:
+            IconButton(
+              icon: Icon(Icons.arrow_back_ios_new),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ))
+
           ],
         ),
       ),

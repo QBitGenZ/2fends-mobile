@@ -39,13 +39,7 @@ class _MainPageState extends State<MainPage> {
           Expanded(
             child: Stack(
               children: [
-                Positioned(
-                  bottom: 0,
-                  child: Navbar(
-                    selectedTitle: selectedTitle,
-                    updateSelectedTitle: updateSelectedTitle,
-                  ),
-                ),
+
                 Positioned(
                   top: 0,
                   child: SizedBox(
@@ -57,6 +51,13 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ],
                     ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  child: Navbar(
+                    selectedTitle: selectedTitle,
+                    updateSelectedTitle: updateSelectedTitle,
                   ),
                 ),
               ],

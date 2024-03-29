@@ -41,7 +41,7 @@ class CartRequest{
       'quantity': quantity
     });
     final responseBody =  jsonDecode(utf8.decode(res.bodyBytes));
-    return res.statusCode == 201;
+    return res.statusCode == 201 || res.statusCode == 200;
   }
 
   static Future<bool> deleteFromCart(String cartID) async {
