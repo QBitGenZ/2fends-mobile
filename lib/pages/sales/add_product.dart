@@ -1,3 +1,4 @@
+import 'package:fends_mobile/pages/sales/sale_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -240,22 +241,28 @@ class AddProductPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(20,MediaQuery.of(context).size.height*0.15,0,MediaQuery.of(context).size.height*0.15),
-                  width: 450,
-                  height: 50,
-                  color: Colors.grey[100],
-                  alignment: Alignment.center,
-                  child: Text(
-
-                    'Tiếp theo',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFF949494),
-                      fontSize: 18,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w700,
-                      height: 0,
+                InkWell(
+                  onTap: () =>{
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SalePage()),)
+                  },
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(20,MediaQuery.of(context).size.height*0.15,0,MediaQuery.of(context).size.height*0.15),
+                    width: 450,
+                    height: 50,
+                    color: Colors.grey[100],
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Tiếp theo',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFF949494),
+                        fontSize: 18,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w700,
+                        height: 0,
+                      ),
                     ),
                   ),
                 )
