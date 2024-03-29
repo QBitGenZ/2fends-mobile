@@ -97,7 +97,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 125,
+      width: 130,
       padding: const EdgeInsets.all(8.0),
       child: ListView(
         children: [
@@ -105,7 +105,7 @@ class ProductItem extends StatelessWidget {
               ? Image.network(
                   AppConfig.IMAGE_API_URL +
                       product.productImage![0].src.toString(),
-                  height: 125)
+                  height: 120, width: 120,)
               : Image.asset('assets/images/fake.png'),
           Text(
             product.name.toString(),
