@@ -28,15 +28,9 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
       child: Column(
         children: [
           Container(
+            width: screenWidth,
             margin: EdgeInsets.fromLTRB(60, 90, 60, 0),
             child: Column(
-              // children: widget.Products.map((e) => {
-              //   ItemList(
-              //     imagePath: "https://product.hstatic.net/1000026602/product/img_5435_6afcdabbf16448eca040cc4bdcf0ba23_master.jpg",
-              //     formatPrice: formatPrice(e.price.toString()),
-              //     productName: e.name.toString(),
-              //   )
-              // }).toList(),
               children: [
                 for (int i = 0; i < widget.Products.length; i += 2)
                   Container(
@@ -47,12 +41,11 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
                         if (i < widget.Products.length)
                           InkWell(
                             onTap: () {
-                              // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ProductDetailPage(
-                                        product: widget.Products[i])), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
+                                        product: widget.Products[i])), 
                               );
                             },
                             child: Container(

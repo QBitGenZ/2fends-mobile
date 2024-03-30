@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       ),
       color: Colors.white,
 
-      home: AddProductPage(),
+      home: StartPage(),
       debugShowCheckedModeBanner: false,
     );
   }

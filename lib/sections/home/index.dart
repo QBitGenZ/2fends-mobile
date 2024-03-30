@@ -18,14 +18,13 @@ class HomeSection extends StatefulWidget {
 class _HomeSectionState extends State<HomeSection> {
   late double screenWidth;
 
-
-
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     
 
     return Container(
+      width: screenWidth,
       height: MediaQuery.of(context).size.height - 68,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -44,41 +43,11 @@ class _HomeSectionState extends State<HomeSection> {
                     return Text('Đã xảy ra lỗi: ${snapshot.error}');
                   }
                   var products = snapshot.data;
-                  var horizontalLists = <Widget>[];
-                  for (var product in products!) {
-                    horizontalLists.add(
-                      HorizontalList(
-                        title: 'Sản phẩm bạn có thể thích',
-                        products: products,
-                      ),
-                    );
-                  }
-                  // return HorizontalList(title: 'Sản phẩm bạn có thể thích',
-                  //     products: products);
                   return RecommentProductSection(
-                    Products: products
+                    Products: products!.where((product) => product != null).toList()
                   );
-                  // return snapshot.data.map((product) => { HorizontalList(
-                  // title: 'Sản phẩm bạn có thể thích',
-                  // products: product,
-                  // )}) ;
-                  // return Text(snapshot.runtimeType.toString());
                 }
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 20),
-              // child: HorizontalList(
-              //   title: 'Sản phẩm đang giảm giá',
-              //   products: products,
-              // ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 20),
-              // child: HorizontalList(
-              //   title: 'Sản phẩm hot',
-              //   products: products,
-              // ),
             ),
           ],
         ),
