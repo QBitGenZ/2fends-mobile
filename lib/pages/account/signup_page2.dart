@@ -47,8 +47,9 @@ class _SignupPageState extends State<SignupPage> {
     screenHeight = MediaQuery.of(context).size.height;
     return MaterialApp(
       home: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
             width: screenWidth,
             color: Color(0xFFEEE8DA),
             child: Stack(
@@ -66,7 +67,7 @@ class _SignupPageState extends State<SignupPage> {
                               top: 50, left: screenWidth * 0.0555),
                           child: Image.asset('assets/images/Vector.png'))),
                 ),
-                Column(
+                ListView(
                   children: [
                     titleContainer(),
                     userContainer(),
@@ -120,15 +121,15 @@ class _SignupPageState extends State<SignupPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Text(
-              'Giới tính',
-              style: GoogleFonts.roboto(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                height: 0,
-              ),
-            ),
+            // Text(
+            //   'Giới tính',
+            //   style: GoogleFonts.roboto(
+            //     color: Colors.black,
+            //     fontSize: 16,
+            //     fontWeight: FontWeight.w400,
+            //     height: 0,
+            //   ),
+            // ),
             Expanded(
               child: RadioListTile<String>(
                 title: const Text('Nam'),
@@ -381,7 +382,7 @@ class _SignupPageState extends State<SignupPage> {
     return Container(
       width: screenWidth * 0.83333,
       height: screenHeight * 0.075,
-      margin: EdgeInsets.only(top: screenHeight * 0.04125),
+      margin: EdgeInsets.only(top: screenHeight * 0.04125, bottom: 20),
       child: ElevatedButton(
         onPressed: () async {
           if (_passwordController.text != _rePasswordController.text)
