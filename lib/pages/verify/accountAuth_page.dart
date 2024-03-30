@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../account/signup_page.dart';
+import '../account/signup_page2.dart';
 import '../home/start_page.dart';
 import '../index.dart';
 

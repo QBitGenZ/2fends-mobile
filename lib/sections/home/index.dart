@@ -33,6 +33,69 @@ class _HomeSectionState extends State<HomeSection> {
           children: [
             HeaderImage(context),
             Container(
+                padding: EdgeInsets.only(top: 20),
+                child: FutureBuilder(
+                    future: ProductRequest.GetProducts(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text('Đã xảy ra lỗi: ${snapshot.error}');
+                      }
+                      var products = snapshot.data;
+                      return HorizontalList(title: "Sản phẩm bạn có thể thích", products: products ?? []);
+                    }
+                )
+            ),
+            Container(
+                padding: EdgeInsets.only(top: 20),
+                child: FutureBuilder(
+                    future: ProductRequest.GetProducts(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text('Đã xảy ra lỗi: ${snapshot.error}');
+                      }
+                      var products = snapshot.data;
+                      return HorizontalList(title: "Đang giảm giá", products: products ?? []);
+                    }
+                )
+            ),
+            Container(
+                padding: EdgeInsets.only(top: 20),
+                child: FutureBuilder(
+                    future: ProductRequest.GetProducts(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text('Đã xảy ra lỗi: ${snapshot.error}');
+                      }
+                      var products = snapshot.data;
+                      return HorizontalList(title: "Sản phẩm hot", products: products ?? []);
+                    }
+                )
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              width: screenWidth,
+              padding: EdgeInsets.only(top: 20, left: 10),
+              child: Text(
+                'Tất cả sản phẩm',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w500,
+                  height: 0,
+                ),
+              ),
+            ),
+            Container(
               padding: EdgeInsets.only(top: 20),
               child: FutureBuilder(
                 future: ProductRequest.GetProducts(),
@@ -44,41 +107,13 @@ class _HomeSectionState extends State<HomeSection> {
                     return Text('Đã xảy ra lỗi: ${snapshot.error}');
                   }
                   var products = snapshot.data;
-                  var horizontalLists = <Widget>[];
-                  for (var product in products!) {
-                    horizontalLists.add(
-                      HorizontalList(
-                        title: 'Sản phẩm bạn có thể thích',
-                        products: products,
-                      ),
-                    );
-                  }
-                  // return HorizontalList(title: 'Sản phẩm bạn có thể thích',
-                  //     products: products);
+
                   return RecommentProductSection(
-                    Products: products
+                    Products: products ?? []
                   );
-                  // return snapshot.data.map((product) => { HorizontalList(
-                  // title: 'Sản phẩm bạn có thể thích',
-                  // products: product,
-                  // )}) ;
-                  // return Text(snapshot.runtimeType.toString());
+
                 }
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 20),
-              // child: HorizontalList(
-              //   title: 'Sản phẩm đang giảm giá',
-              //   products: products,
-              // ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 20),
-              // child: HorizontalList(
-              //   title: 'Sản phẩm hot',
-              //   products: products,
-              // ),
             ),
           ],
         ),

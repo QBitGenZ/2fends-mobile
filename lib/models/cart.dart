@@ -5,12 +5,12 @@ class Cart {
   Product? product;
   int? quantity;
 
-  Cart({this.id, this.product, this.quantity});
+  Cart({ this.id,  this.product,  this.quantity});
 
   Cart.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     product =
-    json['product'] != null ? new Product.fromJson(json['product']) : null;
+    (json['product'] != null ? new Product.fromJson(json['product']) : null)!;
     quantity = json['quantity'];
   }
 

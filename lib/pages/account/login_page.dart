@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../app_config.dart';
-import '../../networks/login_request.dart';
+import '../../networks/user_request.dart';
 import '../home/home_page.dart';
 import '../home/intro_page.dart';
 import '../home/start_page.dart';
@@ -187,7 +187,7 @@ Container passwordContainer(BuildContext context){
         onPressed: () {
           print(username);
           print(password);
-          LoginRequest.loginToken(username, password).then((value) => {
+          UserRequest.loginToken(username, password).then((value) => {
             AppConfig.ACCESS_TOKEN = value.access,
               Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => MainPage()),

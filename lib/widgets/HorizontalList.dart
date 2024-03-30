@@ -1,3 +1,4 @@
+import 'package:fends_mobile/app_config.dart';
 import 'package:fends_mobile/pages/index.dart';
 import 'package:fends_mobile/sections/recomment_product_section.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,13 +6,15 @@ import 'package:flutter/material.dart';
 
 import '../models/index.dart';
 import '../models/product.dart';
+import '../pages/product/product_detail_page.dart';
 
 class HorizontalList extends StatelessWidget {
   final String title;
   final List<Product> products;
   late double screenWidth;
 
-  HorizontalList({Key? key, required this.title, required this.products}) : super(key: key);
+  HorizontalList({Key? key, required this.title, required this.products})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +43,9 @@ class HorizontalList extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RecommentProductSection(Products: products)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              RecommentProductSection(Products: products)),
                     );
                   },
                   child: Text(
@@ -62,7 +67,20 @@ class HorizontalList extends StatelessWidget {
             height: 190,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: products.map((e) => ProductItem(product: e)).toList(),
+              children: products
+                  .map((e) => InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductDetailPage(
+                          product: e,
+                        ),
+                      ),
+                    );
+                  },
+                  child: ProductItem(product: e)))
+                  .toList(),
             ),
           ),
         ],
@@ -79,13 +97,16 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 125,
+      width: 130,
       padding: const EdgeInsets.all(8.0),
       child: ListView(
         children: [
-          // Image(image: AssetImage(product.productImage[0].toString()), ),
-          Image.network("https://bizweb.dktcdn.net/100/393/859/products/aa05eb0d94a869c571dfbc5a04c2dcc0-1664351250542.jpg?v=1680139537870",
-          height: 100),
+          product.productImage != null && product.productImage!.isNotEmpty
+              ? Image.network(
+                  AppConfig.IMAGE_API_URL +
+                      product.productImage![0].src.toString(),
+                  height: 120, width: 120,)
+              : Image.asset('assets/images/fake.png'),
           Text(
             product.name.toString(),
             style: TextStyle(
@@ -111,3 +132,4 @@ class ProductItem extends StatelessWidget {
     );
   }
 }
+

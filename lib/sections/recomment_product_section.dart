@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // import '../constants/recomment_product.dart';
+import '../app_config.dart';
 import '../pages/product/product_detail_page.dart';
 
 import '../models/product.dart';
@@ -23,71 +24,90 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
+    print(widget.Products.length);
 
     return SingleChildScrollView(
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.fromLTRB(60, 90, 60, 0),
+            margin: EdgeInsets.only(),
             child: Column(
-              // children: widget.Products.map((e) => {
-              //   ItemList(
-              //     imagePath: "https://product.hstatic.net/1000026602/product/img_5435_6afcdabbf16448eca040cc4bdcf0ba23_master.jpg",
-              //     formatPrice: formatPrice(e.price.toString()),
-              //     productName: e.name.toString(),
-              //   )
-              // }).toList(),
               children: [
-                for (int i = 0; i < widget.Products.length; i += 2)
-                  Container(
-                    margin: EdgeInsets.only(bottom: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        if (i < widget.Products.length)
-                          InkWell(
-                            onTap: () {
-                              // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
+                if (widget
+                    .Products.isNotEmpty) // Check if Products list is not empty
+                  for (int i = 0; i < widget.Products.length; i += 2)
+                    Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          if (i < widget.Products.length)
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
                                     builder: (context) => ProductDetailPage(
-                                        product: widget.Products[i])), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(right: 20),
-                              child: ItemList(
-                                imagePath: "assets/images/fake.png",
-                                productName: widget.Products[i].name.toString(),
-                                formatPrice:
-                                    formatPrice(widget.Products[i].price ?? 0)
-                                        .toString(),
+                                      product: widget.Products[i],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(right: 20),
+                                child: ItemList(
+                                  imagePath:
+                                      widget.Products[i].productImage !=
+                                                  null &&
+                                              widget.Products[i]
+                                                  .productImage!.isNotEmpty
+                                          ? widget.Products[i]
+                                              .productImage![0].src
+                                              .toString()
+                                          : '',
+                                  productName:
+                                      widget.Products[i].name.toString(),
+                                  formatPrice:
+                                      formatPrice(widget.Products[i].price ?? 0)
+                                          .toString(),
+                                ),
                               ),
                             ),
-                          ),
-                        if (i + 1 < widget.Products.length)
-                          InkWell(
-                            onTap: () {
-                              // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
+                          if (i + 1 < widget.Products.length)
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
                                     builder: (context) => ProductDetailPage(
-                                        product: widget.Products[i + 1])), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
-                              );
-                            },
-                            child: ItemList(
-                              imagePath: "assets/images/fake.png",
-                              productName: widget.Products[i+1].name.toString(),
-                              formatPrice:
-                                  formatPrice(widget.Products[i+1].price ?? 0)
-                                      .toString(),
+                                      product: widget.Products[i + 1],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ItemList(
+                                imagePath:
+                                    widget.Products[i + 1].productImage !=
+                                                null &&
+                                            widget.Products[i + 1].productImage!
+                                                .isNotEmpty
+                                        ? widget.Products[i + 1]
+                                            .productImage![0].src
+                                            .toString()
+                                        : '',
+                                productName:
+                                    widget.Products[i + 1].name.toString(),
+                                formatPrice: formatPrice(
+                                        widget.Products[i + 1].price ?? 0)
+                                    .toString(),
+                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                if (widget.Products
+                    .isEmpty) // Handle case when Products list is empty
+                  Text("No products available"),
               ],
             ),
           ),
@@ -119,8 +139,13 @@ class _ItemListState extends State<ItemList> {
     return Container(
       child: Column(
         children: [
-          Image.asset(
-            widget.imagePath,
+          if (widget.imagePath == '')
+            Image.asset('assets/images/fake.png')
+          else
+          Image.network(
+            AppConfig.IMAGE_API_URL + widget.imagePath,
+            width: 125 / 360 * MediaQuery.of(context).size.width,
+            height: 125 / 360 * MediaQuery.of(context).size.width,
           ),
           Text(
             widget.productName,

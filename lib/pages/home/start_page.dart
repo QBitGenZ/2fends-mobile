@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../account/login_page.dart';
-import '../account/signup_page.dart';
+import '../account/signup_page2.dart';
 
 class StartPage extends StatelessWidget {
   late double screenWidth;

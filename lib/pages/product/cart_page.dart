@@ -1,4 +1,4 @@
-import 'package:fends_mobile/constants/recomment_product.dart' as Constains ;
+import 'package:fends_mobile/constants/recomment_product.dart' as Constains;
 import 'package:fends_mobile/constants/user_data.dart';
 import 'package:fends_mobile/models/index.dart';
 import 'package:fends_mobile/networks/cart_request.dart';
@@ -10,13 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../app_config.dart';
 import '../../constants/recomment_product.dart';
 import '../../constants/recomment_product.dart';
 import '../../models/cart.dart';
 import '../../models/product.dart';
 
 class CartPage extends StatefulWidget {
-
   @override
   State<CartPage> createState() => _CartPageState();
 }
@@ -24,58 +24,66 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   late double screenHeight;
   late double screenWidth;
-  late List<Cart> cart;
+  late List<Cart> carts;
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetchCart();
+  // }
+  //
+  // Future<void> fetchCart() async {
+  //   List<Cart> fetchedCart = await CartRequest.getCarts() ?? [Cart()];
+  //   setState(() {
+  //     cart = fetchedCart; // Cập nhật danh sách giỏ hàng
+  //   });
+  // }
 
-  @override
-  void initState()  {
-    super.initState();
-    fetchCart();
-  }
-
-  Future<void> fetchCart() async {
-    List<Cart> fetchedCart = await CartRequest.GetCarts() ??  [Cart()];
-    setState(() {
-      cart = fetchedCart; // Cập nhật danh sách giỏ hàng
-    });
-  }
   @override
   Widget build(BuildContext context) {
-    screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
-    screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Stack(
-          children: [
-            cart == [] ? SizedBox():
-            ListView(
-              children:
-                cart.map((e) => list(e)).toList()
-              ,
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: payContainer(recommentproduct[0]),
-              // Truyền một phần tử từ danh sách recommentproduct
-              // Đặt payContainer ở góc dưới của màn hình sử dụng Positioned.
-            ),
-          ],
+        appBar: headerForDetail('Giỏ hàng'),
+        body: FutureBuilder(
+          future: CartRequest.getCarts(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Text('Đã xảy ra lỗi: ${snapshot.error}');
+            }
+            carts = snapshot.data!;
+            if (carts!.isNotEmpty)
+              return ListView(children: carts.map((e) => list(e)).toList());
+            else
+              return SizedBox();
+          },
         ),
+        bottomNavigationBar: FutureBuilder(
+            future: CartRequest.getCarts(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox();
+              }
+              if (snapshot.hasError) {
+                return Text('Đã xảy ra lỗi: ${snapshot.error}');
+              }
+              carts = snapshot.data!;
+              if (carts!.isNotEmpty)
+                return payContainer(carts);
+              else
+                return SizedBox();
+
+            }),
       ),
     );
   }
 
-  Widget list(Cart cart)  {
-
+  Widget list(Cart cart) {
     return Dismissible(
       key: Key(cart.id.toString()),
       background: Container(
@@ -90,18 +98,29 @@ class _CartPageState extends State<CartPage> {
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20.0),
       ),
-      onDismissed: (direction) {
-        setState(() {
-
-        });
+      onDismissed: (direction) async {
+        setState(() {});
         if (direction == DismissDirection.startToEnd) {
           // Add item back
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(" added"), duration: Duration(seconds: 1)));
+
+          var success = await CartRequest.addToCart(cart.product!.id.toString(), '1');
+          if (success){
+            setState(() {
+
+            });
+          }
+          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //     content: Text(" added"), duration: Duration(seconds: 1)));
         } else if (direction == DismissDirection.endToStart) {
           // Delete item
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("deleted"), duration: Duration(seconds: 1)));
+          var success = await CartRequest.deleteFromCart(cart.id.toString());
+          if (success){
+            setState(() {
+
+            });
+          }
+          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //     content: Text("deleted"), duration: Duration(seconds: 1)));
         }
       },
       child: ListTile(
@@ -110,16 +129,30 @@ class _CartPageState extends State<CartPage> {
             // Điều hướng đến trang chi tiết sản phẩm và truyền dữ liệu sản phẩm
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProductDetailPage(product: cart.product?? new Product())), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
+              MaterialPageRoute(
+                  builder: (context) => ProductDetailPage(
+                      product: cart.product ??
+                          new Product())), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
             );
           },
           child: Container(
+            width: screenWidth,
             child: Row(
               children: [
-                Image.asset("assets/images/fake.png"),
+                cart.product?.productImage != null &&
+                        cart.product!.productImage!.isNotEmpty
+                    ? Image.network(
+                        AppConfig.IMAGE_API_URL +
+                            cart.product!.productImage![0].src.toString(),
+                        height: 120,
+                        width: 120,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.asset("assets/images/fake.png"),
                 Container(
                   margin: EdgeInsets.only(left: 20),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         cart.product!.name.toString(),
@@ -132,7 +165,7 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
                       Text(
-                        formatPrice(cart.product!.price??0),
+                        formatPrice(cart.product!.price ?? 0),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15,
@@ -142,7 +175,17 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
                       Text(
-                        'Kích cỡ:  '+cart.product!.size.toString() ,
+                        'Kích cỡ:  ' + cart.product!.size.toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          height: 0,
+                        ),
+                      ),
+                      Text(
+                        'Số lượng:  ' + cart.quantity.toString(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15,
@@ -161,36 +204,43 @@ class _CartPageState extends State<CartPage> {
       ),
     );
   }
+  
+  double totalPrice(List<Cart> cart) {
+    return cart.map((item) => (item.product!.price!.toDouble() * item.quantity!.toInt())).reduce((value, element) => value + element);
+  }
 
-  Container payContainer(Constains.RecommentProduct recommentproduct) {
+  Container payContainer(List<Cart> carts) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+    double total = totalPrice(carts);
+    
 
     return Container(
-
       decoration: BoxDecoration(color: Color(0xFFFAFAFA)),
       width: screenWidth,
-      height: screenHeight*0.3125,
+      height: screenHeight * 0.3125,
       child: Column(
         children: [
           Container(
-            height: screenHeight*0.075,
-            child:
-            Row(
+            height: screenHeight * 0.075,
+            child: Row(
               children: [
                 Container(
-            margin: EdgeInsets.fromLTRB( 0.045*screenWidth,0,150,0),
-                  child:Text('Mã giảm giá',
+                  margin: EdgeInsets.fromLTRB(0.045 * screenWidth, 0, 150, 0),
+                  child: Text(
+                    'Mã giảm giá',
                     style: TextStyle(
                       color: Color(0xFF858585),
                       fontSize: 15,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
                       height: 0,
-                    ),),
+                    ),
+                  ),
                 ),
                 Container(
-                  child: Text(formatPrice(recommentproduct.price),
+                  child: Text(
+                    formatPrice(120),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
@@ -198,10 +248,9 @@ class _CartPageState extends State<CartPage> {
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
                       height: 0,
-                    ),),
+                    ),
+                  ),
                 )
-
-
               ],
             ),
           ),
@@ -217,38 +266,39 @@ class _CartPageState extends State<CartPage> {
               ),
             ),
           ),
-         Container(
-           height: screenHeight*0.075,
-           child:
-
-           Row(
-
-             children: [
-               Container(
-                 margin: EdgeInsets.fromLTRB( 0.045*screenWidth,0,125,0),
-                 child: Text('Tổng thanh toán',
-                   style: TextStyle(
-                     color: Color(0xFF858585),
-                     fontSize: 15,
-                     fontFamily: 'Roboto',
-                     fontWeight: FontWeight.w500,
-                     height: 0,
-                   ),),
-               ),
-               Container(
-                 child: Text(formatPrice(recommentproduct.price),
-                   textAlign: TextAlign.center,
-                   style: TextStyle(
-                     color: Colors.black,
-                     fontSize: 15,
-                     fontFamily: 'Roboto',
-                     fontWeight: FontWeight.w500,
-                     height: 0,
-                   ),),
-               )
-             ],
-           ),
-         ),
+          Container(
+            height: screenHeight * 0.075,
+            child: Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(0.045 * screenWidth, 0, 125, 0),
+                  child: Text(
+                    'Tổng thanh toán',
+                    style: TextStyle(
+                      color: Color(0xFF858585),
+                      fontSize: 15,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w500,
+                      height: 0,
+                    ),
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    formatPrice(total),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w500,
+                      height: 0,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
           Container(
             width: screenWidth,
             decoration: ShapeDecoration(
@@ -263,12 +313,13 @@ class _CartPageState extends State<CartPage> {
           ),
           InkWell(
             onTap: () => {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderPage()))
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => OrderPage()))
             },
             child: Container(
-              margin: EdgeInsets.only(top: 0.04125*screenHeight),
-              width: 0.83333*screenWidth,
-              height: screenHeight*0.0625,
+              margin: EdgeInsets.only(top: 0.04125 * screenHeight),
+              width: 0.83333 * screenWidth,
+              height: screenHeight * 0.0625,
               decoration: ShapeDecoration(
                 color: Colors.black,
                 shape: RoundedRectangleBorder(
@@ -276,35 +327,46 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               alignment: Alignment.center,
-              child:  Text(
-                  'Thanh toán',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w400,
-                    height: 0,
-                  ),
+              child: Text(
+                'Thanh toán',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w400,
+                  height: 0,
                 ),
               ),
+            ),
           ),
         ],
       ),
     );
   }
-}
 
-// class Product {
-//   final String imagePath;
-//   final String productName;
-//   final String formatPrice;
-//   final String size;
-//
-//   Product(
-//       {Key? key,
-//       required this.imagePath,
-//       required this.productName,
-//       required this.formatPrice,
-//       required this.size});
-// }
+  AppBar headerForDetail([String? title]) {
+    return AppBar(
+      leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.arrow_back_ios_new)),
+      backgroundColor: Colors.white,
+      centerTitle: true,
+      title: title != null
+          ? Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
+            )
+          : const SizedBox(),
+    );
+  }
+}

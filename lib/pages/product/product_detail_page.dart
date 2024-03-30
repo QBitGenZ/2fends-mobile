@@ -12,6 +12,8 @@ import '../../widgets/navbar.dart';
 import '../index.dart';
 import 'cart_page.dart';
 
+import 'package:fends_mobile/networks/cart_request.dart';
+
 class ProductDetailPage extends StatefulWidget {
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
@@ -176,35 +178,61 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 child: Row(
                   children: [
                     InkWell(
-                      onTap: () {
-
-                        widget.product.id;
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              shadowColor: Colors.grey[300],
-                              alignment: Alignment.center,
-                              content: Text(
-                                "Bạn đã chọn ${widget.product.name}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                      onTap: () async {
+                        bool success = await CartRequest.addToCart(widget.product.id.toString(), "1");
+                        if (success) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                shadowColor: Colors.grey[300],
+                                alignment: Alignment.center,
+                                content: Text(
+                                  "Bạn đã chọn ${widget.product.name}",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 13,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                        Future.delayed(Duration(seconds: 1), () {
-                          Navigator.of(context).pop(); // Tự động đóng AlertDialog sau 2 giây
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => CartPage()),
+                              );
+                            },
                           );
-                        });
+                          Future.delayed(Duration(seconds: 1), () {
+                            Navigator.of(context)
+                                .pop(); // Tự động đóng AlertDialog sau 2 giây
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => CartPage()),
+                            );
+                          });
+                        }
+                        else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                shadowColor: Colors.grey[300],
+                                alignment: Alignment.center,
+                                content: Text(
+                                  "Thêm không thành công",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 13,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+
                       },
 
                       child: Container(
@@ -252,7 +280,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ],
                 ),
               ),
-            )
+            ),
+            Positioned(
+              top: 20,
+                left: 10,
+                child:
+            IconButton(
+              icon: Icon(Icons.arrow_back_ios_new),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ))
+
           ],
         ),
       ),
