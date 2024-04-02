@@ -28,6 +28,7 @@ class HorizontalList extends StatelessWidget {
             padding: EdgeInsets.only(right: 10, left: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   title,
@@ -64,7 +65,7 @@ class HorizontalList extends StatelessWidget {
           ),
           SizedBox(
             width: screenWidth,
-            height: 190,
+            height: 220,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: products
@@ -100,6 +101,7 @@ class ProductItem extends StatelessWidget {
       width: 130,
       padding: const EdgeInsets.all(8.0),
       child: ListView(
+
         children: [
           product.productImage != null && product.productImage!.isNotEmpty
               ? Image.network(
@@ -107,24 +109,28 @@ class ProductItem extends StatelessWidget {
                       product.productImage![0].src.toString(),
                   height: 120, width: 120,)
               : Image.asset('assets/images/fake.png'),
-          Text(
-            product.name.toString(),
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              height: 0,
+          Center(
+            child: Text(
+              product.name.toString(),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
             ),
           ),
-          Text(
-            product.price.toString(),
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w400,
-              height: 0,
+          Center(
+            child: Text(
+              product.price.toString(),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w400,
+                height: 0,
+              ),
             ),
           ),
         ],

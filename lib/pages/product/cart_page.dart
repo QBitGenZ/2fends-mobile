@@ -15,6 +15,7 @@ import '../../constants/recomment_product.dart';
 import '../../constants/recomment_product.dart';
 import '../../models/cart.dart';
 import '../../models/product.dart';
+import '../../widgets/header_for_detail.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -46,7 +47,12 @@ class _CartPageState extends State<CartPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: headerForDetail('Giỏ hàng'),
+        // appBar: headerForDetail('Giỏ hàng'),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: headerForDetail('Giỏ hàng'),
+          // child: context.findAncestorStateOfType(),
+        ),
         body: FutureBuilder(
           future: CartRequest.getCarts(),
           builder: (context, snapshot) {

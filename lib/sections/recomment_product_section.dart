@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // import '../constants/recomment_product.dart';
 import '../app_config.dart';
+import '../models/cart.dart';
 import '../pages/product/product_detail_page.dart';
 
 import '../models/product.dart';
@@ -31,87 +32,37 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
         children: [
           Container(
             margin: EdgeInsets.only(),
-            child: Column(
-              children: [
-                if (widget
-                    .Products.isNotEmpty) // Check if Products list is not empty
-                  for (int i = 0; i < widget.Products.length; i += 2)
-                    Container(
-                      margin: EdgeInsets.only(bottom: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          if (i < widget.Products.length)
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductDetailPage(
-                                      product: widget.Products[i],
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                padding: EdgeInsets.only(right: 20),
-                                child: ItemList(
-                                  imagePath:
-                                      widget.Products[i].productImage !=
-                                                  null &&
-                                              widget.Products[i]
-                                                  .productImage!.isNotEmpty
-                                          ? widget.Products[i]
-                                              .productImage![0].src
-                                              .toString()
-                                          : '',
-                                  productName:
-                                      widget.Products[i].name.toString(),
-                                  formatPrice:
-                                      formatPrice(widget.Products[i].price ?? 0)
-                                          .toString(),
-                                ),
-                              ),
-                            ),
-                          if (i + 1 < widget.Products.length)
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductDetailPage(
-                                      product: widget.Products[i + 1],
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: ItemList(
-                                imagePath:
-                                    widget.Products[i + 1].productImage !=
-                                                null &&
-                                            widget.Products[i + 1].productImage!
-                                                .isNotEmpty
-                                        ? widget.Products[i + 1]
-                                            .productImage![0].src
-                                            .toString()
-                                        : '',
-                                productName:
-                                    widget.Products[i + 1].name.toString(),
-                                formatPrice: formatPrice(
-                                        widget.Products[i + 1].price ?? 0)
-                                    .toString(),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                if (widget.Products
-                    .isEmpty) // Handle case when Products list is empty
-                  Text("No products available"),
-              ],
-            ),
+            child: Wrap(
+                children:
+                    widget.Products.map((e) => buildItem(context, e)).toList()),
           ),
         ],
+      ),
+    );
+  }
+
+  InkWell buildItem(BuildContext context, Product product) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailPage(
+              product: product,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.only(right: 20),
+        child: ItemList(
+          imagePath:
+              product.productImage != null && product.productImage!.isNotEmpty
+                  ? product.productImage![0].src.toString()
+                  : '',
+          productName: product.name.toString(),
+          formatPrice: formatPrice(product.price ?? 0).toString(),
+        ),
       ),
     );
   }
@@ -137,16 +88,18 @@ class _ItemListState extends State<ItemList> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(8.0),
       child: Column(
         children: [
           if (widget.imagePath == '')
             Image.asset('assets/images/fake.png')
           else
-          Image.network(
-            AppConfig.IMAGE_API_URL + widget.imagePath,
-            width: 125 / 360 * MediaQuery.of(context).size.width,
-            height: 125 / 360 * MediaQuery.of(context).size.width,
-          ),
+            Image.network(
+              AppConfig.IMAGE_API_URL + widget.imagePath,
+              width: 125 / 360 * MediaQuery.of(context).size.width,
+              height: 125 / 360 * MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
           Text(
             widget.productName,
             style: TextStyle(
