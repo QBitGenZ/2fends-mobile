@@ -26,18 +26,6 @@ class _CartPageState extends State<CartPage> {
   late double screenHeight;
   late double screenWidth;
   late List<Cart> carts;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   fetchCart();
-  // }
-  //
-  // Future<void> fetchCart() async {
-  //   List<Cart> fetchedCart = await CartRequest.getCarts() ?? [Cart()];
-  //   setState(() {
-  //     cart = fetchedCart; // Cập nhật danh sách giỏ hàng
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +71,6 @@ class _CartPageState extends State<CartPage> {
                 return payContainer(carts);
               else
                 return SizedBox();
-
             }),
       ),
     );
@@ -92,41 +79,26 @@ class _CartPageState extends State<CartPage> {
   Widget list(Cart cart) {
     return Dismissible(
       key: Key(cart.id.toString()),
+      // background: Container(
+      //   color: Colors.green,
+      //   child: Icon(Icons.add),
+      //   alignment: Alignment.centerLeft,
+      //   padding: EdgeInsets.only(left: 20.0),
+      // ),
       background: Container(
-        color: Colors.green,
-        child: Icon(Icons.add),
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 20.0),
-      ),
-      secondaryBackground: Container(
         color: Colors.red,
         child: Icon(Icons.delete),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20.0),
       ),
+      direction: DismissDirection.endToStart,
       onDismissed: (direction) async {
         setState(() {});
-        if (direction == DismissDirection.startToEnd) {
-          // Add item back
-
-          var success = await CartRequest.addToCart(cart.product!.id.toString(), '1');
-          if (success){
-            setState(() {
-
-            });
-          }
-          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //     content: Text(" added"), duration: Duration(seconds: 1)));
-        } else if (direction == DismissDirection.endToStart) {
-          // Delete item
+        if (direction == DismissDirection.endToStart) {
           var success = await CartRequest.deleteFromCart(cart.id.toString());
-          if (success){
-            setState(() {
-
-            });
+          if (success) {
+            setState(() {});
           }
-          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //     content: Text("deleted"), duration: Duration(seconds: 1)));
         }
       },
       child: ListTile(
@@ -170,6 +142,9 @@ class _CartPageState extends State<CartPage> {
                           height: 0,
                         ),
                       ),
+                      SizedBox(
+                        height: 5,
+                      ),
                       Text(
                         formatPrice(cart.product!.price ?? 0),
                         style: TextStyle(
@@ -180,26 +155,84 @@ class _CartPageState extends State<CartPage> {
                           height: 0,
                         ),
                       ),
+                      SizedBox(
+                        height: 5,
+                      ),
                       Text(
                         'Kích cỡ:  ' + cart.product!.size.toString(),
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
+                          color: Color(0xFFB2B2B2),
+                          fontSize: 12,
                           fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w400,
                           height: 0,
                         ),
                       ),
-                      Text(
-                        'Số lượng:  ' + cart.quantity.toString(),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                          height: 0,
-                        ),
+                      SizedBox(
+                        height: 5,
                       ),
+                      Container(
+                        decoration: ShapeDecoration(
+                          shape: RoundedRectangleBorder(
+                            side:
+                                BorderSide(width: 1, color: Color(0xFF7C7C7C)),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        // height: 20,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            InkWell(
+                                onTap: () async {
+                                  if (cart.quantity != 1) {
+                                    var success = await CartRequest.addToCart(
+                                        cart.product!.id.toString(), '-1');
+                                    if (success) {
+                                      setState(() {});
+                                    }
+                                  }
+                                },
+                                child: Icon(
+                                  Icons.remove,
+                                  size: 20,
+                                )),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              cart.quantity.toString(),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 12,
+                                fontFamily: 'Roboto',
+                                fontWeight: FontWeight.w500,
+                                height: 0,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            InkWell(
+                                onTap: () async {
+                                  var success = await CartRequest.addToCart(
+                                      cart.product!.id.toString(), '1');
+                                  if (success) {
+                                    setState(() {});
+                                  }
+                                },
+                                child: Icon(
+                                  Icons.add,
+                                  size: 20,
+                                )),
+                            SizedBox(
+                              width: 5,
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 )
@@ -210,16 +243,18 @@ class _CartPageState extends State<CartPage> {
       ),
     );
   }
-  
+
   double totalPrice(List<Cart> cart) {
-    return cart.map((item) => (item.product!.price!.toDouble() * item.quantity!.toInt())).reduce((value, element) => value + element);
+    return cart
+        .map((item) =>
+            (item.product!.price!.toDouble() * item.quantity!.toInt()))
+        .reduce((value, element) => value + element);
   }
 
   Container payContainer(List<Cart> carts) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     double total = totalPrice(carts);
-    
 
     return Container(
       decoration: BoxDecoration(color: Color(0xFFFAFAFA)),

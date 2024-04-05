@@ -1,4 +1,4 @@
-import 'package:fends_mobile/pages/sales/your_department_page.dart';
+import 'package:fends_mobile/pages/sales/department_store_page.dart';
 import 'package:fends_mobile/sections/home/index.dart';
 import 'package:fends_mobile/widgets/navbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,7 +48,7 @@ class _MainPageState extends State<MainPage> {
       return HomeSection();
     } else if (selectedTitle == navbar[2].title) {
       print(selectedTitle);
-      return YourDepartmentPage();
+      return DepartmentStorePage();
     }
     return Container();
   }

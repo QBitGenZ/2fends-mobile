@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fends_mobile/pages/sales/your_department_page.dart';
+import 'package:fends_mobile/pages/sales/department_store_page.dart';
 import 'package:fends_mobile/pages/sales/size_product.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class _SalePageState extends State<SalePage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => YourDepartmentPage()),
+                      MaterialPageRoute(builder: (context) => DepartmentStorePage()),
                     );
                   },
                   child: Container(

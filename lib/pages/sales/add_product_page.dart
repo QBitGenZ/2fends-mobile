@@ -2,12 +2,16 @@ import 'dart:io';
 
 import 'package:fends_mobile/models/product_type.dart';
 import 'package:fends_mobile/networks/product_request.dart';
+import 'package:fends_mobile/pages/index.dart';
+import 'package:fends_mobile/pages/sales/department_store_page.dart';
+import 'package:fends_mobile/sections/home/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../constants/navbar.dart';
+import '../../models/product.dart';
 import '../../widgets/navbar.dart';
 
 class AddProductPage extends StatefulWidget {
@@ -26,6 +30,7 @@ class _AddProductPageState extends State<AddProductPage> {
   final _quantityController = TextEditingController();
   final _descriptionController = TextEditingController();
   late List<XFile>? images = [];
+  late String _productId;
 
   var _page;
   @override
@@ -46,22 +51,32 @@ class _AddProductPageState extends State<AddProductPage> {
             Expanded(
                 child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
-              child: _page == 1
-                  ? _page1()
-                  : _page == 2
-                      ? _page2()
-                      : _page3(),
+              child: render(),
             )),
             Row(
               children: [
                 Expanded(
-                    child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            _page += 1;
-                          });
-                        },
-                        child: _builderButton())),
+                  child: images!.length == 0 || _page != 3
+                      ? InkWell(
+                          onTap: () {
+                            setState(() {
+                              if (_page < 3) _page += 1;
+                            });
+                            if (_page == 3) {
+                              _addProduct();
+                            }
+                          },
+                          child: _builderButton())
+                      : InkWell(
+                          onTap: () {
+                            _addImage();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => MainPage()),
+                            );
+                          },
+                          child: _builderFinishButton(),
+                        ),
+                )
               ],
             )
           ],
@@ -87,11 +102,35 @@ class _AddProductPageState extends State<AddProductPage> {
     );
   }
 
+  Widget _builderFinishButton() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+      decoration: BoxDecoration(color: Colors.black),
+      child: Text(
+        'Hoàn tất',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          fontFamily: 'Roboto',
+          fontWeight: FontWeight.w700,
+          height: 0,
+        ),
+      ),
+    );
+  }
+
   AppBar headerForDetail([String? title]) {
     return AppBar(
       leading: InkWell(
           onTap: () {
-            Navigator.pop(context);
+            if (_page != 1)
+              setState(() {
+                _page -= 1;
+              });
+            else
+              Navigator.pop(context);
           },
           child: Icon(Icons.arrow_back_ios_new)),
       backgroundColor: Colors.white,
@@ -112,43 +151,81 @@ class _AddProductPageState extends State<AddProductPage> {
     );
   }
 
+  Widget render() {
+    if (_page == 1) {
+      return _page1();
+    }
+    if (_page == 2) {
+      if (_genderController.isNotEmpty &&
+          _typeProductController.isNotEmpty &&
+          _sizeController.isNotEmpty) return _page2();
+      _page = 1;
+      return _page1();
+    }
+    if (_page == 3) {
+      if (_nameController.text.isNotEmpty &&
+          _priceController.text.isNotEmpty &&
+          _priceController.text.isNotEmpty &&
+          _descriptionController.text.isNotEmpty) {
+        print(double.parse(_priceController.text.toString()).runtimeType);
+        return _page3();
+      }
+      _page = 2;
+      return _page2();
+    }
+    return Container();
+  }
+
+  Future<void> _addProduct() async {
+    Product product = Product(
+        name: _nameController.text.toString(),
+        quantity: int.parse(_quantityController.text.toString()),
+        price: double.parse(_priceController.text.toString()),
+        description: _descriptionController.text.toString(),
+        size: _sizeController.toString(),
+        productType: _typeProductController.toString());
+    var success = await ProductRequest.AddProduct(product);
+    _productId = success.id!;
+    print(_productId);
+  }
+
   Widget _page1() {
     return Container(
         child: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Giới tính',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 18,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w700,
-              height: 0,
-            ),
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: genderButton('Nam'),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Expanded(
-                child: genderButton('Unisex'),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Expanded(
-                child: genderButton('Nữ'),
-              ),
-            ],
-          ),
-          SizedBox(height: 30),
+          // Text(
+          //   'Giới tính',
+          //   style: TextStyle(
+          //     color: Colors.black,
+          //     fontSize: 18,
+          //     fontFamily: 'Roboto',
+          //     fontWeight: FontWeight.w700,
+          //     height: 0,
+          //   ),
+          // ),
+          // SizedBox(height: 10),
+          // Row(
+          //   children: [
+          //     Expanded(
+          //       child: genderButton('Nam'),
+          //     ),
+          //     SizedBox(
+          //       width: 20,
+          //     ),
+          //     Expanded(
+          //       child: genderButton('Unisex'),
+          //     ),
+          //     SizedBox(
+          //       width: 20,
+          //     ),
+          //     Expanded(
+          //       child: genderButton('Nữ'),
+          //     ),
+          //   ],
+          // ),
+          // SizedBox(height: 30),
           Text(
             'Loại sản phẩm',
             style: TextStyle(
@@ -265,6 +342,7 @@ class _AddProductPageState extends State<AddProductPage> {
               height: 20,
             ),
             TextFormField(
+              keyboardType: TextInputType.number,
               controller: _priceController,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
@@ -296,6 +374,7 @@ class _AddProductPageState extends State<AddProductPage> {
               height: 20,
             ),
             TextFormField(
+              keyboardType: TextInputType.number,
               controller: _quantityController,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
@@ -327,7 +406,7 @@ class _AddProductPageState extends State<AddProductPage> {
               height: 20,
             ),
             TextFormField(
-              controller: _priceController,
+              controller: _descriptionController,
               keyboardType: TextInputType.multiline,
               maxLines: 10,
               decoration: InputDecoration(
@@ -377,7 +456,7 @@ class _AddProductPageState extends State<AddProductPage> {
             child: GridView.builder(
                 itemCount: images!.length ?? 1,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, crossAxisSpacing: 3, mainAxisSpacing: 3) ,
+                    crossAxisCount: 3, crossAxisSpacing: 3, mainAxisSpacing: 3),
                 itemBuilder: (BuildContext context, int index) {
                   return Image.file(
                     File(images![index].path),
@@ -495,5 +574,15 @@ class _AddProductPageState extends State<AddProductPage> {
     }
     print("Image List Length:" + images!.length.toString());
     setState(() {});
+  }
+
+  Future<void> _addImage() async {
+    print(images!.length);
+    images!.forEach((element) async {
+      var success = await ProductRequest.AddProductImage(
+                _nameController!.text.toString(), _productId, element);
+
+    });
+
   }
 }

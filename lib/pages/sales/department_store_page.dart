@@ -7,18 +7,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../constants/navbar.dart';
 import '../../models/product.dart';
+import '../../widgets/navbar.dart';
 import '../index.dart';
 
-class YourDepartmentPage extends StatefulWidget {
-  const YourDepartmentPage({super.key});
+class DepartmentStorePage extends StatefulWidget {
+  const DepartmentStorePage({super.key});
 
   @override
-  State<YourDepartmentPage> createState() => _YourDepartmentPageState();
+  State<DepartmentStorePage> createState() => _DepartmentStorePageState();
 }
 
-class _YourDepartmentPageState extends State<YourDepartmentPage> {
+class _DepartmentStorePageState extends State<DepartmentStorePage> {
   late double screenWidth;
+  late String selectedTitle;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedTitle = navbar[2].title;
+  }
+
+  void updateSelectedTitle(String title) {
+    setState(() {
+      selectedTitle = title;
+    });
+  }
   // late List<Product> products;
   // @override
   // void initState() async {

@@ -18,105 +18,50 @@ class HomeSection extends StatefulWidget {
 class _HomeSectionState extends State<HomeSection> {
   late double screenWidth;
 
-
-
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
-    
 
     return Container(
-      height: MediaQuery.of(context).size.height - 68,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            HeaderImage(context),
-            Container(
-                padding: EdgeInsets.only(top: 20),
-                child: FutureBuilder(
-                    future: ProductRequest.GetProducts(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return Text('Đã xảy ra lỗi: ${snapshot.error}');
-                      }
-                      var products = snapshot.data;
-                      return HorizontalList(title: "Sản phẩm bạn có thể thích", products: products ?? []);
-                    }
-                )
-            ),
-            Container(
-                padding: EdgeInsets.only(top: 20),
-                child: FutureBuilder(
-                    future: ProductRequest.GetProducts(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return Text('Đã xảy ra lỗi: ${snapshot.error}');
-                      }
-                      var products = snapshot.data;
-                      return HorizontalList(title: "Đang giảm giá", products: products ?? []);
-                    }
-                )
-            ),
-            Container(
-                padding: EdgeInsets.only(top: 20),
-                child: FutureBuilder(
-                    future: ProductRequest.GetProducts(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return Text('Đã xảy ra lỗi: ${snapshot.error}');
-                      }
-                      var products = snapshot.data;
-                      return HorizontalList(title: "Sản phẩm hot", products: products ?? []);
-                    }
-                )
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              width: screenWidth,
-              padding: EdgeInsets.only(top: 20, left: 10),
-              child: Text(
-                'Tất cả sản phẩm',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w500,
-                  height: 0,
-                ),
+      // height: MediaQuery.of(context).size.height - 68,
+      child: Column(
+        children: [
+          HeaderImage(context),
+          Container(
+            alignment: Alignment.centerLeft,
+            width: screenWidth,
+            padding: EdgeInsets.only(top: 20, left: 10),
+            child: Text(
+              'Tất cả sản phẩm',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0,
               ),
             ),
-            Container(
+          ),
+          Expanded(
+            child: Container(
               padding: EdgeInsets.only(top: 20),
               child: FutureBuilder(
-                future: ProductRequest.GetProducts(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  }
-                  if (snapshot.hasError) {
-                    return Text('Đã xảy ra lỗi: ${snapshot.error}');
-                  }
-                  var products = snapshot.data;
-
-                  return RecommentProductSection(
-                    Products: products ?? []
-                  );
-
-                }
-              ),
+                  future: ProductRequest.GetProducts(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Text('Đã xảy ra lỗi: ${snapshot.error}');
+                    }
+                    var products = snapshot.data;
+            
+                    return RecommentProductSection(Products: products ?? []);
+                  }),
+              // child: RecommentProductSection(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
