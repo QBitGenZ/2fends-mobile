@@ -50,12 +50,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       home: Scaffold(
         body: Stack(
           children: [
-            Positioned(
-                bottom: 0,
-                child: Navbar(
-                  selectedTitle: selectedTitle,
-                  updateSelectedTitle: updateSelectedTitle,
-                )),
+            // Positioned(
+            //     bottom: 0,
+            //     child: Navbar(
+            //       selectedTitle: selectedTitle,
+            //       updateSelectedTitle: updateSelectedTitle,
+            //     )),
             Positioned(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -170,7 +170,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             Positioned(
               left: 0,
               right: 0,
-              bottom: 70,
+              bottom: 0,
               child: Container(
                 decoration: BoxDecoration(color: Color(0x63DBDBDB)),
                 width: screenWidth,

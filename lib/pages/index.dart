@@ -1,4 +1,4 @@
-import 'package:fends_mobile/pages/sales/add_product.dart';
+import 'package:fends_mobile/pages/sales/department_store_page.dart';
 import 'package:fends_mobile/sections/home/index.dart';
 import 'package:fends_mobile/widgets/navbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -34,37 +34,11 @@ class _MainPageState extends State<MainPage> {
     }
 
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-
-                Positioned(
-                  top: 0,
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: renderSection(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  child: Navbar(
-                    selectedTitle: selectedTitle,
-                    updateSelectedTitle: updateSelectedTitle,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      bottomNavigationBar: Navbar(
+        selectedTitle: selectedTitle,
+        updateSelectedTitle: updateSelectedTitle,
       ),
+      body: renderSection(),
     );
   }
 
@@ -72,13 +46,10 @@ class _MainPageState extends State<MainPage> {
     if (selectedTitle == navbar[0].title) {
       print(selectedTitle);
       return HomeSection();
-    }
-    else if (selectedTitle == navbar[2].title) {
+    } else if (selectedTitle == navbar[2].title) {
       print(selectedTitle);
-      return AddProductPage();
+      return DepartmentStorePage();
     }
     return Container();
   }
 }
-
-

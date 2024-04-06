@@ -5,8 +5,9 @@ import 'package:fends_mobile/pages/index.dart';
 
 import 'package:fends_mobile/pages/home/home_page.dart';
 import 'package:fends_mobile/pages/home/start_page.dart';
-import 'package:fends_mobile/pages/sales/add_product.dart';
+import 'package:fends_mobile/pages/sales/department_store_page.dart';
 import 'package:fends_mobile/pages/sales/sale_page.dart';
+import 'package:fends_mobile/routes.dart';
 
 import 'package:fends_mobile/sections/recomment_product_section.dart';
 
@@ -37,6 +38,8 @@ class MyApp extends StatelessWidget {
 
       home: StartPage(),
       debugShowCheckedModeBanner: false,
+      // routes: customRoutes,
+
     );
   }
 }

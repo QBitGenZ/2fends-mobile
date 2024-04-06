@@ -42,7 +42,11 @@ class _NavbarState extends State<Navbar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: navbar.map(
               (e) => InkWell(
-            onTap: () => widget.updateSelectedTitle(e.title),
+            onTap: () {
+              widget.updateSelectedTitle(e.title);
+                  // Navigator.pushNamed(context, e.route);
+
+            },
             child: NavbarItem(
               title: e.title,
               icon: e.icon,

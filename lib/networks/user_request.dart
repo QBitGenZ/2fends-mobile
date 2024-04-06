@@ -16,7 +16,7 @@ class UserRequest {
     final res = await http.post(Uri.parse(URLS+'/login'),
         body: {"username": username, "password": password});
     final responseBody = json.decode(res.body);
-    print(responseBody);
+    // print(responseBody);
     if (res.statusCode == 200) {
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       // final Token token = parseToken(responseBody);
