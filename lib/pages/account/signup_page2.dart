@@ -121,15 +121,6 @@ class _SignupPageState extends State<SignupPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            // Text(
-            //   'Giới tính',
-            //   style: GoogleFonts.roboto(
-            //     color: Colors.black,
-            //     fontSize: 16,
-            //     fontWeight: FontWeight.w400,
-            //     height: 0,
-            //   ),
-            // ),
             Expanded(
               child: RadioListTile<String>(
                 title: const Text('Nam'),

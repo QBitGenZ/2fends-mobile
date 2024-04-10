@@ -1,3 +1,4 @@
+import 'package:fends_mobile/pages/account/account_page.dart';
 import 'package:fends_mobile/pages/sales/department_store_page.dart';
 import 'package:fends_mobile/sections/home/index.dart';
 import 'package:fends_mobile/widgets/navbar.dart';
@@ -49,6 +50,9 @@ class _MainPageState extends State<MainPage> {
     } else if (selectedTitle == navbar[2].title) {
       print(selectedTitle);
       return DepartmentStorePage();
+    }
+    else if(selectedTitle == navbar[4].title) {
+      return AccountPage();
     }
     return Container();
   }

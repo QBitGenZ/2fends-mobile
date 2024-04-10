@@ -15,7 +15,7 @@ import '../models/token.dart';
 class ProductRequest {
   static const String URLS = AppConfig.SERVER_API_URL + '/products/';
 
-  static Future<List<Product>> GetProducts({int? page = 1}) async {
+  static Future<List<Product>> GetProducts({int? page=1}) async {
     final tokenString = AppConfig.ACCESS_TOKEN;
     final res = await http.get(Uri.parse(URLS+'?page=${page}'),
         headers: {"Authorization": "Bearer $tokenString"});
@@ -27,7 +27,24 @@ class ProductRequest {
       responseBody['data']
           .map((dynamic product) => products.add(Product.fromJson(product)))
           .toList();
-      // print(responseBody['data'].runtimeType);
+      return products;
+    } else {
+      throw Exception(responseBody);
+    }
+  }
+
+  static Future<List<Product>> GetMyProducts({int? page=1}) async {
+    final tokenString = AppConfig.ACCESS_TOKEN;
+    final res = await http.get(Uri.parse(URLS+'myproducts/'),
+        headers: {"Authorization": "Bearer $tokenString"});
+    final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+
+
+    if (res.statusCode == 200) {
+      List<Product> products = [];
+      responseBody['data']
+          .map((dynamic product) => products.add(Product.fromJson(product)))
+          .toList();
       return products;
     } else {
       throw Exception(responseBody);
@@ -43,7 +60,7 @@ class ProductRequest {
       List<ProductType> productType = [];
       responseBody['data']
           .map((dynamic product) =>
-              productType.add(ProductType.fromJson(product)))
+          productType.add(ProductType.fromJson(product)))
           .toList();
       return productType;
     } else {
@@ -82,11 +99,26 @@ class ProductRequest {
     req.fields['alt'] = alt;
     req.fields['product'] = productID;
     var res = await req.send();
-    print(res.toString());
+
     if (res.statusCode == 201) {
       return true;
     } else {
       return false;
+    }
+  }
+
+  static Future<int> GetRevenue() async {
+    final tokenString = AppConfig.ACCESS_TOKEN;
+    final res = await http.get(Uri.parse(AppConfig.SERVER_API_URL + '/statistics/' + "orders/"), headers: {
+      "Authorization": "Bearer $tokenString"
+    });
+    var revenue = 0;
+    final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+    if (res.statusCode == 200) {
+      //TODO: get api
+      return revenue;
+    } else {
+      throw Exception(responseBody);
     }
   }
 }

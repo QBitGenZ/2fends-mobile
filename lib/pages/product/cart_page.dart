@@ -1,21 +1,20 @@
-import 'package:fends_mobile/constants/recomment_product.dart' as Constains;
-import 'package:fends_mobile/constants/user_data.dart';
-import 'package:fends_mobile/models/index.dart';
 import 'package:fends_mobile/networks/cart_request.dart';
-import 'package:fends_mobile/networks/product_request.dart';
+import 'package:fends_mobile/pages/index.dart';
+
 import 'package:fends_mobile/pages/order/order_page.dart';
 import 'package:fends_mobile/pages/product/product_detail_page.dart';
+import 'package:fends_mobile/sections/home/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../app_config.dart';
 import '../../constants/recomment_product.dart';
-import '../../constants/recomment_product.dart';
+
 import '../../models/cart.dart';
 import '../../models/product.dart';
-import '../../widgets/header_for_detail.dart';
+
+import '../chat/chat_page.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -35,43 +34,20 @@ class _CartPageState extends State<CartPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        // appBar: headerForDetail('Giỏ hàng'),
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
-          child: headerForDetail('Giỏ hàng'),
-          // child: context.findAncestorStateOfType(),
+        appBar: _header(),
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              subNav(),
+              Expanded(child: _buildCart()),
+            ],
+          ),
         ),
-        body: FutureBuilder(
-          future: CartRequest.getCarts(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return Text('Đã xảy ra lỗi: ${snapshot.error}');
-            }
-            carts = snapshot.data!;
-            if (carts!.isNotEmpty)
-              return ListView(children: carts.map((e) => list(e)).toList());
-            else
-              return SizedBox();
-          },
-        ),
-        bottomNavigationBar: FutureBuilder(
-            future: CartRequest.getCarts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox();
-              }
-              if (snapshot.hasError) {
-                return Text('Đã xảy ra lỗi: ${snapshot.error}');
-              }
-              carts = snapshot.data!;
-              if (carts!.isNotEmpty)
-                return payContainer(carts);
-              else
-                return SizedBox();
-            }),
+        // bottomNavigationBar:
       ),
     );
   }
@@ -408,6 +384,126 @@ class _CartPageState extends State<CartPage> {
               ),
             )
           : const SizedBox(),
+    );
+  }
+
+  Widget subNav() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        InkWell(
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => CartPage()));
+            },
+            child: _subnavItem("Giỏ hàng", true)),
+        InkWell(
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => OrderPage()));
+            },
+            child: _subnavItem("Đơn hàng", false)),
+        InkWell(
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => ChatPage()));
+            },
+            child: _subnavItem("Chat", false))
+      ],
+    );
+  }
+
+  Widget _subnavItem(String title, bool state) {
+    return Builder(builder: (context) {
+      return Container(
+        width: 100 / 360 * MediaQuery.of(context).size.width,
+        height: 35,
+        decoration: ShapeDecoration(
+          color: state ? Colors.black : Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 1.5, color: Color(0xFF707070)),
+          ),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: state ? Colors.white : Colors.black,
+              fontSize: 13,
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w500,
+              height: 0,
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+  AppBar _header([String? title]) {
+    return AppBar(
+      leading: InkWell(
+        onTap: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => MainPage()));
+        },
+          child: Icon(Icons.arrow_back_ios_new)
+      ),
+      backgroundColor: Colors.white,
+      title: title != null
+          ? Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
+            )
+          : const SizedBox(),
+    );
+  }
+
+  Widget _buildCart() {
+    return Column(
+      children: [
+        Expanded(
+          child: FutureBuilder(
+            future: CartRequest.getCarts(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Text('Đã xảy ra lỗi: ${snapshot.error}');
+              }
+              carts = snapshot.data!;
+              if (carts!.isNotEmpty)
+                return ListView(children: carts.map((e) => list(e)).toList());
+              else
+                return SizedBox();
+            },
+          ),
+        ),
+        FutureBuilder(
+            future: CartRequest.getCarts(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox();
+              }
+              if (snapshot.hasError) {
+                return Text('Đã xảy ra lỗi: ${snapshot.error}');
+              }
+              carts = snapshot.data!;
+              if (carts!.isNotEmpty)
+                return payContainer(carts);
+              else
+                return SizedBox();
+            }),
+      ],
     );
   }
 }

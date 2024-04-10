@@ -24,7 +24,6 @@ class CartRequest{
     if(res.statusCode == 200){
       List<Cart> carts = [      ];
       responseBody['data'].map((dynamic cart) => carts.add(Cart.fromJson(cart))).toList();
-      print(responseBody['data'].runtimeType);
       return carts;
     } else{
       throw Exception(responseBody);

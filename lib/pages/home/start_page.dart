@@ -15,35 +15,40 @@ class StartPage extends StatelessWidget {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
 
-    return MaterialApp(
-      home: Scaffold(
-        body: Stack(
-          children: [
-            Positioned(
-                child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: Colors.black,
-              child: Image.asset(
-                "./assets/images/home.png",
-              ),
-            )),
-            Positioned(
-                bottom: 0,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.52375,
-                  child: Column(
-                    children: [
-                      loginButtonContainer(context),
-                      signinLink(context)
-                    ],
-                  ),
-                ))
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: MaterialApp(
+        home: Scaffold(
+          body: Stack(
+            children: [
+              Positioned(
+                  child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: Colors.black,
+                child: Image.asset(
+                  "./assets/images/home.png",
+                ),
+              )),
+              Positioned(
+                  bottom: 0,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.52375,
+                    child: Column(
+                      children: [
+                        loginButtonContainer(context),
+                        signinLink(context)
+                      ],
+                    ),
+                  ))
+            ],
+          ),
         ),
+        debugShowCheckedModeBanner: false,
       ),
-      debugShowCheckedModeBanner: false,
     );
   }
 

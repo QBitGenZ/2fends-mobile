@@ -572,7 +572,7 @@ class _AddProductPageState extends State<AddProductPage> {
     if (selectedImages!.isNotEmpty) {
       images!.addAll(selectedImages);
     }
-    print("Image List Length:" + images!.length.toString());
+    // print("Image List Length:" + images!.length.toString());
     setState(() {});
   }
 

@@ -62,8 +62,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    child: Image.network(AppConfig.IMAGE_API_URL +
-                      widget.product.productImage![0].src.toString(),
+                    child: widget.product.productImage != null &&
+                        widget.product.productImage!.isNotEmpty
+                        ? Image.network(
+                      AppConfig.IMAGE_API_URL +
+                          widget.product.productImage![0].src.toString(),
+                      width: screenWidth,
+                      height: screenHeight * 0.49,
+                      fit: BoxFit.cover,
+                    )
+                        : Image.asset(
+                      'assets/images/fake.png',
                       width: screenWidth,
                       height: screenHeight * 0.49,
                       fit: BoxFit.cover,
@@ -148,8 +157,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   ),
                                 ),
                                 Container(
-                                  child: Text(
-                                    widget.product.productDetail![0].text.toString(),
+                                  child: widget.product.productDetail != null && widget.product.productDetail!.isNotEmpty
+                                      ? Text(
+                                    widget.product.productDetail![0].text
+                                        .toString(),
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -157,7 +168,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                       fontWeight: FontWeight.w400,
                                       height: 0,
                                     ),
-                                  ),
+                                  )
+                                      : Container(),
                                 )
                               ],
                             ),
@@ -179,7 +191,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   children: [
                     InkWell(
                       onTap: () async {
-                        bool success = await CartRequest.addToCart(widget.product.id.toString(), "1");
+                        bool success = await CartRequest.addToCart(
+                            widget.product.id.toString(), "1");
                         if (success) {
                           showDialog(
                             context: context,
@@ -209,8 +222,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   builder: (context) => CartPage()),
                             );
                           });
-                        }
-                        else {
+                        } else {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -232,9 +244,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             },
                           );
                         }
-
                       },
-
                       child: Container(
                         width: screenWidth * 150 / 360,
                         alignment: Alignment.center,
@@ -282,16 +292,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
             ),
             Positioned(
-              top: 20,
+                top: 20,
                 left: 10,
-                child:
-            IconButton(
-              icon: Icon(Icons.arrow_back_ios_new),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ))
-
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back_ios_new),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ))
           ],
         ),
       ),
