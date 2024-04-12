@@ -1,4 +1,5 @@
 import 'package:fends_mobile/networks/user_request.dart';
+import 'package:fends_mobile/pages/account/address_page.dart';
 import 'package:fends_mobile/pages/account/login_page.dart';
 import 'package:fends_mobile/pages/account/update_info_page.dart';
 import 'package:fends_mobile/pages/home/start_page.dart';
@@ -128,7 +129,11 @@ class _AccountPageState extends State<AccountPage> {
           child: _menuItem(Icons.manage_accounts_outlined, 'Cài đặt tài khoản',
               Color(0xFF4299AB)),
         ),
-        _menuItem(Icons.location_on_outlined, 'Địa chỉ', Color(0xFF4FEC9D)),
+        InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddressPage(user: user,)));
+            },
+            child: _menuItem(Icons.location_on_outlined, 'Địa chỉ', Color(0xFF4FEC9D))),
         // _menuItem(Icons.credit_card_outlined, 'Thanh toán', Color(0xFF0587FF)),
         _menuItem(Icons.help_outline, 'Trung tâm trợ giúp', Color(0xFFB6D400)),
         _menuItem(Icons.error_outline, 'Báo cáo tài khoản', Color(0xFFFF0000)),

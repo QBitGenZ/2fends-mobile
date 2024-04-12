@@ -5,7 +5,7 @@
 //
 // // import '../constants/recomment_product.dart';
 // import '../app_config.dart';
-// import '../models/cart.dart';
+// import '../models/cart_item.dart';
 // import '../pages/product/product_detail_page.dart';
 //
 // import '../models/product.dart';

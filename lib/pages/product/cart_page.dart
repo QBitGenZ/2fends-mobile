@@ -1,7 +1,10 @@
 import 'package:fends_mobile/networks/cart_request.dart';
+import 'package:fends_mobile/pages/home/start_page.dart';
 import 'package:fends_mobile/pages/index.dart';
 
 import 'package:fends_mobile/pages/order/order_page.dart';
+import 'package:fends_mobile/pages/order/payment_page.dart';
+import 'package:fends_mobile/pages/order/status_order_page.dart';
 import 'package:fends_mobile/pages/product/product_detail_page.dart';
 import 'package:fends_mobile/sections/home/index.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +14,7 @@ import 'package:flutter/widgets.dart';
 import '../../app_config.dart';
 import '../../constants/recomment_product.dart';
 
-import '../../models/cart.dart';
+import '../../models/cart_item.dart';
 import '../../models/product.dart';
 
 import '../chat/chat_page.dart';
@@ -24,7 +27,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   late double screenHeight;
   late double screenWidth;
-  late List<Cart> carts;
+  late List<CartItem> carts;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +55,7 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget list(Cart cart) {
+  Widget list(CartItem cart) {
     return Dismissible(
       key: Key(cart.id.toString()),
       // background: Container(
@@ -220,14 +223,14 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  double totalPrice(List<Cart> cart) {
+  double totalPrice(List<CartItem> cart) {
     return cart
         .map((item) =>
             (item.product!.price!.toDouble() * item.quantity!.toInt()))
         .reduce((value, element) => value + element);
   }
 
-  Container payContainer(List<Cart> carts) {
+  Container payContainer(List<CartItem> carts) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     double total = totalPrice(carts);
@@ -331,7 +334,7 @@ class _CartPageState extends State<CartPage> {
           InkWell(
             onTap: () => {
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => OrderPage()))
+                  .push(MaterialPageRoute(builder: (context) => PaymentPage()))
             },
             child: Container(
               margin: EdgeInsets.only(top: 0.04125 * screenHeight),

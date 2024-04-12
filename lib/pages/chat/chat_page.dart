@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 
 import '../../sections/home/index.dart';
 
+//TODO: gép API
+
 class ChatPage extends StatelessWidget {
   late double screenWidth;
 

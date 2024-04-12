@@ -6,14 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../app_config.dart';
-import '../models/cart.dart';
+import '../models/cart_item.dart';
 import '../models/token.dart';
 
 
 class CartRequest{
   static const String URLS = AppConfig.SERVER_API_URL + '/carts/';
 
-  static Future<List<Cart>> getCarts() async{
+  static Future<List<CartItem>> getCarts() async{
     final tokenString = AppConfig.ACCESS_TOKEN;
     final res = await http.get(Uri.parse(URLS), headers: {
       "Authorization": "Bearer $tokenString"
@@ -22,8 +22,8 @@ class CartRequest{
     // responseBody['data'].forEach((data) => {});
 
     if(res.statusCode == 200){
-      List<Cart> carts = [      ];
-      responseBody['data'].map((dynamic cart) => carts.add(Cart.fromJson(cart))).toList();
+      List<CartItem> carts = [      ];
+      responseBody['data'].map((dynamic cart) => carts.add(CartItem.fromJson(cart))).toList();
       return carts;
     } else{
       throw Exception(responseBody);

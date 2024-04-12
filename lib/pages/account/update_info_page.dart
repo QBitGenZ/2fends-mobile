@@ -69,7 +69,7 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
             child: Column(
               children: [
                 Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
+                  margin: EdgeInsets.symmetric(vertical: 30),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -305,35 +305,40 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
           InkWell(
             onTap: () async {
               var success = await UserRequest.updateUser(
-                  _fullnameController.text,
-                  _birthdayController,
-                  _isFemaleController.toString(),
-                  _emailController.text,
-                  _phoneController.text,
-                  src : _image);
+                _fullnameController.text,
+                _birthdayController,
+                _isFemaleController.toString(),
+                _emailController.text,
+                _phoneController.text,
+                src: _image,
+              );
 
-              if (success) {
-                // showDialog(
-                //     context: context,
-                //     builder: (BuildContext context) {
-                //       return AlertDialog(
-                //         shadowColor: Colors.grey[300],
-                //         alignment: Alignment.center,
-                //         content: Text(
-                //           "Chỉnh sửa thông tin thành công",
-                //           textAlign: TextAlign.center,
-                //           style: TextStyle(
-                //             color: Colors.black,
-                //             fontSize: 13,
-                //             fontFamily: 'Roboto',
-                //             fontWeight: FontWeight.w400,
-                //             height: 0,
-                //           ),
-                //         ),
-                //       );
-                //     });
-                widget.callback();
-                Navigator.pop(context);
+              if (success && context.mounted) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shadowColor: Colors.grey[300],
+                      alignment: Alignment.center,
+                      content: Text(
+                        "Chỉnh sửa thông tin thành công",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    );
+                  },
+                );
+                Future.delayed(Duration(seconds: 1), () {
+                  widget.callback();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                });
               }
             },
             child: Container(
