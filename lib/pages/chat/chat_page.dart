@@ -3,6 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../sections/home/index.dart';
+
+//TODO: gép API
+
 class ChatPage extends StatelessWidget {
   late double screenWidth;
 
@@ -31,7 +35,9 @@ class ChatPage extends StatelessWidget {
         title: _avatar(),
         // backgroundColor: Color(0xFFFFFFFF),
         leading: InkWell(
-          onTap: () {}, //TODO: chuyen ve trang truoc do
+          onTap: () {
+            Navigator.of(context).pop();
+          }, //TODO: chuyen ve trang truoc do
           child: Icon(
             Icons.arrow_back,
             size: 35,

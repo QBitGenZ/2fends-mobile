@@ -1,10 +1,21 @@
 
 import 'package:fends_mobile/pages/order/status_order_page.dart';
+import 'package:fends_mobile/sections/home/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class OrderPage extends StatelessWidget {
+import '../chat/chat_page.dart';
+import '../index.dart';
+import '../product/cart_page.dart';
+
+class OrderPage extends StatefulWidget {
+  @override
+  State<OrderPage> createState() => _OrderPageState();
+}
+
+class _OrderPageState extends State<OrderPage> {
   late double screenWidth;
+
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
@@ -75,7 +86,10 @@ class OrderPage extends StatelessWidget {
 
   AppBar _header([String? title]) {
     return AppBar(
-      leading: Icon(Icons.arrow_back_ios_new),
+      leading: InkWell(onTap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => MainPage()));
+      },child: Icon(Icons.arrow_back_ios_new),),
       backgroundColor: Colors.white,
       title: title != null
           ? Text(
@@ -101,7 +115,7 @@ class OrderPage extends StatelessWidget {
       ),
     );
   }
-
+//TODO: ghép API
   Widget _orderListItem(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -185,9 +199,17 @@ class OrderPage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _subnavItem("Giỏ hàng", false),
-        _subnavItem("Đơn hàng", true),
-        _subnavItem("Chat", false)],
+        InkWell(onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartPage()));
+        },
+            child: _subnavItem("Giỏ hàng", false)),
+        InkWell(onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderPage()));
+        }, child: _subnavItem("Đơn hàng", true)),
+        InkWell(onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPage()));
+        },
+            child: _subnavItem("Chat", false))],
     );
   }
 

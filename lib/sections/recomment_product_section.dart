@@ -5,7 +5,7 @@
 //
 // // import '../constants/recomment_product.dart';
 // import '../app_config.dart';
-// import '../models/cart.dart';
+// import '../models/cart_item.dart';
 // import '../pages/product/product_detail_page.dart';
 //
 // import '../models/product.dart';
@@ -196,9 +196,10 @@ import '../pages/product/product_detail_page.dart';
 import '../networks/product_request.dart';
 
 class RecommentProductSection extends StatefulWidget {
-  final List<Product> Products;
+  // final List<Product> Products;
+  List<Product> Products = [];
 
-  RecommentProductSection({Key? key, required this.Products}) : super(key: key);
+  // RecommentProductSection({Key? key, required this.Products}) : super(key: key);
 
   @override
   _RecommentProductSectionState createState() => _RecommentProductSectionState();
@@ -208,7 +209,7 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
   late double screenHeight;
   late double screenWidth;
 
-  static int page = 1;
+  int currentPage = 1;
   final ScrollController _scrollController = ScrollController();
   bool isLoading = false;
 
@@ -216,7 +217,7 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    _getMoreData(page);
+    _getMoreData(currentPage);
   }
 
   @override
@@ -227,7 +228,7 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      _getMoreData(page);
+      _getMoreData(currentPage);
     }
   }
 
@@ -298,8 +299,9 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
 
       setState(() {
         isLoading = false;
-        page++;
         widget.Products.addAll(response);
+        currentPage = currentPage + 1;
+
       });
     }
   }

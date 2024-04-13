@@ -1,12 +1,14 @@
 import 'package:fends_mobile/app_config.dart';
 import 'package:fends_mobile/pages/index.dart';
+import 'package:fends_mobile/pages/sales/see_all_product.dart';
 import 'package:fends_mobile/sections/recomment_product_section.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-import '../models/index.dart';
-import '../models/product.dart';
-import '../pages/product/product_detail_page.dart';
+import '../../models/index.dart';
+import '../../models/product.dart';
+import '../product/product_detail_page.dart';
 
 class HorizontalList extends StatelessWidget {
   final String title;
@@ -27,36 +29,42 @@ class HorizontalList extends StatelessWidget {
             width: screenWidth,
             padding: EdgeInsets.only(right: 10, left: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w500,
-                    height: 0,
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                      ),
+
+                                    ),
                   ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              RecommentProductSection(Products: products)),
-                    );
-                  },
-                  child: Text(
-                    'Xem tất cả',
-                    style: TextStyle(
-                      color: Color(0xFF929292),
-                      fontSize: 14,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
+                Container(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                SeeAllProduct()),
+                      );
+                    },
+                    child:
+                    Text(
+                      'Xem tất cả',
+                      style: TextStyle(
+                        color: Color(0xFF929292),
+                        fontSize: 14,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                      ),
                     ),
                   ),
                 )
@@ -105,9 +113,9 @@ class ProductItem extends StatelessWidget {
         children: [
           product.productImage != null && product.productImage!.isNotEmpty
               ? Image.network(
-                  AppConfig.IMAGE_API_URL +
-                      product.productImage![0].src.toString(),
-                  height: 120, width: 120,)
+            AppConfig.IMAGE_API_URL +
+                product.productImage![0].src.toString(),
+            height: 120, width: 120,)
               : Image.asset('assets/images/fake.png'),
           Center(
             child: Text(

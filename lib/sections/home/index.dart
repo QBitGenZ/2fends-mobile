@@ -1,6 +1,6 @@
 import 'package:fends_mobile/networks/product_request.dart';
 import 'package:fends_mobile/pages/product/cart_page.dart';
-import 'package:fends_mobile/widgets/HorizontalList.dart';
+import 'package:fends_mobile/pages/sales/HorizontalList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,7 +30,7 @@ class _HomeSectionState extends State<HomeSection> {
           Container(
             alignment: Alignment.centerLeft,
             width: screenWidth,
-            padding: EdgeInsets.only(top: 20, left: 10),
+            padding: EdgeInsets.only( left: 10),
             child: Text(
               'Tất cả sản phẩm',
               style: TextStyle(
@@ -49,14 +49,15 @@ class _HomeSectionState extends State<HomeSection> {
                   future: ProductRequest.GetProducts(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return Center(child: Container(height: 50, width: 50,child: CircularProgressIndicator()));
                     }
                     if (snapshot.hasError) {
                       return Text('Đã xảy ra lỗi: ${snapshot.error}');
                     }
                     var products = snapshot.data;
-            
-                    return RecommentProductSection(Products: products ?? []);
+
+                    // return RecommentProductSection(Products: products ?? []);
+                    return RecommentProductSection();
                   }),
               // child: RecommentProductSection(),
             ),

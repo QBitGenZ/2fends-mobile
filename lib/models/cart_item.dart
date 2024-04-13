@@ -1,13 +1,13 @@
 import 'package:fends_mobile/models/product.dart';
 
-class Cart {
+class CartItem {
   String? id;
   Product? product;
   int? quantity;
 
-  Cart({ this.id,  this.product,  this.quantity});
+  CartItem({ this.id,  this.product,  this.quantity});
 
-  Cart.fromJson(Map<String, dynamic> json) {
+  CartItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     product =
     (json['product'] != null ? new Product.fromJson(json['product']) : null)!;
