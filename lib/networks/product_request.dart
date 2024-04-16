@@ -13,11 +13,11 @@ import '../models/product_image.dart';
 import '../models/token.dart';
 
 class ProductRequest {
-  static const String URLS = AppConfig.SERVER_API_URL + '/products/';
+  static const String URLS = '${AppConfig.SERVER_API_URL}/products/';
 
-  static Future<List<Product>> GetProducts({int? page=1}) async {
+  static Future<List<Product>> getProducts({int? page=1}) async {
     final tokenString = AppConfig.ACCESS_TOKEN;
-    final res = await http.get(Uri.parse(URLS+'?page=${page}'),
+    final res = await http.get(Uri.parse('$URLS?page=${page}'),
         headers: {"Authorization": "Bearer $tokenString"});
     final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
     // responseBody['data'].forEach((data) => {});
@@ -33,9 +33,9 @@ class ProductRequest {
     }
   }
 
-  static Future<List<Product>> GetMyProducts({int? page=1}) async {
+  static Future<List<Product>> getMyProducts({int? page=1}) async {
     final tokenString = AppConfig.ACCESS_TOKEN;
-    final res = await http.get(Uri.parse(URLS+'myproducts/'),
+    final res = await http.get(Uri.parse('${URLS}myproducts/?page=$page'),
         headers: {"Authorization": "Bearer $tokenString"});
     final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
 
@@ -51,9 +51,9 @@ class ProductRequest {
     }
   }
 
-  static Future<List<ProductType>> GetProductType() async {
+  static Future<List<ProductType>> getProductType() async {
     final tokenString = AppConfig.ACCESS_TOKEN;
-    final res = await http.get(Uri.parse(URLS + 'types/'),
+    final res = await http.get(Uri.parse('${URLS}types/'),
         headers: {"Authorization": "Bearer $tokenString"});
     final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
     if (res.statusCode == 200) {
@@ -68,7 +68,7 @@ class ProductRequest {
     }
   }
 
-  static Future<Product> AddProduct(Product product) async {
+  static Future<Product> addProduct(Product product) async {
     final tokenString = AppConfig.ACCESS_TOKEN;
     final res = await http.post(Uri.parse(URLS), headers: {
       "Authorization": "Bearer $tokenString"
@@ -88,12 +88,12 @@ class ProductRequest {
     }
   }
 
-  static Future<bool> AddProductImage(
+  static Future<bool> addProductImage(
       String alt, String productID, XFile src) async {
     final tokenString = AppConfig.ACCESS_TOKEN;
     File file = File(src.path);
     final List<int> imageBytes = await file.readAsBytes();
-    final req = await http.MultipartRequest("POST", Uri.parse(URLS + "images/"));
+    final req = await http.MultipartRequest("POST", Uri.parse("${URLS}images/"));
     req.headers["Authorization"] = "Bearer $tokenString";
     req.files.add(http.MultipartFile('src',  http.ByteStream.fromBytes(imageBytes),imageBytes.length, filename: src.name));
     req.fields['alt'] = alt;
@@ -107,7 +107,7 @@ class ProductRequest {
     }
   }
 
-  static Future<int> GetRevenue() async {
+  static Future<int> getRevenue() async {
     final tokenString = AppConfig.ACCESS_TOKEN;
     final res = await http.get(Uri.parse(AppConfig.SERVER_API_URL + '/statistics/' + "orders/"), headers: {
       "Authorization": "Bearer $tokenString"

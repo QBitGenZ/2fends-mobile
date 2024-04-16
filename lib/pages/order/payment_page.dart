@@ -249,12 +249,6 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   Widget _listProduct() {
-    // return Column(
-    //   children: List.generate(
-    //     3,
-    //     (index) => _listProductItem(),
-    //   ),
-    // );
     return Column(
       children: carts.map((e) => _listProductItem(e)).toList(),
     );
@@ -404,6 +398,7 @@ class _PaymentPageState extends State<PaymentPage> {
         // Navigator.of(context).push(
         //   MaterialPageRoute(builder: (context) => CommentPage()),
         // )
+        //ToDo: Xử lý sự kiện đặt hàng
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,

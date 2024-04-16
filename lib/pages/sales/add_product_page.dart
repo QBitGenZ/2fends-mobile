@@ -184,7 +184,7 @@ class _AddProductPageState extends State<AddProductPage> {
         description: _descriptionController.text.toString(),
         size: _sizeController.toString(),
         productType: _typeProductController.toString());
-    var success = await ProductRequest.AddProduct(product);
+    var success = await ProductRequest.addProduct(product);
     _productId = success.id!;
     print(_productId);
   }
@@ -238,7 +238,7 @@ class _AddProductPageState extends State<AddProductPage> {
           ),
           SizedBox(height: 10),
           FutureBuilder(
-              future: ProductRequest.GetProductType(),
+              future: ProductRequest.getProductType(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
@@ -579,7 +579,7 @@ class _AddProductPageState extends State<AddProductPage> {
   Future<void> _addImage() async {
     print(images!.length);
     images!.forEach((element) async {
-      var success = await ProductRequest.AddProductImage(
+      var success = await ProductRequest.addProductImage(
                 _nameController!.text.toString(), _productId, element);
 
     });

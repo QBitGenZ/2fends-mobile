@@ -46,7 +46,7 @@ class _HomeSectionState extends State<HomeSection> {
             child: Container(
               padding: EdgeInsets.only(top: 20),
               child: FutureBuilder(
-                  future: ProductRequest.GetProducts(),
+                  future: ProductRequest.getProducts(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: Container(height: 50, width: 50,child: CircularProgressIndicator()));

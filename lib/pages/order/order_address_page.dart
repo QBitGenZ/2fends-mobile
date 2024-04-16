@@ -44,7 +44,7 @@ class _OrderAddressPageState extends State<OrderAddressPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: headerForDetail("Địa chỉ giao hàng"),
-      body: Container(
+      body: isLoading ? Center(child: Container(height: 50,width: 50, child: CircularProgressIndicator(),)) : Container(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +80,7 @@ class _OrderAddressPageState extends State<OrderAddressPage> {
               ),
               const SizedBox(height: 20,),
               Container(
-                child: _addressList(),
+                child: _addressList(), //TODO: chọn địa chỉ
               ),
             ],
           ),

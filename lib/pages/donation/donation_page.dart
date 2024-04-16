@@ -1,5 +1,9 @@
+import 'package:fends_mobile/app_config.dart';
+import 'package:fends_mobile/networks/event_request.dart';
 import 'package:fends_mobile/networks/product_request.dart';
 import 'package:fends_mobile/pages/donation/create_donation_event_page.dart';
+import 'package:fends_mobile/pages/donation/donation_event_detail_page.dart';
+import 'package:fends_mobile/pages/donation/see_all_donation_events.dart';
 import 'package:fends_mobile/pages/sales/add_product_page.dart';
 import 'package:fends_mobile/pages/sales/sale_page.dart';
 import 'package:fends_mobile/pages/sales/HorizontalList.dart';
@@ -8,8 +12,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../constants/navbar.dart';
+import '../../models/event.dart';
 import '../../models/product.dart';
 import '../../widgets/navbar.dart';
 import '../index.dart';
@@ -25,11 +31,21 @@ class DonationPage extends StatefulWidget {
 class _DonationPageState extends State<DonationPage> {
   late double screenWidth;
   late String selectedTitle;
+  late List<MyEvent> events;
+  late bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     selectedTitle = navbar[2].title;
+    _getEvents();
+  }
+
+  void _getEvents() async {
+    events = await EventRequest.getEvents();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void updateSelectedTitle(String title) {
@@ -65,28 +81,51 @@ class _DonationPageState extends State<DonationPage> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               _buildDonationCard(),
               const SizedBox(
                 height: 20,
               ),
               InkWell(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreateDonationEventPage()));
-                },
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CreateDonationEventPage()));
+                  },
                   child: _buildCreateEvent()),
               const SizedBox(
                 height: 20,
               ),
-              Text(
-                'Sự kiện bạn đã tạo',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w500,
-                  height: 0,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Sự kiện bạn đã tạo',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => SeeAllDonationEvents()));
+                    },
+                    child: Text(
+                      'Xem thêm',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 11,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w400,
+                        height: 0,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 20,
@@ -128,7 +167,6 @@ class _DonationPageState extends State<DonationPage> {
               const SizedBox(
                 height: 20,
               ),
-
             ],
           ),
         ),
@@ -138,32 +176,32 @@ class _DonationPageState extends State<DonationPage> {
 
   Row _buildCreateEvent() {
     return Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                    decoration: ShapeDecoration(
-                      color: Color(0xFFFFFCEC),
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 1, color: Color(0xFFD5D5D5)),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    child: Text(
-                      'Đăng ký tạo sự kiện quyên góp',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                        height: 0,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
+      children: [
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 15),
+            decoration: ShapeDecoration(
+              color: Color(0xFFFFFCEC),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(width: 1, color: Color(0xFFD5D5D5)),
+                borderRadius: BorderRadius.circular(50),
+              ),
+            ),
+            child: Text(
+              'Đăng ký tạo sự kiện quyên góp',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildListProductEvent() {
@@ -238,20 +276,28 @@ class _DonationPageState extends State<DonationPage> {
   }
 
   Widget _buildListEvent() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          _buildListEventItem(),
-          _buildListEventItem(),
-          _buildListEventItem(),
-        ],
-      ),
-    );
+    return isLoading
+        ? Center(
+            child: Container(
+              height: 50,
+              width: 50,
+              child: CircularProgressIndicator(),
+            ),
+          )
+        : SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: events.map((e) => InkWell(onTap:() {
+                Navigator.of(context).push(MaterialPageRoute(builder:  (context) => DonationEventDetailPage(event: e)));
+              },child: _buildListEventItem(e))).toList(),
+            ),
+          );
   }
 
-  Container _buildListEventItem() {
-    return Container(
+  Container _buildListEventItem(MyEvent event) {
+    var state = DateTime.parse(event.endAt!).difference(DateTime.now()).inHours;
+
+    return state <= 0 ? Container() : Container(
       width: 225,
       margin: EdgeInsets.only(right: 30),
       decoration: ShapeDecoration(
@@ -281,8 +327,11 @@ class _DonationPageState extends State<DonationPage> {
               height: 125,
               decoration: ShapeDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(
-                        "https://product.hstatic.net/1000178779/product/v61w23t010_40774588_0_09600769fda74cf78243b8bd7adfa18b_master.jpg"),
+                    image:  event.image != null ?
+                    NetworkImage(
+                        '${AppConfig.IMAGE_API_URL}${event.image}' )
+                    :
+                    NetworkImage("https://product.hstatic.net/1000178779/product/v61w23t010_40774588_0_09600769fda74cf78243b8bd7adfa18b_master.jpg"),
                     fit: BoxFit.cover,
                   ),
                   shape: RoundedRectangleBorder(
@@ -302,7 +351,7 @@ class _DonationPageState extends State<DonationPage> {
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: Text(
-              'Quyên góp cùng quỹ mái ấm',
+              '${event.name}' ?? 'Quyên góp cùng quỹ mái ấm',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 18,
@@ -320,7 +369,7 @@ class _DonationPageState extends State<DonationPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'Còn lại 25 ngày',
+                  'Còn lại ${DateTime.parse(event.endAt!).difference(DateTime.now()).inDays} ngày',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 11,
@@ -426,143 +475,6 @@ class _DonationPageState extends State<DonationPage> {
               size: 20,
             ),
           )
-        ],
-      ),
-    );
-  }
-
-  Container _buildRevenue() {
-    return Container(
-      decoration: ShapeDecoration(
-        color: Color(0xFF00DF74),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Doanh thu',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w700,
-                      height: 0,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  FutureBuilder(
-                      future: ProductRequest.GetRevenue(),
-                      builder: (context, snapshot) {
-                        return Text(
-                          snapshot.data.toString() + ' VND',
-                          style: TextStyle(
-                            color: Color(0xFF161414),
-                            fontSize: 32,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w700,
-                            height: 0,
-                          ),
-                        );
-                      }),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: IconButton.filled(
-              onPressed: () {}, // TODO: chuyển sang trang doanh thu
-              color: Color(0xFF00DF74),
-              icon: Icon(Icons.arrow_forward_ios),
-              style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.black),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAddProduct() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AddProductPage()));
-      },
-      child: Container(
-        decoration: ShapeDecoration(
-          color: Color(0xFF0665F3),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(30.0),
-                child: Text(
-                  'Thêm mới sản phẩm',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w700,
-                    height: 0,
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton.filled(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddProductPage()));
-                },
-                icon: Icon(Icons.arrow_forward_ios),
-                color: Colors.white,
-                style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll<Color>(Colors.black),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _cardItem(Product product) {
-    return Container(
-      child: Stack(
-        children: [
-          Chip(
-            elevation: 50,
-            padding: EdgeInsets.all(8),
-            backgroundColor: Colors.greenAccent[100],
-            label: Text(
-              'Đã bán',
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
-          // ProductItem(product: product),
         ],
       ),
     );
