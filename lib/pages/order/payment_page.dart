@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:fends_mobile/networks/OrderItemRequest.dart';
+import 'package:fends_mobile/networks/OrderRequest.dart';
 import 'package:fends_mobile/networks/cart_request.dart';
 import 'package:fends_mobile/pages/order/comment_page.dart';
 import 'package:fends_mobile/pages/order/order_address_page.dart';
@@ -7,7 +11,13 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../app_config.dart';
+import '../../models/address.dart';
 import '../../models/cart_item.dart';
+import '../../models/order.dart';
+import '../../models/order_item.dart';
+import '../../models/user.dart';
+import '../../networks/user_request.dart';
+import '../index.dart';
 
 enum PaymentMethod { COD, VNPay }
 
@@ -20,9 +30,21 @@ class _PaymentPageState extends State<PaymentPage> {
   late double screenWidth;
   late List<CartItem> carts;
   late bool isLoading = true;
+  late Address address;
+  late User user;
+  bool isAddressSelected = false;
 
-  Future getCart() async {
+  Future<void> _getCart() async {
     carts = await CartRequest.getCarts();
+  }
+
+  Future<void> _getInfo() async {
+    user = await UserRequest.info();
+  }
+
+  Future<void> _initializeData() async {
+    await _getInfo();
+    await _getCart();
     setState(() {
       isLoading = false;
     });
@@ -38,10 +60,50 @@ class _PaymentPageState extends State<PaymentPage> {
     return 0;
   }
 
+  void getAddressData(Address data) {
+    setState(() {
+      address = data;
+      isAddressSelected = true;
+    });
+  }
+
+  Future<bool> _order() async {
+    try {
+      String payment = _paymentMethod.toString().split('.').last;
+      Order order = await OrderRequest.addOrder(Order.fromJson(
+          {'payment_method': payment, 'address': address.id.toString()}));
+      String? orderId;
+      if (order.id != null) {
+        orderId = order.id;
+        // carts.map((cart) async {
+        //   await OrderItemRequest.addOrderItem(
+        //       orderId!,
+        //       OrderItem.fromJson(
+        //           {'product': cart.product, 'quantity': cart.quantity}));
+        // });
+        for (var cart in carts) {
+          await OrderItemRequest.addOrderItem(
+            order.id!,
+            OrderItem.fromJson({
+              'product': cart.product?.toJson(),
+              'quantity': cart.quantity,
+            }),
+          );
+        }
+        print("true");
+        return true;
+      }
+      return false;
+    } on Exception catch (e) {
+      // return false;
+      throw Exception(e);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    getCart();
+    _initializeData();
   }
 
   PaymentMethod? _paymentMethod = PaymentMethod.COD;
@@ -53,20 +115,20 @@ class _PaymentPageState extends State<PaymentPage> {
       appBar: headerForDetail("Thanh toán"),
       bottomNavigationBar: _submitButton("Đặt hàng", context),
       body: isLoading
-          ? CircularProgressIndicator()
-          : Container(
+          ? const CircularProgressIndicator()
+          : SizedBox(
               height: MediaQuery.of(context).size.height,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.only(left: 25, right: 25),
+                  padding: const EdgeInsets.only(left: 25, right: 25),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // _subNav(),
-                      SizedBox(height: 30),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
+                      const SizedBox(height: 30),
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 10),
                         child: Text(
                           'Chi tiết đơn hàng',
                           style: TextStyle(
@@ -79,7 +141,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                       ),
                       _listProduct(),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       _totalRow("Giá sản phẩm", _totalPrice().toString()),
@@ -96,11 +158,15 @@ class _PaymentPageState extends State<PaymentPage> {
                             Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderAddressPage()));
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => OrderAddressPage(
+                                            saveAddress: getAddressData,
+                                          )));
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15),
-                                  decoration: BoxDecoration(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 15),
+                                  decoration: const BoxDecoration(
                                     color: Colors.white,
                                     border: Border(
                                       // left: BorderSide(color: Color(0xFFCCCCCC)),
@@ -111,28 +177,41 @@ class _PaymentPageState extends State<PaymentPage> {
                                           width: 1, color: Color(0xFFCCCCCC)),
                                     ),
                                   ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                        child: Text(
-                                          'Địa chỉ', //TODO: chon hoặc thêm địa chỉ
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w400,
-                                            height: 0,
+                                      const Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              'Địa chỉ',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w400,
+                                                height: 0,
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          Icon(
+                                            Icons.arrow_forward_ios,
+                                            size: 15,
+                                            color: Color(0xFFCCCCCC),
+                                          )
+                                        ],
                                       ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 15,
-                                        color: Color(0xFFCCCCCC),
-                                      )
+                                      isAddressSelected
+                                          ? _addressCard(address)
+                                          : Container()
                                     ],
                                   ),
                                 ),
@@ -223,6 +302,75 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
+  Widget _addressCard(Address address) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(20),
+                margin: EdgeInsets.only(top: 10),
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 1.5, color: Color(0xFF9E9E9E)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(
+                      "${user.full_name}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      address.address.toString(),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w400,
+                        height: 0,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "${user.phone}",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w400,
+                        height: 0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ]),
+    );
+  }
+
   AppBar headerForDetail([String? title]) {
     return AppBar(
       leading: InkWell(
@@ -294,11 +442,6 @@ class _PaymentPageState extends State<PaymentPage> {
                     ),
               ),
             ),
-            // Image.network(
-            //   "https://bizweb.dktcdn.net/thumb/1024x1024/100/329/681/products/3bf3d1e0-688f-4d6b-8b0a-60e9f0a1bb21.jpg?v=1679480250493",
-            //   width: 40 / 360 * screenWidth,
-            //   fit: BoxFit.fitWidth,
-            // ),
             SizedBox(
               width: 10,
             ),
@@ -342,7 +485,9 @@ class _PaymentPageState extends State<PaymentPage> {
             )),
             Expanded(
               child: Text(
-                (cartItem.product!.price! * cartItem.quantity!.toDouble()).toString() + " vnd",
+                (cartItem.product!.price! * cartItem.quantity!.toDouble())
+                        .toString() +
+                    " vnd",
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   color: Colors.black,
@@ -394,11 +539,60 @@ class _PaymentPageState extends State<PaymentPage> {
 
   Widget _submitButton(String title, BuildContext context) {
     return InkWell(
-      onTap: () => {
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(builder: (context) => CommentPage()),
-        // )
-        //ToDo: Xử lý sự kiện đặt hàng
+      onTap: () async {
+        var success = await _order();
+        if (success) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shadowColor: Colors.grey[300],
+                alignment: Alignment.center,
+                content: Text(
+                  "Đặt hàng thành công",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 13,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                ),
+              );
+            },
+          );
+          Future.delayed(Duration(seconds: 1), () {
+            Navigator.of(context).pop(); // Tự động đóng AlertDialog sau 2 giây
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => MainPage()),
+            );
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shadowColor: Colors.grey[300],
+                alignment: Alignment.center,
+                content: Text(
+                  "Đặt hàng không thành công",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 13,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                ),
+              );
+            },
+          );
+          Future.delayed(Duration(seconds: 1), () {
+            Navigator.of(context).pop();
+          });
+        }
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,

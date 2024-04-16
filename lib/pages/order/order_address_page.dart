@@ -1,4 +1,5 @@
 import 'package:fends_mobile/networks/user_request.dart';
+import 'package:fends_mobile/pages/order/new_address_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,8 @@ import '../../models/user.dart';
 import '../../networks/address_request.dart';
 
 class OrderAddressPage extends StatefulWidget {
-  const OrderAddressPage({super.key});
+  final Function(Address) saveAddress;
+  OrderAddressPage({super.key, required this.saveAddress});
 
   @override
   State<OrderAddressPage> createState() => _OrderAddressPageState();
@@ -44,48 +46,88 @@ class _OrderAddressPageState extends State<OrderAddressPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: headerForDetail("Địa chỉ giao hàng"),
-      body: isLoading ? Center(child: Container(height: 50,width: 50, child: CircularProgressIndicator(),)) : Container(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0),
-                child: Text(
-                  'Địa chỉ vận chuyển',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w500,
-                    height: 0,
-                  ),
+      body: isLoading
+          ? Center(
+              child: Container(
+              height: 50,
+              width: 50,
+              child: CircularProgressIndicator(),
+            ))
+          : Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0),
+                      child: Text(
+                        'Địa chỉ vận chuyển',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          height: 0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0),
+                      child: Text(
+                        'Sau khi nhập địa chỉ, chúng tôi sẽ cho bạn biết chi phí giao hàng đến bạn.',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w300,
+                          height: 0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      child: _addressList(), //TODO: chọn địa chỉ
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        await  Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewAddressPage()));
+                        setState(() {
+                          isLoading = true; // Set loading to true to indicate loading state
+                        });
+                        await _initializeData();
+                      },
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 20),
+                            height: 50,
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(width: 0.50),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Icon(Icons.add),
+                          ))
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 10,),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0),
-                child: Text(
-                  'Sau khi nhập địa chỉ, chúng tôi sẽ cho bạn biết chi phí giao hàng đến bạn.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 10,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w300,
-                    height: 0,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20,),
-              Container(
-                child: _addressList(), //TODO: chọn địa chỉ
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -163,7 +205,12 @@ class _OrderAddressPageState extends State<OrderAddressPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
-      children: addresses.map((e) => _addressCard(e)).toList(),
+      children: addresses.map((e) => InkWell(
+        onTap: () {
+          widget.saveAddress(e);
+          Navigator.pop(context);
+        },
+          child: _addressCard(e))).toList(),
     );
   }
 

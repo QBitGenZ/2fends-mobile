@@ -27,7 +27,7 @@ class AddressRequset {
     }
   }
 
-  static Future<bool> addProduct(String address) async {
+  static Future<bool> addAddress(String address) async {
     final tokenString = AppConfig.ACCESS_TOKEN;
     final res = await http.post(Uri.parse(URLS),
         headers: {"Authorization": "Bearer $tokenString"},
