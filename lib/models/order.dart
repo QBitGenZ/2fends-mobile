@@ -7,6 +7,7 @@ class Order {
   String? paymentMethod;
   String? createdAt;
   List<OrderItem>? items;
+  String? status;
 
   Order(
       {this.id,
@@ -14,7 +15,8 @@ class Order {
         this.address,
         this.paymentMethod,
         this.createdAt,
-        this.items});
+        this.items,
+        this.status});
 
   Order.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -28,6 +30,7 @@ class Order {
         items!.add(new OrderItem.fromJson(v));
       });
     }
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +43,7 @@ class Order {
     if (this.items != null) {
       data['items'] = this.items!.map((v) => v.toJson()).toList();
     }
+    data['status'] = this.status;
     return data;
   }
 }

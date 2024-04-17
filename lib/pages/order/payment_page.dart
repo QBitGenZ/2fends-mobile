@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:fends_mobile/networks/OrderItemRequest.dart';
-import 'package:fends_mobile/networks/OrderRequest.dart';
+import 'package:fends_mobile/networks/order_item_request.dart';
+import 'package:fends_mobile/networks/order_request.dart';
 import 'package:fends_mobile/networks/cart_request.dart';
 import 'package:fends_mobile/pages/order/comment_page.dart';
 import 'package:fends_mobile/pages/order/order_address_page.dart';

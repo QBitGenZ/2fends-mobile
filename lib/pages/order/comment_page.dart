@@ -5,13 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class CommentPage extends StatelessWidget {
+class CommentPage extends StatefulWidget {
+  @override
+  State<CommentPage> createState() => _CommentPageState();
+}
+
+class _CommentPageState extends State<CommentPage> {
   late double screenWidth;
+
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: headerForDetail("Đánh giá đơn hàng"),
+      bottomNavigationBar: _submitButton(),
       body: Container(
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
@@ -55,7 +62,11 @@ class CommentPage extends StatelessWidget {
 
   AppBar headerForDetail([String? title]) {
     return AppBar(
-      leading: Icon(Icons.arrow_back_ios_new),
+      leading: InkWell(
+        onTap: () {
+          Navigator.pop(context);
+        },
+          child: Icon(Icons.arrow_back_ios_new)),
       backgroundColor: Colors.white,
       centerTitle: true,
       title: title != null
@@ -88,11 +99,11 @@ class CommentPage extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10),
       child: Container(
         height: 62,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            side: BorderSide(
+            side: const BorderSide(
                 width: 1.5, color: Color(0xFFCCCCCC), strokeAlign: 2),
             borderRadius: BorderRadius.circular(5),
           ),
@@ -362,7 +373,6 @@ class CommentPage extends StatelessWidget {
             ],
           ),
           SizedBox(height: 15,),
-          _submitButton()
         ],
       ),
     );
@@ -374,6 +384,7 @@ class CommentPage extends StatelessWidget {
         children: [
           Expanded(
             child: Container(
+              margin: EdgeInsets.all(20),
               height: 50,
               decoration: BoxDecoration(color: Colors.black),
               child: Center(

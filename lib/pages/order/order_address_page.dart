@@ -93,7 +93,7 @@ class _OrderAddressPageState extends State<OrderAddressPage> {
                       height: 20,
                     ),
                     Container(
-                      child: _addressList(), //TODO: chọn địa chỉ
+                      child: _addressList(),
                     ),
                     InkWell(
                       onTap: () async {

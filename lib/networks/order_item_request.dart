@@ -16,19 +16,23 @@ class OrderItemRequest {
   }
 
   static Future<bool> addOrderItem(String orderId, OrderItem item) async {
-    final tokenString = AppConfig.ACCESS_TOKEN;
-    final res = await http.post(Uri.parse("$URLS$orderId/items/"),
-        headers: {"Authorization": "Bearer $tokenString"},
-    body: {
-      'product' : item.product?.id,
-      'quantity' : item.quantity.toString()
-    });
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.post(Uri.parse("$URLS$orderId/items/"),
+          headers: {"Authorization": "Bearer $tokenString"},
+      body: {
+        'product' : item.product?.id,
+        'quantity' : item.quantity.toString()
+      });
 
 
-    if (res.statusCode == 201) {
-      return true;
-    } else {
-      throw Exception('Failed to load address');
+      if (res.statusCode == 201) {
+        return true;
+      } else {
+        throw Exception('Failed to load address');
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
     }
   }
 }
