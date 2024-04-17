@@ -202,7 +202,7 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  bool passwordVisible = false;
+  bool passwordVisible = true;
   Container passwordContainer() {
     return Container(
       child: Padding(
@@ -217,7 +217,7 @@ class _SignupPageState extends State<SignupPage> {
             labelText: 'Mật khẩu',
             suffixIcon: IconButton(
               icon: Icon(
-                  passwordVisible ? Icons.visibility : Icons.visibility_off),
+                  passwordVisible ? Icons.visibility_off : Icons.visibility),
               onPressed: () {
                 setState(
                   () {
@@ -239,7 +239,7 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  bool repasswordVisible = false;
+  bool repasswordVisible = true;
   Container repasswordContainer() {
     return Container(
       child: Padding(
@@ -253,7 +253,7 @@ class _SignupPageState extends State<SignupPage> {
             fillColor: Colors.white,
             suffixIcon: IconButton(
               icon: Icon(
-                  repasswordVisible ? Icons.visibility : Icons.visibility_off),
+                  repasswordVisible ? Icons.visibility_off : Icons.visibility),
               onPressed: () {
                 setState(
                   () {

@@ -409,6 +409,10 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
     );
   }
 
+  bool oldPasswordVisible = true;
+  bool newPasswordVisible = true;
+  bool rePasswordVisible = true;
+
   Widget _updatePassword() {
     return SingleChildScrollView(
       child: Column(
@@ -454,8 +458,21 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
           Padding(
             padding: const EdgeInsets.only(left: 30.0, right: 30),
             child: TextFormField(
+              // keyboardType: TextInputType.visiblePassword,
+              obscureText: oldPasswordVisible,
               controller: _oldPasswordController,
               decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                        oldPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () {
+                      setState(
+                            () {
+                              oldPasswordVisible = !oldPasswordVisible;
+                        },
+                      );
+                    },
+                  ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(width: 1, color: Color(0xFFC3C3C3))),
@@ -487,7 +504,19 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
             padding: const EdgeInsets.only(left: 30.0, right: 30),
             child: TextFormField(
               controller: _newPasswordController,
+              obscureText: newPasswordVisible,
               decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                        newPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () {
+                      setState(
+                            () {
+                              newPasswordVisible = !newPasswordVisible;
+                        },
+                      );
+                    },
+                  ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(width: 1, color: Color(0xFFC3C3C3))),
@@ -519,7 +548,19 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
             padding: const EdgeInsets.only(left: 30.0, right: 30),
             child: TextFormField(
               controller: _renewPasswordController,
+              obscureText: rePasswordVisible,
               decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                        rePasswordVisible ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () {
+                      setState(
+                            () {
+                              rePasswordVisible = !rePasswordVisible;
+                        },
+                      );
+                    },
+                  ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(width: 1, color: Color(0xFFC3C3C3))),
@@ -533,7 +574,48 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
           ),
           Container(
               padding: const EdgeInsets.only(left: 30.0, right: 30),
-              child: Row(children: [Expanded(child: _submitButton())])),
+              child: Row(children: [
+                Expanded(
+                    child: InkWell(
+                        onTap: () async {
+                          if (_newPasswordController.text ==
+                              _renewPasswordController.text) {
+                            var success = await UserRequest.changePassword(
+                                _oldPasswordController.text.toString(),
+                                _newPasswordController.text.toString());
+
+                            if(success) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shadowColor: Colors.grey[300],
+                                    alignment: Alignment.center,
+                                    content: Text(
+                                      "Cập nhật mật khẩu thành công",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w400,
+                                        height: 0,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                              Future.delayed(Duration(seconds: 1), () {
+                                widget.callback();
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              });
+                            }
+                          }
+
+                        },
+                        child: _submitButton()))
+              ])),
           const SizedBox(
             height: 30,
           ),
