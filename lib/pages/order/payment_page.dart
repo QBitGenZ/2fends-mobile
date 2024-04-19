@@ -19,7 +19,7 @@ import '../../models/user.dart';
 import '../../networks/user_request.dart';
 import '../index.dart';
 
-enum PaymentMethod { COD, VNPay }
+enum PaymentMethod { COD, MoMo }
 
 class PaymentPage extends StatefulWidget {
   @override
@@ -115,7 +115,7 @@ class _PaymentPageState extends State<PaymentPage> {
       appBar: headerForDetail("Thanh toán"),
       bottomNavigationBar: _submitButton("Đặt hàng", context),
       body: isLoading
-          ? const CircularProgressIndicator()
+          ? Center(child: const CircularProgressIndicator())
           : SizedBox(
               height: MediaQuery.of(context).size.height,
               child: SingleChildScrollView(
@@ -273,9 +273,9 @@ class _PaymentPageState extends State<PaymentPage> {
                                       ),
                                       Container(
                                         child: RadioListTile(
-                                          title: Text("VNPay"),
+                                          title: Text("MoMo"),
                                           groupValue: _paymentMethod,
-                                          value: PaymentMethod.VNPay,
+                                          value: PaymentMethod.MoMo,
                                           onChanged: (PaymentMethod? value) {
                                             setState(() {
                                               _paymentMethod = value;
@@ -314,13 +314,13 @@ class _PaymentPageState extends State<PaymentPage> {
               child: Container(
                 padding: EdgeInsets.all(20),
                 margin: EdgeInsets.only(top: 10),
-                decoration: ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 1.5, color: Color(0xFF9E9E9E)),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                // decoration: ShapeDecoration(
+                //   color: Colors.white,
+                //   shape: RoundedRectangleBorder(
+                //     side: BorderSide(width: 1.5, color: Color(0xFF9E9E9E)),
+                //     borderRadius: BorderRadius.circular(10),
+                //   ),
+                // ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -540,8 +540,63 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget _submitButton(String title, BuildContext context) {
     return InkWell(
       onTap: () async {
-        var success = await _order();
-        if (success) {
+
+        if (isAddressSelected) {
+          var success = await _order();
+          if (success) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  shadowColor: Colors.grey[300],
+                  alignment: Alignment.center,
+                  content: Text(
+                    "Đặt hàng thành công",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 13,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w400,
+                      height: 0,
+                    ),
+                  ),
+                );
+              },
+            );
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.of(context).pop(); // Tự động đóng AlertDialog sau 2 giây
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => MainPage()),
+              );
+            });
+          } else {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  shadowColor: Colors.grey[300],
+                  alignment: Alignment.center,
+                  content: Text(
+                    "Đặt hàng không thành công",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 13,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w400,
+                      height: 0,
+                    ),
+                  ),
+                );
+              },
+            );
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.of(context).pop();
+            });
+          }
+        }
+        else{
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -549,7 +604,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 shadowColor: Colors.grey[300],
                 alignment: Alignment.center,
                 content: Text(
-                  "Đặt hàng thành công",
+                  "Vui lòng chọn địa chỉ",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
@@ -564,33 +619,6 @@ class _PaymentPageState extends State<PaymentPage> {
           );
           Future.delayed(Duration(seconds: 1), () {
             Navigator.of(context).pop(); // Tự động đóng AlertDialog sau 2 giây
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MainPage()),
-            );
-          });
-        } else {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shadowColor: Colors.grey[300],
-                alignment: Alignment.center,
-                content: Text(
-                  "Đặt hàng không thành công",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 13,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w400,
-                    height: 0,
-                  ),
-                ),
-              );
-            },
-          );
-          Future.delayed(Duration(seconds: 1), () {
-            Navigator.of(context).pop();
           });
         }
       },

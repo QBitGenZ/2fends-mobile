@@ -19,7 +19,8 @@ class OrderPage extends StatefulWidget {
 
 class _OrderPageState extends State<OrderPage> {
   late double screenWidth;
-  late List<Order> orders = [];
+  late List<Order> unDeliveredOrders = [];
+  late List<Order> deliveredOrders = [];
   bool isLoading = true;
 
   Future<void> _getOrders() async {
@@ -27,7 +28,8 @@ class _OrderPageState extends State<OrderPage> {
       // Assuming OrderRequest.getOrders() returns a list of orders
       List<Order> fetchedOrders = await OrderRequest.getOrders();
       setState(() {
-        orders = fetchedOrders;
+        unDeliveredOrders = fetchedOrders.where((element) => element.status != "Đã giao hàng").toList();
+        deliveredOrders = fetchedOrders.where((element) => element.status == "Đã giao hàng").toList();
         isLoading = false; // Set isLoading to false when data is fetched
       });
     } catch (error) {
@@ -61,35 +63,35 @@ class _OrderPageState extends State<OrderPage> {
               children: [
                 subNav(),
                 SizedBox(height: 30),
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 20.0, bottom: 10),
-                //   child: Text(
-                //     'Đơn hàng chưa giao',
-                //     style: TextStyle(
-                //       color: Colors.black,
-                //       fontSize: 16,
-                //       fontFamily: 'Roboto',
-                //       fontWeight: FontWeight.w500,
-                //       height: 0,
-                //     ),
-                //   ),
-                // ),
-                // _orderList(context),
-                // Padding(
-                //   padding:
-                //       const EdgeInsets.only(left: 20.0, bottom: 10, top: 30),
-                //   child: Text(
-                //     'Đơn hàng đã giao',
-                //     style: TextStyle(
-                //       color: Colors.black,
-                //       fontSize: 16,
-                //       fontFamily: 'Roboto',
-                //       fontWeight: FontWeight.w500,
-                //       height: 0,
-                //     ),
-                //   ),
-                // ),
-                // _orderList(context),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 10),
+                  child: Text(
+                    'Đơn hàng chưa giao',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w500,
+                      height: 0,
+                    ),
+                  ),
+                ),
+                _orderList(context, unDeliveredOrders),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20.0, bottom: 10, top: 30),
+                  child: Text(
+                    'Đơn hàng đã giao',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w500,
+                      height: 0,
+                    ),
+                  ),
+                ),
+                _orderList(context, deliveredOrders),
                 // Padding(
                 //   padding:
                 //       const EdgeInsets.only(left: 20.0, bottom: 10, top: 30),
@@ -104,7 +106,7 @@ class _OrderPageState extends State<OrderPage> {
                 //     ),
                 //   ),
                 // ),
-                _orderList(context),
+                // _orderList(context),
               ],
             ),
           ),
@@ -145,7 +147,7 @@ class _OrderPageState extends State<OrderPage> {
   //       itemBuilder: _orderListItem() );
   // }
 
-  Widget _orderList(BuildContext context) {
+  Widget _orderList(BuildContext context, List<Order> orders) {
     if (isLoading) {
       return Center(
           child: Container(
@@ -273,12 +275,12 @@ class _OrderPageState extends State<OrderPage> {
                   .push(MaterialPageRoute(builder: (context) => OrderPage()));
             },
             child: _subnavItem("Đơn hàng", true)),
-        InkWell(
-            onTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => ChatPage()));
-            },
-            child: _subnavItem("Chat", false))
+        // InkWell(
+        //     onTap: () {
+        //       Navigator.of(context)
+        //           .push(MaterialPageRoute(builder: (context) => ChatPage()));
+        //     },
+        //     child: _subnavItem("Chat", false))
       ],
     );
   }

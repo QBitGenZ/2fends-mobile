@@ -406,12 +406,12 @@ class _CartPageState extends State<CartPage> {
                   .push(MaterialPageRoute(builder: (context) => OrderPage()));
             },
             child: _subnavItem("Đơn hàng", false)),
-        InkWell(
-            onTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => ChatPage()));
-            },
-            child: _subnavItem("Chat", false))
+        // InkWell(
+        //     onTap: () {
+        //       Navigator.of(context)
+        //           .push(MaterialPageRoute(builder: (context) => ChatPage()));
+        //     },
+        //     child: _subnavItem("Chat", false))
       ],
     );
   }

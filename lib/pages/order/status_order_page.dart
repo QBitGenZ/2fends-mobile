@@ -63,7 +63,15 @@ class _StatusOrderPageState extends State<StatusOrderPage> {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: headerForDetail("Tình trạng đơn hàng"),
-      bottomNavigationBar: _submitButton("Đánh giá đơn hàng", context),
+      bottomNavigationBar: widget.order.status.toString() == "Đã giao hàng"
+          ? InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => CommentPage(order: widget.order,)),
+                );
+              },
+              child: _submitButton("Đánh giá đơn hàng", context))
+          : _submitButton("Đã nhận hàng", context),
       body: isLoading
           ? Container()
           : Container(
@@ -429,37 +437,30 @@ class _StatusOrderPageState extends State<StatusOrderPage> {
   }
 
   Widget _submitButton(String title, BuildContext context) {
-    return InkWell(
-      onTap: () => {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => CommentPage()),
-        )
-      },
-      child: Container(
-        margin: EdgeInsets.all(20),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(color: Colors.black),
-                child: Center(
-                  child: Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w700,
-                      height: 0,
-                    ),
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(color: Colors.black),
+              child: Center(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w700,
+                    height: 0,
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
