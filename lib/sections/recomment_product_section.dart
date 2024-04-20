@@ -295,7 +295,7 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
         isLoading = true;
       });
 
-      final response = await ProductRequest.GetProducts(page: page);
+      final response = await ProductRequest.getProducts(page: page);
 
       setState(() {
         isLoading = false;

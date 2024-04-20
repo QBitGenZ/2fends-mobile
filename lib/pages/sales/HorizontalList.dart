@@ -1,5 +1,6 @@
 import 'package:fends_mobile/app_config.dart';
 import 'package:fends_mobile/pages/index.dart';
+import 'package:fends_mobile/pages/sales/edit_product_page.dart';
 import 'package:fends_mobile/pages/sales/see_all_product.dart';
 import 'package:fends_mobile/sections/recomment_product_section.dart';
 import 'package:flutter/cupertino.dart';
@@ -82,7 +83,7 @@ class HorizontalList extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProductDetailPage(
+                        builder: (context) => EditProductPage(
                           product: e,
                         ),
                       ),

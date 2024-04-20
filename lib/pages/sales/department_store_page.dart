@@ -85,7 +85,7 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
               // SizedBox(height: 15,),
               Container(
                 child: FutureBuilder(
-                    future:  ProductRequest.GetMyProducts(),
+                    future:  ProductRequest.getMyProducts(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
@@ -113,7 +113,7 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
               SizedBox(height: 15,),
               Container(
                 child: FutureBuilder(
-                    future:  ProductRequest.GetProducts(),
+                    future:  ProductRequest.getProducts(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
@@ -170,7 +170,7 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
                   SizedBox(
                     height: 5,
                   ),
-                  FutureBuilder(future: ProductRequest.GetRevenue(), builder: (context, snapshot) {
+                  FutureBuilder(future: ProductRequest.getRevenue(), builder: (context, snapshot) {
                     return Text(
                       snapshot.data.toString() + ' VND',
                       style: TextStyle(

@@ -1,3 +1,4 @@
+import 'package:fends_mobile/models/feedback.dart';
 import 'package:fends_mobile/models/product.dart';
 import 'package:fends_mobile/models/product_type.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,112 +14,162 @@ import '../models/product_image.dart';
 import '../models/token.dart';
 
 class ProductRequest {
-  static const String URLS = AppConfig.SERVER_API_URL + '/products/';
+  static const String URLS = '${AppConfig.SERVER_API_URL}/products/';
 
-  static Future<List<Product>> GetProducts({int? page=1}) async {
-    final tokenString = AppConfig.ACCESS_TOKEN;
-    final res = await http.get(Uri.parse(URLS+'?page=${page}'),
-        headers: {"Authorization": "Bearer $tokenString"});
-    final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
-    // responseBody['data'].forEach((data) => {});
+  static Future<List<Product>> getProducts({int? page = 1}) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.get(Uri.parse('$URLS?page=${page}'),
+          headers: {"Authorization": "Bearer $tokenString"});
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      // responseBody['data'].forEach((data) => {});
 
-    if (res.statusCode == 200) {
-      List<Product> products = [];
-      responseBody['data']
-          .map((dynamic product) => products.add(Product.fromJson(product)))
-          .toList();
-      return products;
-    } else {
-      throw Exception(responseBody);
+      if (res.statusCode == 200) {
+        List<Product> products = [];
+        responseBody['data']
+            .map((dynamic product) => products.add(Product.fromJson(product)))
+            .toList();
+        return products;
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
     }
   }
 
-  static Future<List<Product>> GetMyProducts({int? page=1}) async {
-    final tokenString = AppConfig.ACCESS_TOKEN;
-    final res = await http.get(Uri.parse(URLS+'myproducts/'),
-        headers: {"Authorization": "Bearer $tokenString"});
-    final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+  static Future<List<Product>> getMyProducts({int? page = 1}) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.get(Uri.parse('${URLS}myproducts/?page=$page'),
+          headers: {"Authorization": "Bearer $tokenString"});
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
 
-
-    if (res.statusCode == 200) {
-      List<Product> products = [];
-      responseBody['data']
-          .map((dynamic product) => products.add(Product.fromJson(product)))
-          .toList();
-      return products;
-    } else {
-      throw Exception(responseBody);
+      if (res.statusCode == 200) {
+        List<Product> products = [];
+        responseBody['data']
+            .map((dynamic product) => products.add(Product.fromJson(product)))
+            .toList();
+        return products;
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
     }
   }
 
-  static Future<List<ProductType>> GetProductType() async {
-    final tokenString = AppConfig.ACCESS_TOKEN;
-    final res = await http.get(Uri.parse(URLS + 'types/'),
-        headers: {"Authorization": "Bearer $tokenString"});
-    final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
-    if (res.statusCode == 200) {
-      List<ProductType> productType = [];
-      responseBody['data']
-          .map((dynamic product) =>
-          productType.add(ProductType.fromJson(product)))
-          .toList();
-      return productType;
-    } else {
-      throw Exception(responseBody);
+  static Future<List<ProductType>> getProductType() async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.get(Uri.parse('${URLS}types/'),
+          headers: {"Authorization": "Bearer $tokenString"});
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      if (res.statusCode == 200) {
+        List<ProductType> productType = [];
+        responseBody['data']
+            .map((dynamic product) =>
+                productType.add(ProductType.fromJson(product)))
+            .toList();
+        return productType;
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
     }
   }
 
-  static Future<Product> AddProduct(Product product) async {
-    final tokenString = AppConfig.ACCESS_TOKEN;
-    final res = await http.post(Uri.parse(URLS), headers: {
-      "Authorization": "Bearer $tokenString"
-    }, body: {
-      'name': product.name.toString(),
-      'price': product.price.toString(),
-      'quantity': product.quantity.toString(),
-      'product_type': product.productType.toString(),
-      'size': product.size.toString(),
-      'description': product.description.toString()
-    });
-    final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
-    if (res.statusCode == 201) {
-      return Product.fromJson(responseBody['data']);
-    } else {
-      throw Exception(responseBody);
+  static Future<Product> addProduct(Product product) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.post(Uri.parse(URLS), headers: {
+        "Authorization": "Bearer $tokenString"
+      }, body: {
+        'name': product.name.toString(),
+        'price': product.price.toString(),
+        'quantity': product.quantity.toString(),
+        'product_type': product.productType.toString(),
+        'size': product.size.toString(),
+        'description': product.description.toString()
+      });
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      if (res.statusCode == 201) {
+        return Product.fromJson(responseBody['data']);
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
     }
   }
 
-  static Future<bool> AddProductImage(
+  static Future<bool> addProductImage(
       String alt, String productID, XFile src) async {
-    final tokenString = AppConfig.ACCESS_TOKEN;
-    File file = File(src.path);
-    final List<int> imageBytes = await file.readAsBytes();
-    final req = await http.MultipartRequest("POST", Uri.parse(URLS + "images/"));
-    req.headers["Authorization"] = "Bearer $tokenString";
-    req.files.add(http.MultipartFile('src',  http.ByteStream.fromBytes(imageBytes),imageBytes.length, filename: src.name));
-    req.fields['alt'] = alt;
-    req.fields['product'] = productID;
-    var res = await req.send();
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      File file = File(src.path);
+      final List<int> imageBytes = await file.readAsBytes();
+      final req =
+          await http.MultipartRequest("POST", Uri.parse("${URLS}images/"));
+      req.headers["Authorization"] = "Bearer $tokenString";
+      req.files.add(http.MultipartFile(
+          'src', http.ByteStream.fromBytes(imageBytes), imageBytes.length,
+          filename: src.name));
+      req.fields['alt'] = alt;
+      req.fields['product'] = productID;
+      var res = await req.send();
 
-    if (res.statusCode == 201) {
-      return true;
-    } else {
-      return false;
+      if (res.statusCode == 201) {
+        return true;
+      } else {
+        return false;
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
     }
   }
 
-  static Future<int> GetRevenue() async {
-    final tokenString = AppConfig.ACCESS_TOKEN;
-    final res = await http.get(Uri.parse(AppConfig.SERVER_API_URL + '/statistics/' + "orders/"), headers: {
-      "Authorization": "Bearer $tokenString"
-    });
-    var revenue = 0;
-    final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
-    if (res.statusCode == 200) {
-      //TODO: get api
-      return revenue;
-    } else {
-      throw Exception(responseBody);
+  static Future<int> getRevenue() async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.get(
+          Uri.parse(AppConfig.SERVER_API_URL + '/statistics/' + "orders/"),
+          headers: {"Authorization": "Bearer $tokenString"});
+      var revenue = 0;
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      if (res.statusCode == 200) {
+        //TODO: get api
+        return revenue;
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<bool> addFeedback(MyFeedback feedback) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.post(Uri.parse("${URLS}feedbacks/"), headers: {
+        "Authorization": "Bearer $tokenString"
+      }, body: {
+        'title': feedback.title.toString(),
+        'text': feedback.text.toString(),
+        'product': feedback.product.toString(),
+        'star_number': feedback.starNumber.toString()
+      });
+      print(res.body);
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      if (res.statusCode == 201) {
+        return true;
+      } else {
+        return false;
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
     }
   }
 }

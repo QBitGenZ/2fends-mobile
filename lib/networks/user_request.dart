@@ -84,14 +84,13 @@ class UserRequest {
     }
   }
 
-  static Future<bool> updateUser(String fullname,
-  DateTime birthday, String gender, String email, String phone, {XFile? src}) async {
+  static Future<bool> updateUser(String fullname, DateTime birthday,
+      String gender, String email, String phone,
+      {XFile? src}) async {
     try {
       final tokenString = AppConfig.ACCESS_TOKEN;
-      String formattedBirthday =
-          DateFormat('yyyy-MM-dd').format(birthday!);
-      final req =
-          await http.MultipartRequest("PUT", Uri.parse(URLS + '/user'));
+      String formattedBirthday = DateFormat('yyyy-MM-dd').format(birthday!);
+      final req = await http.MultipartRequest("PUT", Uri.parse(URLS + '/user'));
       req.headers["Authorization"] = "Bearer $tokenString";
       if (src != null) {
         File file = File(src.path);
@@ -114,6 +113,26 @@ class UserRequest {
     } catch (e) {
       // Error occurred during signup process
       throw Exception('Failed to signup: $e');
+    }
+  }
+
+  static Future<bool> changePassword(
+      String oldPassword, String newPassword) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.put(Uri.parse('$URLS/change-password'),
+          headers: {"Authorization": "Bearer $tokenString"},
+          body: {'old_password': oldPassword, 'new_password': newPassword});
+      print(res.body);
+      if(res.statusCode == 200){
+        return true;
+      }
+      else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+      throw Exception(e);
     }
   }
 }

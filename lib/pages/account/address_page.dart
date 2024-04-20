@@ -25,7 +25,7 @@ class _AddressPageState extends State<AddressPage> {
   bool isLoading = true;
   int _page = 1;
 
-  final TextEditingController _provineController = TextEditingController();
+  final TextEditingController _provinceController = TextEditingController();
   final TextEditingController _districtController = TextEditingController();
   final TextEditingController _villageController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
@@ -241,7 +241,7 @@ class _AddressPageState extends State<AddressPage> {
           Padding(
             padding: const EdgeInsets.only(left: 30.0, right: 30),
             child: TextFormField(
-              controller: _provineController,
+              controller: _provinceController,
               decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                       borderSide:
@@ -358,10 +358,10 @@ class _AddressPageState extends State<AddressPage> {
                         onTap: () async {
                           if (_isValid()) {
                             String address =
-                                "${_noteController.text}, ${_provineController.text}, ${_districtController.text}, ${_villageController.text}";
+                                "${_provinceController.text}, ${_districtController.text}, ${_villageController.text} \n${_noteController.text}";
 
                             var success =
-                                await AddressRequset.addProduct(address);
+                                await AddressRequset.addAddress(address);
                             if (success && context.mounted) {
                               showDialog(
                                 context: context,
@@ -425,7 +425,7 @@ class _AddressPageState extends State<AddressPage> {
   }
 
   bool _isValid() {
-    return _provineController.text.isNotEmpty &&
+    return _provinceController.text.isNotEmpty &&
         _districtController.text.isNotEmpty &&
         _villageController.text.isNotEmpty &&
         _noteController.text.isNotEmpty;

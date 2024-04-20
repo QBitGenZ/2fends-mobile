@@ -111,7 +111,7 @@ class _SeeAllProductState extends State<SeeAllProduct> {
         isLoading = true;
       });
 
-      final response = await ProductRequest.GetMyProducts(page: page);
+      final response = await ProductRequest.getMyProducts(page: page);
 
       setState(() {
         isLoading = false;

@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:fends_mobile/networks/event_request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/event.dart';
 import '../../models/product_type.dart';
 import '../../networks/product_request.dart';
 import '../index.dart';
@@ -23,18 +25,47 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
   late double screenWidth;
   var _page;
   late bool isLoading = true;
+  bool _eventSubmitted = false;
   final TextEditingController _eventNameController = TextEditingController();
+  late DateTime _eventStartTimeController = DateTime.now();
   late DateTime _eventEndTimeController = DateTime.now();
   final TextEditingController _eventDescriptionController =
       TextEditingController();
   late List<String> _listProductTypeController;
-  late List<XFile>? images = [];
+  late XFile? images = null;
 
   @override
   void initState() {
     super.initState();
     _page = 1;
     _listProductTypeController = [];
+  }
+
+
+  Future<bool> addEvent() async {
+    var event = MyEvent(
+      name: _eventNameController.text,
+      description: _eventDescriptionController.text,
+      beginAt: DateFormat("yyyy-MM-dd").format(_eventStartTimeController),
+      endAt: DateFormat("yyyy-MM-dd").format(_eventEndTimeController),
+    );
+    //TODO: chon san pham can keu goi
+    if (!_eventSubmitted) {
+      setState(() {
+        _eventSubmitted = true;
+      });
+      try {
+        final bool success = await EventRequest.addEvent(event, images!);
+        if (success) {
+         return true;
+        } else {
+         return false;
+        }
+      } catch (e) {
+        throw Exception(e);
+      }
+    }
+    return false;
   }
 
   @override
@@ -71,11 +102,10 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
                             child: _builderButton())
                         : InkWell(
                             onTap: () {
-                              // TODO: Xử lý sự kiện thêm sự kiện
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => MainPage()),
-                              );
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MainPage()));
                             },
                             child: _builderFinishButton(),
                           ),
@@ -95,17 +125,35 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
     }
     if (_page == 2) {
       if (_eventNameController.text.isNotEmpty &&
-          _eventDescriptionController.text.isNotEmpty)
+          _eventDescriptionController.text.isNotEmpty) {
         return _page2();
-      else
+      } else {
         _page = 1;
+      }
       return _page1();
     }
     if (_page == 3) {
-      return _page3();
+      if (_listProductTypeController.isNotEmpty) {
+        return _page3();
+      } else {
+        return _page2();
+      }
     }
     if (_page == 4) {
-      return _page4();
+      return FutureBuilder<bool>(
+        future: addEvent(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Container(width: 50, height: 50,child: CircularProgressIndicator()));
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.data == true) {
+            return _page4();
+          } else {
+            return _page3();
+          }
+        },
+      );
     }
     return Container();
   }
@@ -183,6 +231,43 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
           height: 30,
         ),
         Text(
+          'Thời gian bắt đầu',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w700,
+            height: 0,
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        TextFormField(
+          readOnly: true,
+          controller: TextEditingController(
+            text: DateFormat('dd/MM/yyyy')
+                .format(_eventStartTimeController)
+                .toString(),
+          ),
+          decoration: InputDecoration(
+              suffixIcon: IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () => _selectTime(context, true),
+              ),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                color: Color(0xFF999999),
+              )),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                color: Color(0xFF999999),
+              ))),
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        Text(
           'Thời gian kết thúc',
           style: TextStyle(
             color: Colors.black,
@@ -205,7 +290,7 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
           decoration: InputDecoration(
               suffixIcon: IconButton(
                 icon: Icon(Icons.calendar_today),
-                onPressed: () => _selectEndTime(context),
+                onPressed: () => _selectTime(context, false),
               ),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
@@ -273,7 +358,7 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
             height: 30,
           ),
           FutureBuilder(
-              future: ProductRequest.GetProductType(),
+              future: ProductRequest.getProductType(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
@@ -298,7 +383,6 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
       ),
     );
   }
-
 
   Widget _page3() {
     return Container(
@@ -328,17 +412,12 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
             child: Text('Chọn hình ảnh'),
           ),
           Expanded(
-            child: GridView.builder(
-                itemCount: images!.length ?? 1,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, crossAxisSpacing: 3, mainAxisSpacing: 3),
-                itemBuilder: (BuildContext context, int index) {
-                  return Image.file(
-                    File(images![index].path),
-                    fit: BoxFit.cover,
-                  );
-                }),
-          ),
+              child: images != null
+                  ? Image.file(
+                      File(images!.path),
+                      fit: BoxFit.cover,
+                    )
+                  : Container()),
         ],
       ),
     );
@@ -435,26 +514,32 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
     );
   }
 
-  Future<void> _selectEndTime(BuildContext context) async {
+  Future<void> _selectTime(BuildContext context, bool isStartTime) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: _eventEndTimeController,
+      initialDate:
+          isStartTime ? _eventStartTimeController : _eventEndTimeController,
       firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      lastDate: DateTime.now().add(Duration(days: 360)),
     );
 
-    if (pickedDate != null && pickedDate != _eventEndTimeController) {
+    if (pickedDate != null) {
       setState(() {
-        _eventEndTimeController = pickedDate;
+        if (isStartTime) {
+          _eventStartTimeController = pickedDate;
+        } else {
+          _eventEndTimeController = pickedDate;
+        }
       });
     }
   }
 
   void getImage() async {
     final ImagePicker imagePicker = ImagePicker();
-    final List<XFile>? selectedImages = await imagePicker.pickMultiImage();
-    if (selectedImages!.isNotEmpty) {
-      images!.addAll(selectedImages);
+    final XFile? selectedImages =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+    if (selectedImages != null) {
+      images = selectedImages;
     }
     // print("Image List Length:" + images!.length.toString());
     setState(() {});

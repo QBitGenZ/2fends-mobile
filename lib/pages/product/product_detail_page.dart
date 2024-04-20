@@ -50,12 +50,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       home: Scaffold(
         body: Stack(
           children: [
-            // Positioned(
-            //     bottom: 0,
-            //     child: Navbar(
-            //       selectedTitle: selectedTitle,
-            //       updateSelectedTitle: updateSelectedTitle,
-            //     )),
             Positioned(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -70,7 +64,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       width: screenWidth,
                       height: screenHeight * 0.49,
                       fit: BoxFit.cover,
-                    )
+                    ) //TODO: carosel oproduct image
                         : Image.asset(
                       'assets/images/fake.png',
                       width: screenWidth,
