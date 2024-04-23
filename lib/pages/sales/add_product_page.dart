@@ -22,9 +22,10 @@ class AddProductPage extends StatefulWidget {
 class _AddProductPageState extends State<AddProductPage> {
   late double screenHeight;
   late double screenWidth;
+  String _degreeController = 'Mới';
   String _genderController = 'Nam';
   String _typeProductController = '';
-  String _sizeController = '';
+  List<String> _sizeController = [];
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _quantityController = TextEditingController();
@@ -37,7 +38,7 @@ class _AddProductPageState extends State<AddProductPage> {
   void initState() {
     super.initState();
     _page = 1;
-    _genderController = 'Nam';
+    _degreeController = 'Nam';
   }
 
   @override
@@ -156,7 +157,7 @@ class _AddProductPageState extends State<AddProductPage> {
       return _page1();
     }
     if (_page == 2) {
-      if (_genderController.isNotEmpty &&
+      if (_degreeController.isNotEmpty &&
           _typeProductController.isNotEmpty &&
           _sizeController.isNotEmpty) return _page2();
       _page = 1;
@@ -167,7 +168,7 @@ class _AddProductPageState extends State<AddProductPage> {
           _priceController.text.isNotEmpty &&
           _priceController.text.isNotEmpty &&
           _descriptionController.text.isNotEmpty) {
-        print(double.parse(_priceController.text.toString()).runtimeType);
+        // print(double.parse(_priceController.text.toString()).runtimeType);
         return _page3();
       }
       _page = 2;
@@ -177,17 +178,26 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   Future<void> _addProduct() async {
-    Product product = Product(
+    try {
+      print(_sizeController.join(', ').toString());
+      Product product = Product(
         name: _nameController.text.toString(),
         quantity: int.parse(_quantityController.text.toString()),
         price: double.parse(_priceController.text.toString()),
         description: _descriptionController.text.toString(),
-        size: _sizeController.toString(),
-        productType: _typeProductController.toString());
-    var success = await ProductRequest.addProduct(product);
-    _productId = success.id!;
-    print(_productId);
+        size: _sizeController.join(', ').toString(),
+        productType: _typeProductController.toString(),
+        gender: _genderController.toString(),
+        degree: _degreeController.toString()
+      );
+      var success = await ProductRequest.addProduct(product);
+      _productId = success.id!;
+      // print(_productId);
+    } catch (e) {
+      print('Error adding product: $e');
+    }
   }
+
 
   Widget _page1() {
     return Container(
@@ -195,37 +205,69 @@ class _AddProductPageState extends State<AddProductPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Text(
-          //   'Giới tính',
-          //   style: TextStyle(
-          //     color: Colors.black,
-          //     fontSize: 18,
-          //     fontFamily: 'Roboto',
-          //     fontWeight: FontWeight.w700,
-          //     height: 0,
-          //   ),
-          // ),
-          // SizedBox(height: 10),
-          // Row(
-          //   children: [
-          //     Expanded(
-          //       child: genderButton('Nam'),
-          //     ),
-          //     SizedBox(
-          //       width: 20,
-          //     ),
-          //     Expanded(
-          //       child: genderButton('Unisex'),
-          //     ),
-          //     SizedBox(
-          //       width: 20,
-          //     ),
-          //     Expanded(
-          //       child: genderButton('Nữ'),
-          //     ),
-          //   ],
-          // ),
-          // SizedBox(height: 30),
+          Text(
+            'Giới tính',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w700,
+              height: 0,
+            ),
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: genderButton('Nam'),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: genderButton('Nữ'),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: genderButton('Unisex'),
+              ),
+            ],
+          ),
+          SizedBox(height: 30),
+
+          Text(
+            'Độ mới',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w700,
+              height: 0,
+            ),
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: degreeButton('Mới'),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: degreeButton('Vừa'),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: degreeButton('Cũ'),
+              ),
+            ],
+          ),
+          SizedBox(height: 30),
           Text(
             'Loại sản phẩm',
             style: TextStyle(
@@ -247,7 +289,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   return Text('Đã xảy ra lỗi: ${snapshot.error}');
                 }
                 List<ProductType> productType = snapshot.data ?? [];
-                print(_typeProductController);
+                // print(_typeProductController);
                 return Center(
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
@@ -469,6 +511,38 @@ class _AddProductPageState extends State<AddProductPage> {
     );
   }
 
+  Widget degreeButton(String gender) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _degreeController = gender;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        decoration: ShapeDecoration(
+          color: identical(_degreeController, gender)
+              ? Colors.black
+              : Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Color(0xFF999999)),
+          ),
+        ),
+        child: Text(
+          gender,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: _degreeController == gender ? Colors.white : Colors.black,
+            fontSize: 14,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w500,
+            height: 0,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget genderButton(String gender) {
     return InkWell(
       onTap: () {
@@ -507,7 +581,7 @@ class _AddProductPageState extends State<AddProductPage> {
         setState(() {
           _typeProductController = type.id!;
         });
-        print(identical(_typeProductController, type.id));
+        // print(identical(_typeProductController, type.id));
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -539,14 +613,17 @@ class _AddProductPageState extends State<AddProductPage> {
     return InkWell(
       onTap: () {
         setState(() {
-          _sizeController = size;
+          if (_sizeController.contains(size))
+            _sizeController.remove(size);
+          else
+            _sizeController.add(size);
         });
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         width: screenWidth * 40 / 100,
         decoration: ShapeDecoration(
-          color: _sizeController == size ? Colors.black : Colors.white,
+          color: _sizeController.contains(size) ? Colors.black : Colors.white,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: Color(0xFF999999)),
           ),
@@ -555,7 +632,7 @@ class _AddProductPageState extends State<AddProductPage> {
           size.toString(),
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: _sizeController == size ? Colors.white : Colors.black,
+            color: _sizeController.contains(size) ? Colors.white : Colors.black,
             fontSize: 14,
             fontFamily: 'Roboto',
             fontWeight: FontWeight.w500,

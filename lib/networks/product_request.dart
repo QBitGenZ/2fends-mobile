@@ -91,7 +91,9 @@ class ProductRequest {
         'quantity': product.quantity.toString(),
         'product_type': product.productType.toString(),
         'size': product.size.toString(),
-        'description': product.description.toString()
+        'description': product.description.toString(),
+        'degree': product.degree.toString(),
+        'gender': product.gender.toString()
       });
       final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
       if (res.statusCode == 201) {
