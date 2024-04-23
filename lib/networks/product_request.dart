@@ -172,4 +172,25 @@ class ProductRequest {
       throw Exception(e);
     }
   }
+
+  static Future<List<Product>> search({int? page = 1, String? keyword}) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.get(
+          Uri.parse('${URLS}search/?page=${page}&keyword=${keyword}'),
+          headers: {"Authorization": "Bearer $tokenString"});
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      if (res.statusCode == 200) {
+        List<Product> products = [];
+        responseBody['data']
+            .map((dynamic product) => products.add(Product.fromJson(product)))
+            .toList();
+        return products;
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
 }

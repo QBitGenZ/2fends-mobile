@@ -99,13 +99,13 @@ class _HomeSectionState extends State<HomeSection> {
                 ),
               )),
           const Positioned(
-              top: 120,
+              top: 170,
               left: 20,
               child: SizedBox(
-                width: 186,
+                // width: 186,
                 height: 118,
                 child: Text(
-                  'Item hot bạn \nkhông nên bỏ lỡ',
+                  '''Nâng niu những điều đã cũ\nĐồng hành và trao sự yêu thương!''',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,

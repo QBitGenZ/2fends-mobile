@@ -361,5 +361,5 @@ class ItemList extends StatelessWidget {
 }
 
 String formatPrice(double price) {
-  return '\$$price'; // You can implement your own price formatting logic here
+  return '${price.toInt()} VND'; // You can implement your own price formatting logic here
 }
