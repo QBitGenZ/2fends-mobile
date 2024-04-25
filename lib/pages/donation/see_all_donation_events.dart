@@ -6,7 +6,8 @@ import 'package:fends_mobile/networks/event_request.dart';
 import '../../app_config.dart';
 
 class SeeAllDonationEvents extends StatefulWidget {
-  SeeAllDonationEvents({Key? key}) : super(key: key);
+  late bool myEvent;
+  SeeAllDonationEvents({Key? key, required this.myEvent}) : super(key: key);
 
   @override
   _SeeAllDonationEventsState createState() => _SeeAllDonationEventsState();

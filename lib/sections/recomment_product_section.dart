@@ -197,7 +197,7 @@ import '../networks/product_request.dart';
 
 class RecommentProductSection extends StatefulWidget {
   // final List<Product> Products;
-  List<Product> Products = [];
+  List<Product> products = [];
 
   // RecommentProductSection({Key? key, required this.Products}) : super(key: key);
 
@@ -243,20 +243,20 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
       height: 400 / 800 * screenHeight,
       child: ListView.builder(
         physics: AlwaysScrollableScrollPhysics(),
-        itemCount: (widget.Products.length / 2).ceil(),
+        itemCount: (widget.products.length / 2).ceil(),
         controller: _scrollController,
         itemBuilder: (context, rowIndex) {
-          if (rowIndex == widget.Products.length)
+          if (rowIndex == widget.products.length)
             return Container();
           final firstItemIndex = rowIndex * 2;
           final secondItemIndex = firstItemIndex + 1;
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (firstItemIndex < widget.Products.length)
-                buildItem(context, widget.Products[firstItemIndex]),
-              if (secondItemIndex < widget.Products.length)
-                buildItem(context, widget.Products[secondItemIndex]),
+              if (firstItemIndex < widget.products.length)
+                buildItem(context, widget.products[firstItemIndex]),
+              if (secondItemIndex < widget.products.length)
+                buildItem(context, widget.products[secondItemIndex]),
             ],
           );
         },
@@ -299,7 +299,7 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
 
       setState(() {
         isLoading = false;
-        widget.Products.addAll(response);
+        widget.products.addAll(response);
         currentPage = currentPage + 1;
 
       });

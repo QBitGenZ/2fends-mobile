@@ -150,6 +150,19 @@ class _CartPageState extends State<CartPage> {
                       SizedBox(
                         height: 5,
                       ),
+                      Text(
+                        'Độ mới:  ' + cart.product!.degree.toString(),
+                        style: TextStyle(
+                          color: Color(0xFFB2B2B2),
+                          fontSize: 12,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
                       Container(
                         decoration: ShapeDecoration(
                           shape: RoundedRectangleBorder(
@@ -196,10 +209,12 @@ class _CartPageState extends State<CartPage> {
                             ),
                             InkWell(
                                 onTap: () async {
-                                  var success = await CartRequest.addToCart(
-                                      cart.product!.id.toString(), '1');
-                                  if (success) {
-                                    setState(() {});
+                                  if (cart.quantity! < (cart.product!.quantity! - cart.product!.sold!.toInt())) {
+                                    var success = await CartRequest.addToCart(
+                                        cart.product!.id.toString(), '1');
+                                    if (success) {
+                                      setState(() {});
+                                    }
                                   }
                                 },
                                 child: Icon(

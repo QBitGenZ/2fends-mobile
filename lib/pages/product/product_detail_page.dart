@@ -57,20 +57,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 children: [
                   Container(
                     child: widget.product.productImage != null &&
-                        widget.product.productImage!.isNotEmpty
+                            widget.product.productImage!.isNotEmpty
                         ? Image.network(
-                      AppConfig.IMAGE_API_URL +
-                          widget.product.productImage![0].src.toString(),
-                      width: screenWidth,
-                      height: screenHeight * 0.49,
-                      fit: BoxFit.cover,
-                    ) //TODO: carosel oproduct image
+                            AppConfig.IMAGE_API_URL +
+                                widget.product.productImage![0].src.toString(),
+                            width: screenWidth,
+                            height: screenHeight * 0.49,
+                            fit: BoxFit.cover,
+                          ) //TODO: carosel oproduct image
                         : Image.asset(
-                      'assets/images/fake.png',
-                      width: screenWidth,
-                      height: screenHeight * 0.49,
-                      fit: BoxFit.cover,
-                    ),
+                            'assets/images/fake.png',
+                            width: screenWidth,
+                            height: screenHeight * 0.49,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   Container(
                       margin: EdgeInsets.fromLTRB(screenWidth * 0.043055,
@@ -95,7 +95,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           Container(
                             margin: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              widget.product.size.toString(),
+                              'Kích cỡ: ${widget.product.size.toString()}',
+                              style: TextStyle(
+                                color: Color(0xFF5A5A5A),
+                                fontSize: 14,
+                                fontFamily: 'Roboto',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 5),
+                            child: Text(
+                              'Số lượng còn lại: ${widget.product.quantity.toString()}',
                               style: TextStyle(
                                 color: Color(0xFF5A5A5A),
                                 fontSize: 14,
@@ -151,10 +164,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   ),
                                 ),
                                 Container(
-                                  child: widget.product.productDetail != null && widget.product.productDetail!.isNotEmpty
-                                      ? Text(
-                                    widget.product.productDetail![0].text
-                                        .toString(),
+                                  child: Text(
+                                    widget.product.description.toString(),
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -162,8 +173,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                       fontWeight: FontWeight.w400,
                                       height: 0,
                                     ),
-                                  )
-                                      : Container(),
+                                  ),
                                 )
                               ],
                             ),
@@ -185,37 +195,41 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   children: [
                     InkWell(
                       onTap: () async {
-                        bool success = await CartRequest.addToCart(
-                            widget.product.id.toString(), "1");
-                        if (success) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                shadowColor: Colors.grey[300],
-                                alignment: Alignment.center,
-                                content: Text(
-                                  "Bạn đã chọn ${widget.product.name}",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 13,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
+                        if (widget.product.quantity! -
+                                widget.product.sold!.toInt() >
+                            0) {
+                          bool success = await CartRequest.addToCart(
+                              widget.product.id.toString(), "1");
+                          if (success) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shadowColor: Colors.grey[300],
+                                  alignment: Alignment.center,
+                                  content: Text(
+                                    "Bạn đã chọn ${widget.product.name}",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                          Future.delayed(Duration(seconds: 1), () {
-                            Navigator.of(context)
-                                .pop(); // Tự động đóng AlertDialog sau 2 giây
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => CartPage()),
+                                );
+                              },
                             );
-                          });
+                            Future.delayed(Duration(seconds: 1), () {
+                              Navigator.of(context)
+                                  .pop(); // Tự động đóng AlertDialog sau 2 giây
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => CartPage()),
+                              );
+                            });
+                          }
                         } else {
                           showDialog(
                             context: context,

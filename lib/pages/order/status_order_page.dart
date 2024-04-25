@@ -83,21 +83,21 @@ class _StatusOrderPageState extends State<StatusOrderPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _subNav(),
-                      SizedBox(height: 30),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Text(
-                          'Chi tiết đơn hàng',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
-                          ),
-                        ),
-                      ),
+                      // _subNav(),
+                      // SizedBox(height: 30),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(bottom: 10),
+                      //   child: Text(
+                      //     'Chi tiết đơn hàng',
+                      //     style: TextStyle(
+                      //       color: Colors.black,
+                      //       fontSize: 16,
+                      //       fontFamily: 'Roboto',
+                      //       fontWeight: FontWeight.w500,
+                      //       height: 0,
+                      //     ),
+                      //   ),
+                      // ),
                       _listProduct(),
                       SizedBox(
                         height: 10,

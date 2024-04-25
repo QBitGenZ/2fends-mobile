@@ -54,19 +54,7 @@ class _SignupPageState extends State<SignupPage> {
             color: Color(0xFFEEE8DA),
             child: Stack(
               children: [
-                Positioned(
-                  child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => StartPage()),
-                        );
-                      },
-                      child: Container(
-                          margin: EdgeInsets.only(
-                              top: 50, left: screenWidth * 0.0555),
-                          child: Image.asset('assets/images/Vector.png'))),
-                ),
+
                 ListView(
                   children: [
                     titleContainer(),
@@ -80,6 +68,19 @@ class _SignupPageState extends State<SignupPage> {
                     phoneContainer(),
                     signinbtnContainer()
                   ],
+                ),
+                Positioned(
+                  top: 50,
+                  left: 20,
+                  child: InkWell(
+                      onTap: () {
+                        print("hello)");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => StartPage()),
+                        );
+                      },
+                      child: Icon(Icons.arrow_back_ios_new)),
                 ),
               ],
             )),

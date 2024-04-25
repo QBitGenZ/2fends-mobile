@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../app_config.dart';
+import 'add_donation_product_page.dart';
 
 class DonationEventDetailPage extends StatefulWidget {
   late MyEvent event;
@@ -130,42 +131,47 @@ class _DonationEventDetailPageState extends State<DonationEventDetailPage> {
   Widget _button() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
-      child: Row(
-        children: [
-          Expanded(
+      child: InkWell(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AddDonationProductPage(event: widget.event,)));
+        },
+        child: Row(
+          children: [
+            Expanded(
+                child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x3F6B6B6B),
+                    blurRadius: 50,
+                    offset: Offset(0, 15),
+                    spreadRadius: 0,
+                  )
+                ],
+              ),
               child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x3F6B6B6B),
-                  blurRadius: 50,
-                  offset: Offset(0, 15),
-                  spreadRadius: 0,
-                )
-              ],
-            ),
-            child: Container(
-              alignment: Alignment.center,
-              height: 50,
-              decoration: ShapeDecoration(
-                color: Color(0xFFEEE8DA),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
+                alignment: Alignment.center,
+                height: 50,
+                decoration: ShapeDecoration(
+                  color: Color(0xFFEEE8DA),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: Text(
+                  'Tham gia quyên góp',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
-              child: Text(
-                'Tham gia quyên góp',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ))
-        ],
+            ))
+          ],
+        ),
       ),
     );
   }

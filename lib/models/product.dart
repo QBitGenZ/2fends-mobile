@@ -111,6 +111,7 @@ class Product {
   String? size;
   String? description;
   String? gender;
+  int? sold;
 
   Product(
       {this.id,
@@ -127,7 +128,8 @@ class Product {
         this.degree,
         this.size,
         this.description,
-        this.gender});
+        this.gender,
+      this.sold});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -160,6 +162,7 @@ class Product {
     size = json['size'];
     description = json['description'];
     gender = json['gender'];
+    sold = json['sold'];
   }
 
   Map<String, dynamic> toJson() {
@@ -188,6 +191,7 @@ class Product {
     data['size'] = this.size;
     data['description'] = this.description;
     data['gender'] = this.gender;
+    data['sold'] = this.sold;
     return data;
   }
 }

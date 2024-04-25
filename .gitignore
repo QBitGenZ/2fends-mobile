@@ -45,3 +45,6 @@ app.*.map.json
 
 /lib/app_config.dart
 /pubspec.lock
+
+TODOLIST.dart
+/lib/app_config.dart
