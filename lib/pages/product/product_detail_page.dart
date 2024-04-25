@@ -108,7 +108,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           Container(
                             margin: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              'Số lượng còn lại: ${widget.product.quantity.toString()}',
+                              'Số lượng còn lại: ${widget.product.quantity! - widget.product.sold!}',
                               style: TextStyle(
                                 color: Color(0xFF5A5A5A),
                                 fontSize: 14,

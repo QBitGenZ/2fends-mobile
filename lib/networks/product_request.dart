@@ -59,6 +59,24 @@ class ProductRequest {
     }
   }
 
+  static Future<Product> getProductByID(String productID) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.get(Uri.parse('${URLS}$productID/'),
+          headers: {"Authorization": "Bearer $tokenString"});
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+
+      if (res.statusCode == 200) {
+        Product product = Product.fromJson(responseBody['data']);
+        return product;
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
+
   static Future<List<ProductType>> getProductType() async {
     try {
       final tokenString = AppConfig.ACCESS_TOKEN;

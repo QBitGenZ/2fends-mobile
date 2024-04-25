@@ -105,11 +105,11 @@ class EventRequest {
   }
 
   static Future<List<DonationProduct>> getDonationProduct(
-      String eventID) async {
+      String eventID, {int? page=1}) async {
     try {
       final tokenString = AppConfig.ACCESS_TOKEN;
       final res = await http.get(
-        Uri.parse('${URLS}${eventID}/donation_products/'),
+        Uri.parse('$URLS$eventID/donation_products/?page=$page'),
         headers: {"Authorization": "Bearer $tokenString"},
       );
       final responseBody = jsonDecode(utf8.decode(res.bodyBytes));

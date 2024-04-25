@@ -1,4 +1,6 @@
 import 'package:fends_mobile/models/event.dart';
+import 'package:fends_mobile/pages/donation/donation_products_list.dart';
+import 'package:fends_mobile/pages/donation/see_all_donation_product_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,7 +32,7 @@ class _DonationEventDetailPageState extends State<DonationEventDetailPage> {
         width: screenWidth,
         height: screenHeight,
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: SingleChildScrollView(
+        child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -121,6 +123,29 @@ class _DonationEventDetailPageState extends State<DonationEventDetailPage> {
                   height: 0,
                 ),
               ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SeeAllDonationProductPage(event: widget.event)));
+                },
+                child: Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  child: Text(
+                    'Xem sản phẩm quyên góp',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w500,
+                      height: 0,
+                    ),
+                  ),
+                ),
+              ),
+              // Expanded(child: Container( padding: EdgeInsets.only(top: 20), child: DonationProductsList(event: widget.event,)))
             ],
           ),
         ),
@@ -133,7 +158,12 @@ class _DonationEventDetailPageState extends State<DonationEventDetailPage> {
       padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
       child: InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AddDonationProductPage(event: widget.event,)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddDonationProductPage(
+                        event: widget.event,
+                      )));
         },
         child: Row(
           children: [
