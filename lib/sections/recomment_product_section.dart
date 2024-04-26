@@ -334,14 +334,19 @@ class ItemList extends StatelessWidget {
               height: 125 / 360 * MediaQuery.of(context).size.width,
               fit: BoxFit.cover,
             ),
-          Text(
-            productName,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              height: 0,
+          Container(
+            width: 125 / 360 * MediaQuery.of(context).size.width,
+            child: Text(
+              productName,
+              maxLines: 1, // Limit the text to 2 lines
+                overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
             ),
           ),
           Text(

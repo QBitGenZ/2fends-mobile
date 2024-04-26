@@ -1,4 +1,5 @@
 import 'package:fends_mobile/networks/product_request.dart';
+import 'package:fends_mobile/networks/statistics.dart';
 import 'package:fends_mobile/pages/sales/add_product_page.dart';
 import 'package:fends_mobile/pages/sales/sale_page.dart';
 import 'package:fends_mobile/pages/sales/HorizontalList.dart';
@@ -9,9 +10,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../constants/navbar.dart';
 import '../../models/product.dart';
-import '../../widgets/navbar.dart';
-import '../index.dart';
-import 'HorizontalList.dart';
 
 class DepartmentStorePage extends StatefulWidget {
   const DepartmentStorePage({super.key});
@@ -67,11 +65,11 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
             children: [
               _buildRevenue(),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               _buildAddProduct(),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               Container(
                 child: FutureBuilder(
@@ -109,7 +107,8 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
                       if (soldOutProducts.isEmpty) return Container();
                       return HorizontalList(
                           title: "Sản phẩm đã bán",
-                          products: soldOutProducts ?? []);
+                          products: soldOutProducts ?? [],
+                      canEdit: false,);
                     }),
               ),
             ],
@@ -184,6 +183,7 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
     );
   }
 
+
   Widget _buildAddProduct() {
     return InkWell(
       onTap: () {
@@ -201,10 +201,10 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
           children: [
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(30.0),
+                padding: const EdgeInsets.only(top:30.0, bottom: 30, left: 30),
                 child: Text(
                   'Thêm mới sản phẩm',
-                  textAlign: TextAlign.center,
+                  // textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -237,6 +237,7 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
       ),
     );
   }
+
 
   Widget _cardItem(Product product) {
     return Container(
