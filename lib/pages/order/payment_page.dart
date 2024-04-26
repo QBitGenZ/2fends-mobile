@@ -144,9 +144,9 @@ class _PaymentPageState extends State<PaymentPage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      _totalRow("Giá sản phẩm", _totalPrice().toString()),
-                      _totalRow("Giá vận chuyển", "0"),
-                      _totalRow("Giá đơn hàng", _totalPrice().toString(),
+                      _totalRow("Giá trị sản phẩm", _totalPrice().toString()),
+                      // _totalRow("Giá vận chuyển", "0"),
+                      _totalRow("Giá trị đơn hàng", _totalPrice().toString(),
                           Colors.black), //TODO: Cộng giá vận chuyển
                       const SizedBox(
                         height: 30,
@@ -406,7 +406,7 @@ class _PaymentPageState extends State<PaymentPage> {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Container(
-        height: 62,
+        // height: 62,
         padding: EdgeInsets.all(10),
         decoration: ShapeDecoration(
           color: Colors.white,

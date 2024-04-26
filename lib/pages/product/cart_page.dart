@@ -150,6 +150,19 @@ class _CartPageState extends State<CartPage> {
                       SizedBox(
                         height: 5,
                       ),
+                      Text(
+                        'Độ mới:  ' + cart.product!.degree.toString(),
+                        style: TextStyle(
+                          color: Color(0xFFB2B2B2),
+                          fontSize: 12,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
                       Container(
                         decoration: ShapeDecoration(
                           shape: RoundedRectangleBorder(
@@ -196,10 +209,12 @@ class _CartPageState extends State<CartPage> {
                             ),
                             InkWell(
                                 onTap: () async {
-                                  var success = await CartRequest.addToCart(
-                                      cart.product!.id.toString(), '1');
-                                  if (success) {
-                                    setState(() {});
+                                  if (cart.quantity! < (cart.product!.quantity! - cart.product!.sold!.toInt())) {
+                                    var success = await CartRequest.addToCart(
+                                        cart.product!.id.toString(), '1');
+                                    if (success) {
+                                      setState(() {});
+                                    }
                                   }
                                 },
                                 child: Icon(
@@ -248,7 +263,7 @@ class _CartPageState extends State<CartPage> {
                 Container(
                   margin: EdgeInsets.fromLTRB(0.045 * screenWidth, 0, 150, 0),
                   child: Text(
-                    'Mã giảm giá',
+                    'Quỹ từ thiện',
                     style: TextStyle(
                       color: Color(0xFF858585),
                       fontSize: 15,
@@ -260,7 +275,7 @@ class _CartPageState extends State<CartPage> {
                 ),
                 Container(
                   child: Text(
-                    formatPrice(120),
+                    formatPrice(total*10/100),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,

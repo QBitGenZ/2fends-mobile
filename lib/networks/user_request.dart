@@ -41,7 +41,7 @@ class UserRequest {
           'password': password,
           'full_name': fullname,
           'birthday': formattedBirthday, // Convert DateTime to string
-          'is_female': gender == 'Nữ',
+          'is_female': (gender == 'Nữ').toString(),
           'phone': phone,
           'email': email
         },
@@ -70,7 +70,7 @@ class UserRequest {
           headers: {"Authorization": "Bearer $tokenString"});
 
       // Decode the response body
-      final responseBody = json.decode(res.body);
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
       print(res.statusCode);
       // Check the response status code
       if (res.statusCode == 200) {

@@ -4,6 +4,7 @@ import 'package:fends_mobile/pages/sales/HorizontalList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../models/index.dart';
 import '../../models/product.dart';
@@ -23,6 +24,7 @@ class _HomeSectionState extends State<HomeSection> {
     screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
+      width: screenWidth,
       // height: MediaQuery.of(context).size.height - 68,
       child: Column(
         children: [
@@ -30,7 +32,7 @@ class _HomeSectionState extends State<HomeSection> {
           Container(
             alignment: Alignment.centerLeft,
             width: screenWidth,
-            padding: EdgeInsets.only( left: 10),
+            padding: EdgeInsets.only(left: 10),
             child: Text(
               'Tất cả sản phẩm',
               style: TextStyle(
@@ -77,8 +79,9 @@ class _HomeSectionState extends State<HomeSection> {
             top: 0,
             child: Container(
                 width: screenWidth,
+                height: 360,
                 child: const Image(
-                  image: AssetImage('assets/images/home/background.png'),
+                  image: AssetImage('assets/images/startpage.jpg'),
                   fit: BoxFit.cover,
                 )),
           ),
@@ -98,29 +101,29 @@ class _HomeSectionState extends State<HomeSection> {
                   ),
                 ),
               )),
-          const Positioned(
-              top: 120,
+           Positioned(
+              top: 80,
               left: 20,
               child: SizedBox(
-                width: 186,
+                // width: 186,
                 height: 118,
                 child: Text(
-                  'Item hot bạn \nkhông nên bỏ lỡ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w500,
-                    height: 0,
-                    shadows: [
-                      Shadow(
-                        color: Color.fromRGBO(0, 0, 0, 0.5),
-                        blurRadius: 5, // Độ mờ của bóng
-                        offset: Offset(
-                            2, 2), // Độ dịch chuyển của bóng theo trục X và Y
+                    '''Nâng niu những điều đã cũ\n      Đồng hành và trao sự yêu thương!''',
+                    style: GoogleFonts.lobster(
+                      textStyle: TextStyle(
+                        color: Color(0xffA65644),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                        shadows: [
+                          Shadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.25),
+                            blurRadius: 5,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    )
                 ),
               )),
         ],

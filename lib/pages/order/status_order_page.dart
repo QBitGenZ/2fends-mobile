@@ -83,27 +83,27 @@ class _StatusOrderPageState extends State<StatusOrderPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _subNav(),
-                      SizedBox(height: 30),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Text(
-                          'Chi tiết đơn hàng',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
-                          ),
-                        ),
-                      ),
+                      // _subNav(),
+                      // SizedBox(height: 30),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(bottom: 10),
+                      //   child: Text(
+                      //     'Chi tiết đơn hàng',
+                      //     style: TextStyle(
+                      //       color: Colors.black,
+                      //       fontSize: 16,
+                      //       fontFamily: 'Roboto',
+                      //       fontWeight: FontWeight.w500,
+                      //       height: 0,
+                      //     ),
+                      //   ),
+                      // ),
                       _listProduct(),
                       SizedBox(
                         height: 10,
                       ),
-                      _totalRow("Giá sản phẩm", "${_totalPrice()}"),
-                      _totalRow("Giá vận chuyển", "0"),
+                      _totalRow("Quỹ từ thiện", "${_totalPrice() * 10/100}"),
+                      // _totalRow("Giá vận chuyển", "0"),
                       _totalRow(
                           "Giá đơn hàng", "${_totalPrice()}", Colors.black),
                       const SizedBox(
@@ -216,7 +216,7 @@ class _StatusOrderPageState extends State<StatusOrderPage> {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Container(
-        height: 62,
+        // height: 62,
         padding: EdgeInsets.all(10),
         decoration: ShapeDecoration(
           color: Colors.white,

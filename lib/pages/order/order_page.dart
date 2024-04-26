@@ -1,4 +1,5 @@
 import 'package:fends_mobile/app_config.dart';
+import 'package:fends_mobile/constants/recomment_product.dart';
 import 'package:fends_mobile/networks/order_request.dart';
 import 'package:fends_mobile/pages/order/comment_page.dart';
 
@@ -39,6 +40,16 @@ class _OrderPageState extends State<OrderPage> {
         isLoading = false; // Set isLoading to false even if there's an error
       });
     }
+  }
+
+  double _totalPrice(Order order) {
+    if (order.items!.isNotEmpty) {
+      return order.items!
+          .map((item) =>
+      (item.product!.price!.toDouble() * item.quantity!.toInt()))
+          .reduce((value, element) => value + element);
+    }
+    return 0;
   }
 
   @override
@@ -219,7 +230,7 @@ class _OrderPageState extends State<OrderPage> {
                       height: 10,
                     ),
                     Text(
-                      '125.000 vnd',
+                      formatPrice(_totalPrice(order)),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 10,

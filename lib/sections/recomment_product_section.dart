@@ -197,7 +197,7 @@ import '../networks/product_request.dart';
 
 class RecommentProductSection extends StatefulWidget {
   // final List<Product> Products;
-  List<Product> Products = [];
+  List<Product> products = [];
 
   // RecommentProductSection({Key? key, required this.Products}) : super(key: key);
 
@@ -243,20 +243,20 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
       height: 400 / 800 * screenHeight,
       child: ListView.builder(
         physics: AlwaysScrollableScrollPhysics(),
-        itemCount: (widget.Products.length / 2).ceil(),
+        itemCount: (widget.products.length / 2).ceil(),
         controller: _scrollController,
         itemBuilder: (context, rowIndex) {
-          if (rowIndex == widget.Products.length)
+          if (rowIndex == widget.products.length)
             return Container();
           final firstItemIndex = rowIndex * 2;
           final secondItemIndex = firstItemIndex + 1;
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (firstItemIndex < widget.Products.length)
-                buildItem(context, widget.Products[firstItemIndex]),
-              if (secondItemIndex < widget.Products.length)
-                buildItem(context, widget.Products[secondItemIndex]),
+              if (firstItemIndex < widget.products.length)
+                buildItem(context, widget.products[firstItemIndex]),
+              if (secondItemIndex < widget.products.length)
+                buildItem(context, widget.products[secondItemIndex]),
             ],
           );
         },
@@ -299,7 +299,7 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
 
       setState(() {
         isLoading = false;
-        widget.Products.addAll(response);
+        widget.products.addAll(response);
         currentPage = currentPage + 1;
 
       });
@@ -334,14 +334,19 @@ class ItemList extends StatelessWidget {
               height: 125 / 360 * MediaQuery.of(context).size.width,
               fit: BoxFit.cover,
             ),
-          Text(
-            productName,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              height: 0,
+          Container(
+            width: 125 / 360 * MediaQuery.of(context).size.width,
+            child: Text(
+              productName,
+              maxLines: 1, // Limit the text to 2 lines
+                overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
             ),
           ),
           Text(
@@ -361,5 +366,5 @@ class ItemList extends StatelessWidget {
 }
 
 String formatPrice(double price) {
-  return '\$$price'; // You can implement your own price formatting logic here
+  return '${price.toInt()} VND'; // You can implement your own price formatting logic here
 }

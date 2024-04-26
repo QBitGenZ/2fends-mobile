@@ -1,6 +1,7 @@
 import 'package:fends_mobile/pages/account/account_page.dart';
 import 'package:fends_mobile/pages/donation/donation_page.dart';
 import 'package:fends_mobile/pages/sales/department_store_page.dart';
+import 'package:fends_mobile/pages/search/search_page.dart';
 import 'package:fends_mobile/sections/home/index.dart';
 import 'package:fends_mobile/widgets/navbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,7 +54,12 @@ class _MainPageState extends State<MainPage> {
     if (selectedTitle == navbar[0].title) {
       print(selectedTitle);
       return HomeSection();
-    } else if (selectedTitle == navbar[2].title) {
+    }
+    else if (selectedTitle == navbar[1].title) {
+      print(selectedTitle);
+      return SearchPage();
+    }
+    else if (selectedTitle == navbar[2].title) {
       print(selectedTitle);
       return DepartmentStorePage();
     }

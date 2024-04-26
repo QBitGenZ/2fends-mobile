@@ -59,6 +59,24 @@ class ProductRequest {
     }
   }
 
+  static Future<Product> getProductByID(String productID) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.get(Uri.parse('${URLS}$productID/'),
+          headers: {"Authorization": "Bearer $tokenString"});
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+
+      if (res.statusCode == 200) {
+        Product product = Product.fromJson(responseBody['data']);
+        return product;
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
+
   static Future<List<ProductType>> getProductType() async {
     try {
       final tokenString = AppConfig.ACCESS_TOKEN;
@@ -91,7 +109,9 @@ class ProductRequest {
         'quantity': product.quantity.toString(),
         'product_type': product.productType.toString(),
         'size': product.size.toString(),
-        'description': product.description.toString()
+        'description': product.description.toString(),
+        'degree': product.degree.toString(),
+        'gender': product.gender.toString()
       });
       final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
       if (res.statusCode == 201) {
@@ -166,6 +186,27 @@ class ProductRequest {
         return true;
       } else {
         return false;
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<List<Product>> search({int? page = 1, String? keyword}) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.get(
+          Uri.parse('${URLS}search/?page=${page}&keyword=${keyword}'),
+          headers: {"Authorization": "Bearer $tokenString"});
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      if (res.statusCode == 200) {
+        List<Product> products = [];
+        responseBody['data']
+            .map((dynamic product) => products.add(Product.fromJson(product)))
+            .toList();
+        return products;
+      } else {
         throw Exception(responseBody);
       }
     } on Exception catch (e) {

@@ -41,6 +41,22 @@ class _SeeAllProductState extends State<SeeAllProduct> {
     }
   }
 
+  Future<void> _getMoreData(int page) async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+
+      final response = await ProductRequest.getMyProducts(page: page);
+
+      setState(() {
+        isLoading = false;
+        widget.Products.addAll(response);
+        currentPage = currentPage + 1;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
@@ -105,21 +121,7 @@ class _SeeAllProductState extends State<SeeAllProduct> {
     );
   }
 
-  Future<void> _getMoreData(int page) async {
-    if (!isLoading) {
-      setState(() {
-        isLoading = true;
-      });
 
-      final response = await ProductRequest.getMyProducts(page: page);
-
-      setState(() {
-        isLoading = false;
-        widget.Products.addAll(response);
-        currentPage = currentPage + 1;
-      });
-    }
-  }
 
   AppBar headerForDetail([String? title]) {
     return AppBar(

@@ -15,8 +15,9 @@ class HorizontalList extends StatelessWidget {
   final String title;
   final List<Product> products;
   late double screenWidth;
+  bool? canEdit = true;
 
-  HorizontalList({Key? key, required this.title, required this.products})
+  HorizontalList({Key? key, required this.title, required this.products, this.canEdit = true})
       : super(key: key);
 
   @override
@@ -80,14 +81,17 @@ class HorizontalList extends StatelessWidget {
               children: products
                   .map((e) => InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditProductPage(
-                          product: e,
+                    if(canEdit!=null && canEdit!) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              EditProductPage(
+                                product: e,
+                              ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                   child: ProductItem(product: e)))
                   .toList(),

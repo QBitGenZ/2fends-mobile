@@ -1,10 +1,17 @@
 import 'package:fends_mobile/models/event.dart';
+import 'package:fends_mobile/networks/user_request.dart';
+import 'package:fends_mobile/pages/donation/donation_products_list.dart';
+import 'package:fends_mobile/pages/donation/edit_donation_event_page.dart';
+import 'package:fends_mobile/pages/donation/see_all_donation_product_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 
 import '../../app_config.dart';
+import '../../models/user.dart';
+import 'add_donation_product_page.dart';
 
 class DonationEventDetailPage extends StatefulWidget {
   late MyEvent event;
@@ -18,18 +25,42 @@ class DonationEventDetailPage extends StatefulWidget {
 class _DonationEventDetailPageState extends State<DonationEventDetailPage> {
   late double screenHeight;
   late double screenWidth;
+  late User user;
+  late bool isMyEvent = false;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getInfo();
+  }
+
+  Future<void> _getInfo() async {
+    try {
+      user = await UserRequest.info();
+      isMyEvent = (user.username == widget.event.user);
+      setState(() {
+
+      });
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: headerForDetail("Chi tiết sự kiện"),
-      bottomNavigationBar: _button(),
+      bottomNavigationBar: _button(isPhilanthropist: isMyEvent),
       body: Container(
         width: screenWidth,
         height: screenHeight,
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: SingleChildScrollView(
+        child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -110,16 +141,33 @@ class _DonationEventDetailPageState extends State<DonationEventDetailPage> {
               SizedBox(
                 height: 10,
               ),
-              Text(
-                '${widget.event.description.toString()}',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w400,
-                  height: 0,
+              Expanded(child: Container(
+                  child: SingleChildScrollView(child: HtmlWidget("${widget.event.description.toString()}")))),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                SeeAllDonationProductPage(event: widget.event)));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Text(
+                      'Xem sản phẩm quyên góp',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                      ),
+                    ),
+                  ),
                 ),
               ),
+              // Expanded(child: Container( padding: EdgeInsets.only(top: 20), child: DonationProductsList(event: widget.event,)))
             ],
           ),
         ),
@@ -127,45 +175,57 @@ class _DonationEventDetailPageState extends State<DonationEventDetailPage> {
     );
   }
 
-  Widget _button() {
+  Widget _button({bool isPhilanthropist=false}) {
+    var title = isPhilanthropist ? 'Chỉnh sửa sự kiện' : 'Tham gia quyên góp';
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
-      child: Row(
-        children: [
-          Expanded(
+      child: InkWell(
+        onTap: () {
+          isPhilanthropist ? Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditDonationEventPage(event: widget.event))) :
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddDonationProductPage(
+                        event: widget.event,
+                      )));
+        },
+        child: Row(
+          children: [
+            Expanded(
+                child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x3F6B6B6B),
+                    blurRadius: 50,
+                    offset: Offset(0, 15),
+                    spreadRadius: 0,
+                  )
+                ],
+              ),
               child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x3F6B6B6B),
-                  blurRadius: 50,
-                  offset: Offset(0, 15),
-                  spreadRadius: 0,
-                )
-              ],
-            ),
-            child: Container(
-              alignment: Alignment.center,
-              height: 50,
-              decoration: ShapeDecoration(
-                color: Color(0xFFEEE8DA),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
+                alignment: Alignment.center,
+                height: 50,
+                decoration: ShapeDecoration(
+                  color: Color(0xFFEEE8DA),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
-              child: Text(
-                'Tham gia quyên góp',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ))
-        ],
+            ))
+          ],
+        ),
       ),
     );
   }
