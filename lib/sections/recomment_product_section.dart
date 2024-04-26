@@ -191,6 +191,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../app_config.dart';
+import '../constants/recomment_product.dart';
 import '../models/product.dart';
 import '../pages/product/product_detail_page.dart';
 import '../networks/product_request.dart';
@@ -368,8 +369,4 @@ class ItemList extends StatelessWidget {
       ),
     );
   }
-}
-
-String formatPrice(double price) {
-  return '${price.toInt()} VND'; // You can implement your own price formatting logic here
 }

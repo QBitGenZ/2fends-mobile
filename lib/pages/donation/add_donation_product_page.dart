@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_config.dart';
+import '../../constants/recomment_product.dart';
 import '../../models/event.dart';
 import '../../models/product.dart';
 import '../../networks/product_request.dart';
