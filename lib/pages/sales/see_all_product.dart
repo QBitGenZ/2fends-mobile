@@ -1,3 +1,4 @@
+import 'package:fends_mobile/pages/sales/edit_product_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,9 @@ import '../../networks/product_request.dart';
 
 class SeeAllProduct extends StatefulWidget {
   List<Product> Products = [];
+  late bool canEdit = false;
+
+  SeeAllProduct({super.key, this.canEdit = false});
 
   @override
   _SeeAllProductState createState() => _SeeAllProductState();
@@ -26,6 +30,7 @@ class _SeeAllProductState extends State<SeeAllProduct> {
     super.initState();
     _scrollController.addListener(_scrollListener);
     _getMoreData(currentPage);
+    print(widget.canEdit);
   }
 
   @override
@@ -48,10 +53,18 @@ class _SeeAllProductState extends State<SeeAllProduct> {
       });
 
       final response = await ProductRequest.getMyProducts(page: page);
+      final List<Product>products = [];
+      if (widget.canEdit!=null && widget.canEdit!) {
+        products.addAll(response!.where((product) => product.quantity != product.sold).toList());
+
+      }
+      else{
+        products.addAll(response!.where((product) => product.quantity == product.sold).toList());
+      }
 
       setState(() {
         isLoading = false;
-        widget.Products.addAll(response);
+        widget.Products.addAll(products);
         currentPage = currentPage + 1;
       });
     }
@@ -98,14 +111,14 @@ class _SeeAllProductState extends State<SeeAllProduct> {
   Widget buildItem(BuildContext context, Product product) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProductDetailPage(
-              product: product,
+        if (widget.canEdit!=null && widget.canEdit!) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditProductPage(product: product)
             ),
-          ),
-        );
+          );
+        }
       },
       child: Container(
         padding: EdgeInsets.only(right: 20),
@@ -224,5 +237,5 @@ class ListProducts extends StatelessWidget {
 }
 
 String formatPrice(double price) {
-  return '\$$price'; // You can implement your own price formatting logic here
+  return '${price.toInt()} VND'; // You can implement your own price formatting logic here
 }

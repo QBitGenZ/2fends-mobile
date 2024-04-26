@@ -87,7 +87,8 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
                       if (inventoryProducts!.isEmpty) return Container();
                       return HorizontalList(
                           title: 'Sản phẩm còn lại',
-                          products: inventoryProducts ?? []);
+                          products: inventoryProducts ?? [],
+                      canEdit: true,);
                     }),
               ),
               const SizedBox(height: 10,),

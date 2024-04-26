@@ -232,6 +232,25 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
     }
   }
 
+  Future<void> _getMoreData(int page) async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+
+      final response = await ProductRequest.getProducts(page: page);
+      final products = response!.where((product) => product.quantity != product.sold).toList();
+
+
+      setState(() {
+        isLoading = false;
+        widget.products.addAll(products);
+        currentPage = currentPage + 1;
+
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
@@ -289,22 +308,7 @@ class _RecommentProductSectionState extends State<RecommentProductSection> {
     );
   }
 
-  Future<void> _getMoreData(int page) async {
-    if (!isLoading) {
-      setState(() {
-        isLoading = true;
-      });
 
-      final response = await ProductRequest.getProducts(page: page);
-
-      setState(() {
-        isLoading = false;
-        widget.products.addAll(response);
-        currentPage = currentPage + 1;
-
-      });
-    }
-  }
 }
 
 class ItemList extends StatelessWidget {
@@ -337,6 +341,7 @@ class ItemList extends StatelessWidget {
           Container(
             width: 125 / 360 * MediaQuery.of(context).size.width,
             child: Text(
+              textAlign: TextAlign.center,
               productName,
               maxLines: 1, // Limit the text to 2 lines
                 overflow: TextOverflow.ellipsis,
