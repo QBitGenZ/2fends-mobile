@@ -105,7 +105,11 @@ class _DonationPageState extends State<DonationPage> {
                     is_philanthropist
                         ? _buildAddEventButton(context)
                         : Container(),
-                    _eventsList(context,'Sự kiện bạn đã tạo', myEvents, true),
+                    is_philanthropist
+                        ? _eventsList(
+                            context, 'Sự kiện bạn đã tạo', myEvents, true)
+                        : Container(),
+
                     _eventsList(context, "Sự kiện", events, false),
                   ],
                 ),
@@ -128,7 +132,8 @@ class _DonationPageState extends State<DonationPage> {
     );
   }
 
-  Widget _eventsList(BuildContext context,String title, List<MyEvent> events, bool myEvent) {
+  Widget _eventsList(
+      BuildContext context, String title, List<MyEvent> events, bool myEvent) {
     return Container(
       padding: EdgeInsets.only(bottom: 20),
       child: Column(
@@ -150,7 +155,8 @@ class _DonationPageState extends State<DonationPage> {
               InkWell(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => SeeAllDonationEvents(myEvent: myEvent)));
+                      builder: (context) =>
+                          SeeAllDonationEvents(myEvent: myEvent)));
                 },
                 child: Text(
                   'Xem thêm',

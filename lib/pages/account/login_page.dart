@@ -51,6 +51,15 @@ class _LoginPageState extends State<LoginPage> {
             child: Stack(
               children: [
                 Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Image.asset(
+                    'assets/images/Group 674.png',
+                    width: 900,
+                  ),
+                ),
+                Positioned(
                   child: GestureDetector(
                       onTap: () {
                         navigateToStartScreen(context);
@@ -73,15 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                     loginbtnContainer(context)
                   ],
                 ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Image.asset(
-                    'assets/images/Group 674.png',
-                    width: 900,
-                  ),
-                )
+
               ],
             )),
       ),

@@ -88,12 +88,12 @@ class _AddProductPageState extends State<AddProductPage> {
     return Container(
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-      decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
+      decoration: BoxDecoration(color: Colors.black),
       child: Text(
         'Tiếp theo',
         textAlign: TextAlign.center,
         style: TextStyle(
-          color: Color(0xFF949494),
+          color: Colors.white,
           fontSize: 18,
           fontFamily: 'Roboto',
           fontWeight: FontWeight.w700,

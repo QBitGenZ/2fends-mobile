@@ -15,8 +15,9 @@ class HorizontalList extends StatelessWidget {
   final String title;
   final List<Product> products;
   late double screenWidth;
+  bool? canEdit = false;
 
-  HorizontalList({Key? key, required this.title, required this.products})
+  HorizontalList({Key? key, required this.title, required this.products, this.canEdit})
       : super(key: key);
 
   @override

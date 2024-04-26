@@ -66,26 +66,16 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
           child: Column(
             children: [
               _buildRevenue(),
-              SizedBox(height: 30,),
+              SizedBox(
+                height: 30,
+              ),
               _buildAddProduct(),
-              SizedBox(height: 30,),
-              // Container(
-              //   alignment: Alignment.centerLeft,
-              //   child: Text(
-              //     'Sản phẩm chưa bán',
-              //     style: TextStyle(
-              //       color: Colors.black,
-              //       fontSize: 18,
-              //       fontFamily: 'Roboto',
-              //       fontWeight: FontWeight.w700,
-              //       height: 0,
-              //     ),
-              //   ),
-              // ),
-              // SizedBox(height: 15,),
+              SizedBox(
+                height: 30,
+              ),
               Container(
                 child: FutureBuilder(
-                    future:  ProductRequest.getMyProducts(),
+                    future: ProductRequest.getMyProducts(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
@@ -94,26 +84,18 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
                         return Text('Đã xảy ra lỗi: ${snapshot.error}');
                       }
                       var products = snapshot.data;
-                      return HorizontalList(title: 'Sản phẩm chưa bán', products: products ?? []);
+                      List<Product> inventoryProducts = [];
+                      inventoryProducts = products!.where((product) => product.quantity != product.sold).toList();
+                      if (inventoryProducts!.isEmpty) return Container();
+                      return HorizontalList(
+                          title: 'Sản phẩm còn lại',
+                          products: inventoryProducts ?? []);
                     }),
               ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Sản phẩm đã bán',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w700,
-                    height: 0,
-                  ),
-                ),
-              ),
-              SizedBox(height: 15,),
+              const SizedBox(height: 10,),
               Container(
                 child: FutureBuilder(
-                    future:  ProductRequest.getProducts(),
+                    future: ProductRequest.getMyProducts(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
@@ -122,23 +104,19 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
                         return Text('Đã xảy ra lỗi: ${snapshot.error}');
                       }
                       var products = snapshot.data;
-                      return _cardItem(products![0]);
+                      List<Product> soldOutProducts = [];
+                      soldOutProducts = products!.where((product) => product.quantity == product.sold).toList();
+                      if (soldOutProducts.isEmpty) return Container();
+                      return HorizontalList(
+                          title: "Sản phẩm đã bán",
+                          products: soldOutProducts ?? []);
                     }),
               ),
-
-
-
-
-
-
-
-
             ],
           ),
         ),
       ),
     );
-
   }
 
   Container _buildRevenue() {
@@ -153,7 +131,8 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
         children: [
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -170,22 +149,21 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
                   SizedBox(
                     height: 5,
                   ),
-                  FutureBuilder(future: ProductRequest.getRevenue(), builder: (context, snapshot) {
-                    return Text(
-                      snapshot.data.toString() + ' VND',
-                      style: TextStyle(
-                        color: Color(0xFF161414),
-                        fontSize: 32,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w700,
-                        height: 0,
-                      ),
-                    );
-                  }
-                  ),
-
-
-
+                  FutureBuilder(
+                      future: ProductRequest.getRevenue(),
+                      builder: (context, snapshot) {
+                        var price = snapshot.data ?? 0;
+                        return Text(
+                          '$price VND',
+                          style: TextStyle(
+                            color: Color(0xFF161414),
+                            fontSize: 32,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w700,
+                            height: 0,
+                          ),
+                        );
+                      }),
                 ],
               ),
             ),
@@ -197,8 +175,7 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
               color: Color(0xFF00DF74),
               icon: Icon(Icons.arrow_forward_ios),
               style: const ButtonStyle(
-                backgroundColor:
-                MaterialStatePropertyAll<Color>(Colors.black),
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.black),
               ),
             ),
           )
@@ -206,9 +183,13 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
       ),
     );
   }
+
   Widget _buildAddProduct() {
     return InkWell(
-      onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductPage()));},
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => AddProductPage()));
+      },
       child: Container(
         decoration: ShapeDecoration(
           color: Color(0xFF0665F3),
@@ -237,12 +218,17 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
             Padding(
               padding: const EdgeInsets.only(right: 10.0),
               child: IconButton.filled(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductPage()));},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddProductPage()));
+                },
                 icon: Icon(Icons.arrow_forward_ios),
                 color: Colors.white,
                 style: const ButtonStyle(
                   backgroundColor:
-                  MaterialStatePropertyAll<Color>(Colors.black),
+                      MaterialStatePropertyAll<Color>(Colors.black),
                 ),
               ),
             )
@@ -253,7 +239,6 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
   }
 
   Widget _cardItem(Product product) {
-
     return Container(
       child: Stack(
         children: [
@@ -261,12 +246,13 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
             elevation: 50,
             padding: EdgeInsets.all(8),
             backgroundColor: Colors.greenAccent[100],
-
-            label: Text('Đã bán', style: TextStyle(fontSize: 20),), ),
+            label: Text(
+              'Đã bán',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
           // ProductItem(product: product),
-
         ],
-
       ),
     );
   }
@@ -282,16 +268,16 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
       centerTitle: true,
       title: title != null
           ? Text(
-        title ?? '',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 20,
-          fontFamily: 'Roboto',
-          fontWeight: FontWeight.w500,
-          height: 0,
-        ),
-      )
+              title ?? '',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
+            )
           : const SizedBox(),
     );
   }

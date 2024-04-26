@@ -79,6 +79,32 @@ class EventRequest {
     }
   }
 
+  static Future<bool> updateEvent(MyEvent event, XFile src) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      File file = File(src.path);
+      final List<int> imageBytes = await file.readAsBytes();
+      final req = await http.MultipartRequest("PUT", Uri.parse('${URLS}${event.id}/'));
+      req.headers["Authorization"] = "Bearer $tokenString";
+      req.files.add(http.MultipartFile(
+          'image', http.ByteStream.fromBytes(imageBytes), imageBytes.length,
+          filename: src.name));
+      req.fields['name'] = event.name.toString();
+      req.fields['description'] = event.description.toString();
+      req.fields['beginAt'] = event.beginAt.toString();
+      req.fields['endAt'] = event.endAt.toString();
+      //TODO: chon san phammm can quyen gop
+      var res = await req.send();
+      if (res.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
+
   static Future<bool> addDonationProduct(
       int quantity, String productID, String eventID) async {
     try {

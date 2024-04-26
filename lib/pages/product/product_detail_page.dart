@@ -8,6 +8,8 @@ import '../../constants/navbar.dart';
 import '../../constants/recomment_product.dart';
 import '../../models/cart_item.dart';
 import '../../models/product_image.dart';
+import '../../models/user.dart';
+import '../../networks/user_request.dart';
 import '../../widgets/navbar.dart';
 import '../index.dart';
 import 'cart_page.dart';
@@ -37,8 +39,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   void initState() {
     super.initState();
-    selectedTitle = navbar[0].title;
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +168,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 ),
                                 Container(
                                   child: Text(
-                                    widget.product.description.toString(),
+                                    widget.product.description ?? '',
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,

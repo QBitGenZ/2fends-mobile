@@ -12,25 +12,26 @@ import '../../models/product_type.dart';
 import '../../networks/product_request.dart';
 import '../index.dart';
 
-class CreateDonationEventPage extends StatefulWidget {
-  const CreateDonationEventPage({super.key});
+class EditDonationEventPage extends StatefulWidget {
+  final MyEvent event;
+  const EditDonationEventPage({super.key, required this.event});
 
   @override
-  State<CreateDonationEventPage> createState() =>
-      _CreateDonationEventPageState();
+  State<EditDonationEventPage> createState() =>
+      _EditDonationEventPageState();
 }
 
-class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
+class _EditDonationEventPageState extends State<EditDonationEventPage> {
   late double screenHeight;
   late double screenWidth;
   var _page;
   late bool isLoading = true;
   bool _eventSubmitted = false;
-  final TextEditingController _eventNameController = TextEditingController();
-  late DateTime _eventStartTimeController = DateTime.now();
-  late DateTime _eventEndTimeController = DateTime.now();
-  final TextEditingController _eventDescriptionController =
-      TextEditingController();
+  late TextEditingController _eventNameController = TextEditingController(text: widget.event.name.toString());
+  late DateTime _eventStartTimeController = DateTime.parse(widget.event.beginAt.toString());
+  late DateTime _eventEndTimeController = DateTime.parse(widget.event.endAt.toString());
+  late TextEditingController _eventDescriptionController =
+  TextEditingController(text: widget.event.description.toString());
   late List<String> _listProductTypeController;
   late XFile? images = null;
 
@@ -41,9 +42,12 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
     _listProductTypeController = [];
   }
 
+  // void _initController
 
-  Future<bool> addEvent() async {
+
+  Future<bool> updateEvent() async {
     var event = MyEvent(
+      id: widget.event.id,
       name: _eventNameController.text,
       description: _eventDescriptionController.text,
       beginAt: DateFormat("yyyy-MM-dd").format(_eventStartTimeController),
@@ -55,11 +59,11 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
         _eventSubmitted = true;
       });
       try {
-        final bool success = await EventRequest.addEvent(event, images!);
+        final bool success = await EventRequest.updateEvent(event, images!);
         if (success) {
-         return true;
+          return true;
         } else {
-         return false;
+          return false;
         }
       } catch (e) {
         throw Exception(e);
@@ -109,7 +113,7 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
               Expanded(
                 child: Padding(
                   padding:
-                      const EdgeInsets.only(left: 20.0, right: 20.0, top: 20),
+                  const EdgeInsets.only(left: 20.0, right: 20.0, top: 20),
                   child: render(),
                 ),
               ),
@@ -142,7 +146,7 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
     }
     if (_page == 4) {
       return FutureBuilder<bool>(
-        future: addEvent(),
+        future: updateEvent(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: Container(width: 50, height: 50,child: CircularProgressIndicator()));
@@ -221,12 +225,12 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
           decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Color(0xFF999999),
-              )),
+                    color: Color(0xFF999999),
+                  )),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Color(0xFF999999),
-              ))),
+                    color: Color(0xFF999999),
+                  ))),
         ),
         const SizedBox(
           height: 30,
@@ -258,12 +262,12 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
               ),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Color(0xFF999999),
-              )),
+                    color: Color(0xFF999999),
+                  )),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Color(0xFF999999),
-              ))),
+                    color: Color(0xFF999999),
+                  ))),
         ),
         const SizedBox(
           height: 30,
@@ -295,12 +299,12 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
               ),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Color(0xFF999999),
-              )),
+                    color: Color(0xFF999999),
+                  )),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Color(0xFF999999),
-              ))),
+                    color: Color(0xFF999999),
+                  ))),
         ),
         const SizedBox(
           height: 30,
@@ -325,12 +329,12 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
           decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Color(0xFF999999),
-              )),
+                    color: Color(0xFF999999),
+                  )),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Color(0xFF999999),
-              ))),
+                    color: Color(0xFF999999),
+                  ))),
         ),
       ],
     );
@@ -415,9 +419,9 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
           Expanded(
               child: images != null
                   ? Image.file(
-                      File(images!.path),
-                      fit: BoxFit.cover,
-                    )
+                File(images!.path),
+                fit: BoxFit.cover,
+              )
                   : Container()),
         ],
       ),
@@ -519,7 +523,7 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate:
-          isStartTime ? _eventStartTimeController : _eventEndTimeController,
+      isStartTime ? _eventStartTimeController : _eventEndTimeController,
       firstDate: DateTime(1900),
       lastDate: DateTime.now().add(Duration(days: 360)),
     );
@@ -538,7 +542,7 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
   void getImage() async {
     final ImagePicker imagePicker = ImagePicker();
     final XFile? selectedImages =
-        await imagePicker.pickImage(source: ImageSource.gallery);
+    await imagePicker.pickImage(source: ImageSource.gallery);
     if (selectedImages != null) {
       images = selectedImages;
     }
@@ -557,16 +561,16 @@ class _CreateDonationEventPageState extends State<CreateDonationEventPage> {
       centerTitle: true,
       title: title != null
           ? Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w500,
-                height: 0,
-              ),
-            )
+        title,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontFamily: 'Roboto',
+          fontWeight: FontWeight.w500,
+          height: 0,
+        ),
+      )
           : const SizedBox(),
     );
   }

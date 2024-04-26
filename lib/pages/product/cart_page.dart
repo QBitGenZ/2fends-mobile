@@ -263,7 +263,7 @@ class _CartPageState extends State<CartPage> {
                 Container(
                   margin: EdgeInsets.fromLTRB(0.045 * screenWidth, 0, 150, 0),
                   child: Text(
-                    'Mã giảm giá',
+                    'Quỹ từ thiện',
                     style: TextStyle(
                       color: Color(0xFF858585),
                       fontSize: 15,
@@ -275,7 +275,7 @@ class _CartPageState extends State<CartPage> {
                 ),
                 Container(
                   child: Text(
-                    formatPrice(120),
+                    formatPrice(total*10/100),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
