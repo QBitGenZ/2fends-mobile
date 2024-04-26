@@ -34,7 +34,7 @@ class _SignupPageState extends State<SignupPage> {
 
   String _selectedGender = 'Nữ';
 
-  String _selctedPhilanthropist = "Người dùng";
+  bool _selectedPhilanthropist = false;
 
   @override
   void initState() {
@@ -56,7 +56,6 @@ class _SignupPageState extends State<SignupPage> {
             color: Color(0xFFEEE8DA),
             child: Stack(
               children: [
-
                 ListView(
                   children: [
                     titleContainer(),
@@ -170,49 +169,26 @@ class _SignupPageState extends State<SignupPage> {
           color: Colors.white,
         ),
         padding: EdgeInsets.only(left: 13),
-        child: Column(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            Text("Nhà từ thiện"),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: const Text('Không'),
-                    value: 'false',
-                    groupValue: _selctedPhilanthropist,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selctedPhilanthropist = value!;
-                      });
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: const Text("Phải"),
-                    value: 'true',
-                    groupValue: _selctedPhilanthropist,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selctedPhilanthropist = value!;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
+            Expanded(
+                child: CheckboxListTile(
+              title: const Text("Nhà từ thiện"),
+              value: _selectedPhilanthropist,
+              onChanged: (bool? value) {
+                setState(() {
+                  _selectedPhilanthropist = value!;
+                });
+              },
+            )),
           ],
         ),
       ),
     );
   }
-
 
   Container userContainer() {
     return Container(
@@ -469,7 +445,7 @@ class _SignupPageState extends State<SignupPage> {
                 _fullNameController.text,
                 _selectedDate,
                 _selectedGender.toString(),
-                _selctedPhilanthropist.toString(),
+                _selectedPhilanthropist.toString(),
                 _emailController.text,
                 _phoneController.text);
             if (success)
