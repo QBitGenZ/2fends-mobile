@@ -31,7 +31,7 @@ class UserRequest {
   }
 
   static Future<bool> signup(String username, String password, String fullname,
-      DateTime birthday, String gender, String email, String phone) async {
+      DateTime birthday, String gender, String philanthropist, String email, String phone) async {
     try {
       String formattedBirthday = DateFormat('yyyy-MM-dd').format(birthday);
       final res = await http.post(
@@ -43,7 +43,8 @@ class UserRequest {
           'birthday': formattedBirthday, // Convert DateTime to string
           'is_female': (gender == 'Nữ').toString(),
           'phone': phone,
-          'email': email
+          'email': email,
+          'is_philanthropist': philanthropist.toString()
         },
       );
 

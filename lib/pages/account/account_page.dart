@@ -45,7 +45,7 @@ class _AccountPageState extends State<AccountPage> {
       backgroundColor: Color(0xFFEEE8DA),
       appBar: headerForDetail("Tài khoản"),
       body: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: AlwaysScrollableScrollPhysics(),
         child: Container(
           width: screenWidth,
           height: screenHeight,
