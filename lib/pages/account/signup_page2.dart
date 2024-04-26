@@ -34,6 +34,8 @@ class _SignupPageState extends State<SignupPage> {
 
   String _selectedGender = 'Nữ';
 
+  String _selctedPhilanthropist = "Người dùng";
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +66,7 @@ class _SignupPageState extends State<SignupPage> {
                     nameContainer(),
                     birthdayContainer(),
                     genderContainerState(),
+                    philanthropistContainerState(),
                     emailContainer(),
                     phoneContainer(),
                     signinbtnContainer()
@@ -117,40 +120,99 @@ class _SignupPageState extends State<SignupPage> {
           color: Colors.white,
         ),
         padding: EdgeInsets.only(left: 13),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
           children: [
-            Expanded(
-              child: RadioListTile<String>(
-                title: const Text('Nam'),
-                value: 'Nam',
-                groupValue: _selectedGender,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedGender = value!;
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: RadioListTile<String>(
-                title: const Text('Nữ'),
-                value: 'Nữ',
-                groupValue: _selectedGender,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedGender = value!;
-                  });
-                },
-              ),
+            Text("Giới tính"),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: RadioListTile<String>(
+                    title: const Text('Nam'),
+                    value: 'Nam',
+                    groupValue: _selectedGender,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _selectedGender = value!;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: RadioListTile<String>(
+                    title: const Text('Nữ'),
+                    value: 'Nữ',
+                    groupValue: _selectedGender,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _selectedGender = value!;
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget philanthropistContainerState() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 40.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        padding: EdgeInsets.only(left: 13),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Nhà từ thiện"),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+
+                Expanded(
+                  child: RadioListTile<String>(
+                    title: const Text('Không'),
+                    value: 'false',
+                    groupValue: _selctedPhilanthropist,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _selctedPhilanthropist = value!;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: RadioListTile<String>(
+                    title: const Text("Phải"),
+                    value: 'true',
+                    groupValue: _selctedPhilanthropist,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _selctedPhilanthropist = value!;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 
   Container userContainer() {
     return Container(
@@ -407,6 +469,7 @@ class _SignupPageState extends State<SignupPage> {
                 _fullNameController.text,
                 _selectedDate,
                 _selectedGender.toString(),
+                _selctedPhilanthropist.toString(),
                 _emailController.text,
                 _phoneController.text);
             if (success)
