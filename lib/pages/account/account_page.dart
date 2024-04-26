@@ -1,3 +1,4 @@
+import 'package:fends_mobile/constants/recomment_product.dart';
 import 'package:fends_mobile/networks/user_request.dart';
 import 'package:fends_mobile/pages/account/address_page.dart';
 import 'package:fends_mobile/pages/account/login_page.dart';
@@ -43,29 +44,41 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       backgroundColor: Color(0xFFEEE8DA),
       appBar: headerForDetail("Tài khoản"),
-      body: Column(children: [
-        Expanded(
-            child: Container(
+      body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        child: Container(
           width: screenWidth,
-          height: screenHeight * 83 / 100,
-          decoration: ShapeDecoration(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-              ),
-            ),
-          ),
-          child: isLoading
-              ? Center(
+          height: screenHeight,
+          child: Container(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+              Expanded(
                   child: Container(
-                      height: 50,
-                      width: 50,
-                      child: CircularProgressIndicator()))
-              : _buildInfoMenu(),
-        ))
-      ]),
+                // width: screenWidth,
+                // height: screenHeight * 83 / 100,
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                ),
+                child: isLoading
+                    ? Center(
+                        child: Container(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator()))
+                    : _buildInfoMenu(),
+              ))
+            ]),
+          ),
+        ),
+      ),
     );
   }
 
@@ -212,7 +225,7 @@ class _AccountPageState extends State<AccountPage> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 40),
       decoration: ShapeDecoration(
-        color: Color(0xFFEEE8DA),
+        color: Color(0x75EEE8DA),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -223,9 +236,9 @@ class _AccountPageState extends State<AccountPage> {
             child: Container(
               alignment: Alignment.center,
               padding:
-              const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
+                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     'Tổng số tiền quyên góp',
@@ -245,7 +258,8 @@ class _AccountPageState extends State<AccountPage> {
                       builder: (context, snapshot) {
                         var fund = snapshot.data ?? 0;
                         return Text(
-                          '$fund VND',
+                          '${formatPrice(fund.toDouble())}',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Color(0xFF161414),
                             fontSize: 32,

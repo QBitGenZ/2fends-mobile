@@ -158,7 +158,3 @@ class ProductItem extends StatelessWidget {
     );
   }
 }
-
-String formatPrice(double price) {
-  return '${price.toInt()} VND'; // You can implement your own price formatting logic here
-}
