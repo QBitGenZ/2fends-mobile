@@ -56,7 +56,7 @@ class _EditProductPageState extends State<EditProductPage> {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-        appBar: headerForDetail("Đăng bán sản phẩm"),
+        appBar: headerForDetail("Chỉnh sửa sản phẩm"),
         body: Column(
           children: [
             Expanded(

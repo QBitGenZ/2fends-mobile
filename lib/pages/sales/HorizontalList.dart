@@ -1,4 +1,5 @@
 import 'package:fends_mobile/app_config.dart';
+import 'package:fends_mobile/constants/recomment_product.dart';
 import 'package:fends_mobile/pages/index.dart';
 import 'package:fends_mobile/pages/sales/edit_product_page.dart';
 import 'package:fends_mobile/pages/sales/see_all_product.dart';
@@ -11,14 +12,20 @@ import '../../models/index.dart';
 import '../../models/product.dart';
 import '../product/product_detail_page.dart';
 
-class HorizontalList extends StatelessWidget {
+class HorizontalList extends StatefulWidget {
   final String title;
   final List<Product> products;
-  late double screenWidth;
   bool? canEdit = true;
 
   HorizontalList({Key? key, required this.title, required this.products, this.canEdit = true})
       : super(key: key);
+
+  @override
+  State<HorizontalList> createState() => _HorizontalListState();
+}
+
+class _HorizontalListState extends State<HorizontalList> {
+  late double screenWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +43,7 @@ class HorizontalList extends StatelessWidget {
               children: [
                   Expanded(
                     child: Text(
-                      title,
+                      widget.title,
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -54,7 +61,7 @@ class HorizontalList extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SeeAllProduct()),
+                                SeeAllProduct(canEdit: widget.canEdit!,)),
                       );
                     },
                     child:
@@ -78,10 +85,10 @@ class HorizontalList extends StatelessWidget {
             height: 220,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: products
+              children: widget.products
                   .map((e) => InkWell(
                   onTap: () {
-                    if(canEdit!=null && canEdit!) {
+                    if(widget.canEdit!=null && widget.canEdit!) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -136,7 +143,7 @@ class ProductItem extends StatelessWidget {
           ),
           Center(
             child: Text(
-              product.price.toString(),
+              formatPrice(product.price!),
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 13,
@@ -152,3 +159,6 @@ class ProductItem extends StatelessWidget {
   }
 }
 
+String formatPrice(double price) {
+  return '${price.toInt()} VND'; // You can implement your own price formatting logic here
+}
