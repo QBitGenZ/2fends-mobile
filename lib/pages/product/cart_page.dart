@@ -28,6 +28,26 @@ class _CartPageState extends State<CartPage> {
   late double screenHeight;
   late double screenWidth;
   late List<CartItem> carts;
+  // bool isLoading = true;
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   initData();
+  // }
+  //
+  // Future<List<CartItem>> getCarts() async {
+  //   final cart = await CartRequest.getCarts();
+  //   return cart;
+  // }
+  //
+  // void initData() async {
+  //   carts = await getCarts();
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +75,9 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget list(CartItem cart) {
+  Widget listItem(CartItem cart) {
     return Dismissible(
       key: Key(cart.id.toString()),
-      // background: Container(
-      //   color: Colors.green,
-      //   child: Icon(Icons.add),
-      //   alignment: Alignment.centerLeft,
-      //   padding: EdgeInsets.only(left: 20.0),
-      // ),
       background: Container(
         color: Colors.red,
         child: Icon(Icons.delete),
@@ -72,13 +86,18 @@ class _CartPageState extends State<CartPage> {
       ),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) async {
-        setState(() {});
+
         if (direction == DismissDirection.endToStart) {
           var success = await CartRequest.deleteFromCart(cart.id.toString());
           if (success) {
-            setState(() {});
+            setState(() {
+              // initData();
+            });
           }
         }
+        // setState(() {
+        //
+        // });
       },
       child: ListTile(
         title: InkWell(
@@ -89,7 +108,7 @@ class _CartPageState extends State<CartPage> {
               MaterialPageRoute(
                   builder: (context) => ProductDetailPage(
                       product: cart.product ??
-                          new Product())), // Thay đổi index bằng vị trí sản phẩm bạn muốn truyền vào
+                          new Product())),
             );
           },
           child: Container(
@@ -209,7 +228,9 @@ class _CartPageState extends State<CartPage> {
                             ),
                             InkWell(
                                 onTap: () async {
-                                  if (cart.quantity! < (cart.product!.quantity! - cart.product!.sold!.toInt())) {
+                                  if (cart.quantity! <
+                                      (cart.product!.quantity! -
+                                          cart.product!.sold!.toInt())) {
                                     var success = await CartRequest.addToCart(
                                         cart.product!.id.toString(), '1');
                                     if (success) {
@@ -226,7 +247,16 @@ class _CartPageState extends State<CartPage> {
                             ),
                           ],
                         ),
-                      )
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      cart.product!.quantity! - cart.product!.sold! == 0
+                          ? Text(
+                              "Sản phẩm đã hết",
+                              style: TextStyle(color: Colors.red, fontSize: 16),
+                            )
+                          : Container()
                     ],
                   ),
                 )
@@ -248,92 +278,17 @@ class _CartPageState extends State<CartPage> {
   Container payContainer(List<CartItem> carts) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
-    double total = totalPrice(carts);
+    double total = carts.isNotEmpty ? totalPrice(carts) : 0;
 
     return Container(
       decoration: BoxDecoration(color: Color(0xFFFAFAFA)),
       width: screenWidth,
-      height: screenHeight * 0.3125,
+      // height: screenHeight * 0.3125,
       child: Column(
         children: [
-          Container(
-            height: screenHeight * 0.075,
-            child: Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(0.045 * screenWidth, 0, 150, 0),
-                  child: Text(
-                    'Quỹ từ thiện',
-                    style: TextStyle(
-                      color: Color(0xFF858585),
-                      fontSize: 15,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    formatPrice(total*10/100),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-            width: screenWidth,
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                side: BorderSide(
-                  width: 0.50,
-                  strokeAlign: BorderSide.strokeAlignCenter,
-                  color: Color(0xFFC7C7C7),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            height: screenHeight * 0.075,
-            child: Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(0.045 * screenWidth, 0, 125, 0),
-                  child: Text(
-                    'Tổng thanh toán',
-                    style: TextStyle(
-                      color: Color(0xFF858585),
-                      fontSize: 15,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    formatPrice(total),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w500,
-                      height: 0,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
+          _buildTotalRow('Quỹ từ thiện', total * 0.1),
+          _buildTotalRow("Tổng giá trị sản phẩm", total),
+          _buildTotalRow('Tổng đơn hàng', total * 1.1),
           Container(
             width: screenWidth,
             decoration: ShapeDecoration(
@@ -347,9 +302,41 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
           InkWell(
-            onTap: () => {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => PaymentPage()))
+            onTap: (){
+              bool check = true;
+              for (var element in carts) {
+                check = element.product!.quantity != element.product!.sold && check;
+              }
+              if(check) {
+                Navigator.of(context)
+                    .push(
+                    MaterialPageRoute(builder: (context) => PaymentPage()));
+              }
+              else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shadowColor: Colors.grey[300],
+                      alignment: Alignment.center,
+                      content: Text(
+                        "Có sản phẩm đã hết trong giỏ hàng\nVui lòng xóa sản phẩm",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    );
+                  },
+                );
+                Future.delayed(Duration(seconds: 1), () {
+                  Navigator.pop(context);
+                });
+              }
             },
             child: Container(
               margin: EdgeInsets.only(top: 0.04125 * screenHeight),
@@ -375,6 +362,45 @@ class _CartPageState extends State<CartPage> {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Container _buildTotalRow(String title, double total) {
+    return Container(
+      padding: EdgeInsets.only(top: 20, bottom: 20),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 30),
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Color(0xFF858585),
+                  fontSize: 15,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w500,
+                  height: 0,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(right: 30),
+            child: Text(
+              formatPrice(total),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 15,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                height: 0,
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -462,12 +488,11 @@ class _CartPageState extends State<CartPage> {
   AppBar _header([String? title]) {
     return AppBar(
       leading: InkWell(
-        onTap: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => MainPage()));
-        },
-          child: Icon(Icons.arrow_back_ios_new)
-      ),
+          onTap: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => MainPage()));
+          },
+          child: Icon(Icons.arrow_back_ios_new)),
       backgroundColor: Colors.white,
       title: title != null
           ? Text(
@@ -486,42 +511,29 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget _buildCart() {
-    return Column(
-      children: [
-        Expanded(
-          child: FutureBuilder(
-            future: CartRequest.getCarts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Text('Đã xảy ra lỗi: ${snapshot.error}');
-              }
-              carts = snapshot.data!;
-              if (carts!.isNotEmpty)
-                return ListView(children: carts.map((e) => list(e)).toList());
-              else
-                return SizedBox();
-            },
-          ),
-        ),
-        FutureBuilder(
-            future: CartRequest.getCarts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox();
-              }
-              if (snapshot.hasError) {
-                return Text('Đã xảy ra lỗi: ${snapshot.error}');
-              }
-              carts = snapshot.data!;
-              if (carts!.isNotEmpty)
-                return payContainer(carts);
-              else
-                return SizedBox();
-            }),
-      ],
-    );
+    return FutureBuilder(future: CartRequest.getCarts(), builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SizedBox();
+            }
+            if (snapshot.hasError) {
+              return Text('Đã xảy ra lỗi: ${snapshot.error}');
+            }
+            carts = snapshot.data!;
+            if (carts!.isNotEmpty)
+              return Column(
+                children: [
+                  Expanded(child: ListView(children: carts.map((e) => listItem(e)).toList()),),
+                  Container(child: payContainer(carts),)
+                ],
+              );
+            else
+              return Column(
+                children: [
+                  Expanded(child: Container(),),
+                  Container(child: payContainer([]),)
+                ],
+              );
+
+    });
   }
 }

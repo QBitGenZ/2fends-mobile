@@ -11,6 +11,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../app_config.dart';
+import '../../constants/recomment_product.dart';
 import '../../models/address.dart';
 import '../../models/cart_item.dart';
 import '../../models/order.dart';
@@ -75,12 +76,6 @@ class _PaymentPageState extends State<PaymentPage> {
       String? orderId;
       if (order.id != null) {
         orderId = order.id;
-        // carts.map((cart) async {
-        //   await OrderItemRequest.addOrderItem(
-        //       orderId!,
-        //       OrderItem.fromJson(
-        //           {'product': cart.product, 'quantity': cart.quantity}));
-        // });
         for (var cart in carts) {
           await OrderItemRequest.addOrderItem(
             order.id!,
@@ -144,9 +139,10 @@ class _PaymentPageState extends State<PaymentPage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      _totalRow("Giá trị sản phẩm", _totalPrice().toString()),
+                      _totalRow("Quỹ từ thiện", (_totalPrice()*0.1)),
+                      _totalRow("Giá trị sản phẩm", _totalPrice()),
                       // _totalRow("Giá vận chuyển", "0"),
-                      _totalRow("Giá trị đơn hàng", _totalPrice().toString(),
+                      _totalRow("Giá trị đơn hàng",( _totalPrice()*1.1),
                           Colors.black), //TODO: Cộng giá vận chuyển
                       const SizedBox(
                         height: 30,
@@ -271,18 +267,18 @@ class _PaymentPageState extends State<PaymentPage> {
                                           },
                                         ),
                                       ),
-                                      Container(
-                                        child: RadioListTile(
-                                          title: Text("MoMo"),
-                                          groupValue: _paymentMethod,
-                                          value: PaymentMethod.MoMo,
-                                          onChanged: (PaymentMethod? value) {
-                                            setState(() {
-                                              _paymentMethod = value;
-                                            });
-                                          },
-                                        ),
-                                      )
+                                      // Container(
+                                      //   child: RadioListTile(
+                                      //     title: Text("MoMo"),
+                                      //     groupValue: _paymentMethod,
+                                      //     value: PaymentMethod.MoMo,
+                                      //     onChanged: (PaymentMethod? value) {
+                                      //       setState(() {
+                                      //         _paymentMethod = value;
+                                      //       });
+                                      //     },
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 ),
@@ -485,9 +481,7 @@ class _PaymentPageState extends State<PaymentPage> {
             )),
             Expanded(
               child: Text(
-                (cartItem.product!.price! * cartItem.quantity!.toDouble())
-                        .toString() +
-                    " vnd",
+                formatPrice(cartItem.product!.price! * cartItem.quantity!.toDouble()),
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   color: Colors.black,
@@ -504,7 +498,7 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget _totalRow(String title, String value, [Color? color]) {
+  Widget _totalRow(String title, double value, [Color? color]) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Row(
@@ -522,7 +516,7 @@ class _PaymentPageState extends State<PaymentPage> {
             ),
           ),
           Text(
-            value + ' vnd',
+            formatPrice(value),
             textAlign: TextAlign.right,
             style: TextStyle(
               color: color ?? Color(0xFF767676),

@@ -150,16 +150,17 @@ class ProductRequest {
     }
   }
 
-  static Future<int> getRevenue() async {
+  static Future<double> getRevenue() async {
     try {
       final tokenString = AppConfig.ACCESS_TOKEN;
       final res = await http.get(
-          Uri.parse(AppConfig.SERVER_API_URL + '/statistics/' + "orders/"),
+          Uri.parse('${AppConfig.SERVER_API_URL}/products/myproducts/revenue/'),
           headers: {"Authorization": "Bearer $tokenString"});
-      var revenue = 0;
+      var revenue = 0.0;
       final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
       if (res.statusCode == 200) {
-        //TODO: get api
+        revenue = responseBody['data'];
+        print(responseBody);
         return revenue;
       } else {
         throw Exception(responseBody);
