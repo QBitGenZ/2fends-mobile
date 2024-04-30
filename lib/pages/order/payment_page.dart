@@ -18,9 +18,10 @@ import '../../models/order.dart';
 import '../../models/order_item.dart';
 import '../../models/user.dart';
 import '../../networks/user_request.dart';
+import '../../utils/pay.dart';
 import '../index.dart';
 
-enum PaymentMethod { COD, MoMo }
+enum PaymentMethod { COD, VNPay }
 
 class PaymentPage extends StatefulWidget {
   @override
@@ -68,7 +69,7 @@ class _PaymentPageState extends State<PaymentPage> {
     });
   }
 
-  Future<bool> _order() async {
+  Future<String> _order() async {
     try {
       String payment = _paymentMethod.toString().split('.').last;
       Order order = await OrderRequest.addOrder(Order.fromJson(
@@ -85,10 +86,9 @@ class _PaymentPageState extends State<PaymentPage> {
             }),
           );
         }
-        print("true");
-        return true;
+        return order.id!;
       }
-      return false;
+      return "false";
     } on Exception catch (e) {
       // return false;
       throw Exception(e);
@@ -139,10 +139,10 @@ class _PaymentPageState extends State<PaymentPage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      _totalRow("Quỹ từ thiện", (_totalPrice()*0.1)),
+                      _totalRow("Quỹ từ thiện", (_totalPrice() * 0.1)),
                       _totalRow("Giá trị sản phẩm", _totalPrice()),
                       // _totalRow("Giá vận chuyển", "0"),
-                      _totalRow("Giá trị đơn hàng",( _totalPrice()*1.1),
+                      _totalRow("Giá trị đơn hàng", (_totalPrice() * 1.1),
                           Colors.black), //TODO: Cộng giá vận chuyển
                       const SizedBox(
                         height: 30,
@@ -267,18 +267,18 @@ class _PaymentPageState extends State<PaymentPage> {
                                           },
                                         ),
                                       ),
-                                      // Container(
-                                      //   child: RadioListTile(
-                                      //     title: Text("MoMo"),
-                                      //     groupValue: _paymentMethod,
-                                      //     value: PaymentMethod.MoMo,
-                                      //     onChanged: (PaymentMethod? value) {
-                                      //       setState(() {
-                                      //         _paymentMethod = value;
-                                      //       });
-                                      //     },
-                                      //   ),
-                                      // )
+                                      Container(
+                                        child: RadioListTile(
+                                          title: Text("VNPay"),
+                                          groupValue: _paymentMethod,
+                                          value: PaymentMethod.VNPay,
+                                          onChanged: (PaymentMethod? value) {
+                                            setState(() {
+                                              _paymentMethod = value;
+                                            });
+                                          },
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
@@ -481,7 +481,8 @@ class _PaymentPageState extends State<PaymentPage> {
             )),
             Expanded(
               child: Text(
-                formatPrice(cartItem.product!.price! * cartItem.quantity!.toDouble()),
+                formatPrice(
+                    cartItem.product!.price! * cartItem.quantity!.toDouble()),
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   color: Colors.black,
@@ -534,63 +535,73 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget _submitButton(String title, BuildContext context) {
     return InkWell(
       onTap: () async {
-
         if (isAddressSelected) {
-          var success = await _order();
-          if (success) {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  shadowColor: Colors.grey[300],
-                  alignment: Alignment.center,
-                  content: Text(
-                    "Đặt hàng thành công",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 13,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
+          // print(_paymentMethod == PaymentMethod.COD);
+          if (_paymentMethod == PaymentMethod.COD) {
+            var success = await _order();
+            if (success != "false") {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shadowColor: Colors.grey[300],
+                    alignment: Alignment.center,
+                    content: Text(
+                      "Đặt hàng thành công",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w400,
+                        height: 0,
+                      ),
                     ),
-                  ),
-                );
-              },
-            );
-            Future.delayed(Duration(seconds: 1), () {
-              Navigator.of(context).pop(); // Tự động đóng AlertDialog sau 2 giây
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => MainPage()),
+                  );
+                },
               );
-            });
-          } else {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  shadowColor: Colors.grey[300],
-                  alignment: Alignment.center,
-                  content: Text(
-                    "Đặt hàng không thành công",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 13,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                    ),
-                  ),
+              Future.delayed(Duration(seconds: 1), () {
+                Navigator.of(context)
+                    .pop(); // Tự động đóng AlertDialog sau 2 giây
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MainPage()),
                 );
-              },
-            );
-            Future.delayed(Duration(seconds: 1), () {
-              Navigator.of(context).pop();
-            });
+              });
+            }
+            else {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shadowColor: Colors.grey[300],
+                    alignment: Alignment.center,
+                    content: Text(
+                      "Đặt hàng không thành công",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w400,
+                        height: 0,
+                      ),
+                    ),
+                  );
+                },
+              );
+              Future.delayed(Duration(seconds: 1), () {
+                Navigator.of(context).pop();
+              });
+            }
+          } else {
+            var orderID = await _order();
+            print('1' + orderID);
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+                  PayScreen(money: (_totalPrice() * 1.1).toInt().toString(), orderID: orderID,),
+            ));
           }
-        }
-        else{
+        } else {
           showDialog(
             context: context,
             builder: (BuildContext context) {

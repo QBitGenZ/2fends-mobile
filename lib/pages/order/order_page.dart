@@ -185,9 +185,9 @@ class _OrderPageState extends State<OrderPage> {
 
   Widget _orderListItem(Order order) {
     if (order.items != null && order.items!.isNotEmpty) {
-      final productImage = order.items![0].product!.productImage?[0].src;
-      final imageUrl = productImage != null && productImage.isNotEmpty
-          ? "${AppConfig.IMAGE_API_URL}/${productImage.toString()}"
+      // final productImage = order.items?[0].product!.productImage?[0].src;
+      final imageUrl = order.items?[0].product!.productImage != null && order.items![0].product!.productImage!.isNotEmpty
+          ? "${AppConfig.IMAGE_API_URL}/${order.items?[0].product!.productImage?[0].src.toString()}"
           : "https://bizweb.dktcdn.net/thumb/1024x1024/100/329/681/products/3bf3d1e0-688f-4d6b-8b0a-60e9f0a1bb21.jpg?v=1679480250493";
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),

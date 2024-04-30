@@ -124,6 +124,32 @@ class ProductRequest {
     }
   }
 
+  static Future<Product> updateProduct(Product product) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.put(Uri.parse('$URLS${product.id}/'), headers: {
+        "Authorization": "Bearer $tokenString"
+      }, body: {
+        'name': product.name.toString(),
+        'price': product.price.toString(),
+        'quantity': product.quantity.toString(),
+        'product_type': product.productType.toString(),
+        'size': product.size.toString(),
+        'description': product.description.toString(),
+        'degree': product.degree.toString(),
+        'gender': product.gender.toString()
+      });
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      if (res.statusCode == 201) {
+        return Product.fromJson(responseBody['data']);
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
+
   static Future<bool> addProductImage(
       String alt, String productID, XFile src) async {
     try {
@@ -149,6 +175,8 @@ class ProductRequest {
       throw Exception(e);
     }
   }
+
+
 
   static Future<double> getRevenue() async {
     try {
