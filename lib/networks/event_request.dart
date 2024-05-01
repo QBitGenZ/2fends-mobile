@@ -8,6 +8,8 @@ import '../models/donation_product.dart';
 import '../models/event.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/product.dart';
+
 class EventRequest {
   static const String URLS = AppConfig.SERVER_API_URL + '/events/';
 
@@ -118,7 +120,7 @@ class EventRequest {
         'event': eventID.toString()
       });
       final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
-
+      print(responseBody);
       if (res.statusCode == 201) {
         return true;
       } else {

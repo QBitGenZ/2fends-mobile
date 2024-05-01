@@ -124,7 +124,8 @@ class _DonationItemListState extends State<DonationItemList> {
   late bool isLoading = true;
 
   Future<void> getProduct() async {
-    product = await ProductRequest.getProductByID(widget.donationProduct.product.toString());
+    // product = await ProductRequest.getProductByID(widget.donationProduct.product!.id.toString());
+    product = widget.donationProduct.product!;
     setState(() {
       isLoading = false;
     });

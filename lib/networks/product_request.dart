@@ -114,6 +114,7 @@ class ProductRequest {
         'gender': product.gender.toString()
       });
       final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      print(responseBody);
       if (res.statusCode == 201) {
         return Product.fromJson(responseBody['data']);
       } else {
