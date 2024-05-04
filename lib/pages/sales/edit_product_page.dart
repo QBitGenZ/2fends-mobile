@@ -191,6 +191,7 @@ class _EditProductPageState extends State<EditProductPage> {
     try {
       print(_sizeController.join(', ').toString());
       Product product = Product(
+        id: widget.product.id,
           name: _nameController.text.toString(),
           quantity: int.parse(_quantityController.text.toString()),
           price: double.parse(_priceController.text.toString()),
@@ -200,7 +201,7 @@ class _EditProductPageState extends State<EditProductPage> {
           gender: _genderController.toString(),
           degree: _degreeController.toString()
       );
-      var success = await ProductRequest.addProduct(product);
+      var success = await ProductRequest.updateProduct(product);
       _productId = success.id!;
       // print(_productId);
     } catch (e) {

@@ -196,14 +196,45 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 height: screenHeight * 50 / 830,
                 child: Row(
                   children: [
-                    InkWell(
-                      onTap: () async {
-                        if (widget.product.quantity! -
-                                widget.product.sold!.toInt() >
-                            0) {
-                          bool success = await CartRequest.addToCart(
-                              widget.product.id.toString(), "1");
-                          if (success) {
+                    Expanded(
+                      child: InkWell(
+                        onTap: () async {
+                          if (widget.product.quantity! -
+                                  widget.product.sold!.toInt() >
+                              0) {
+                            bool success = await CartRequest.addToCart(
+                                widget.product.id.toString(), "1");
+                            if (success) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shadowColor: Colors.grey[300],
+                                    alignment: Alignment.center,
+                                    content: Text(
+                                      "Bạn đã chọn ${widget.product.name}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w400,
+                                        height: 0,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                              Future.delayed(Duration(seconds: 1), () {
+                                Navigator.of(context)
+                                    .pop(); // Tự động đóng AlertDialog sau 2 giây
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => CartPage()),
+                                );
+                              });
+                            }
+                          } else {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -211,7 +242,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   shadowColor: Colors.grey[300],
                                   alignment: Alignment.center,
                                   content: Text(
-                                    "Bạn đã chọn ${widget.product.name}",
+                                    "Thêm không thành công",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.black,
@@ -224,80 +255,51 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 );
                               },
                             );
-                            Future.delayed(Duration(seconds: 1), () {
-                              Navigator.of(context)
-                                  .pop(); // Tự động đóng AlertDialog sau 2 giây
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => CartPage()),
-                              );
-                            });
                           }
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                shadowColor: Colors.grey[300],
-                                alignment: Alignment.center,
-                                content: Text(
-                                  "Thêm không thành công",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 13,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        }
-                      },
-                      child: Container(
-                        width: screenWidth * 150 / 360,
-                        alignment: Alignment.center,
-                        height: screenHeight * 30 / 830,
-                        decoration: BoxDecoration(color: Colors.white),
-                        margin: EdgeInsets.fromLTRB(
-                            screenWidth * 17 / 360,
-                            screenHeight * 10 / 830,
-                            screenWidth * 26 / 360,
-                            screenHeight * 10 / 830),
-                        child: Text(
-                          'Thêm vào giỏ hàng',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
+                        },
+                        child: Container(
+                          // width: screenWidth * 150 / 360,
+                          alignment: Alignment.center,
+                          height: screenHeight * 30 / 830,
+                          decoration: BoxDecoration(color: Colors.white),
+                          margin: EdgeInsets.fromLTRB(
+                              screenWidth * 17 / 360,
+                              screenHeight * 10 / 830,
+                              screenWidth * 26 / 360,
+                              screenHeight * 10 / 830),
+                          child: Text(
+                            'Thêm vào giỏ hàng',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 13,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w500,
+                              height: 0,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    Container(
-                      width: screenWidth * 150 / 360,
-                      alignment: Alignment.center,
-                      height: screenHeight * 30 / 830,
-                      decoration: BoxDecoration(color: Colors.black),
-                      margin: EdgeInsets.fromLTRB(0, screenHeight * 10 / 830,
-                          screenWidth * 17 / 360, screenHeight * 10 / 830),
-                      child: Text(
-                        'Mua hàng',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                          height: 0,
-                        ),
-                      ),
-                    )
+                    // Container(
+                    //   width: screenWidth * 150 / 360,
+                    //   alignment: Alignment.center,
+                    //   height: screenHeight * 30 / 830,
+                    //   decoration: BoxDecoration(color: Colors.black),
+                    //   margin: EdgeInsets.fromLTRB(0, screenHeight * 10 / 830,
+                    //       screenWidth * 17 / 360, screenHeight * 10 / 830),
+                    //   child: Text(
+                    //     'Mua hàng',
+                    //     textAlign: TextAlign.center,
+                    //     style: TextStyle(
+                    //       color: Colors.white,
+                    //       fontSize: 13,
+                    //       fontFamily: 'Roboto',
+                    //       fontWeight: FontWeight.w500,
+                    //       height: 0,
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 ),
               ),

@@ -114,6 +114,33 @@ class ProductRequest {
         'gender': product.gender.toString()
       });
       final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
+      print(responseBody);
+      if (res.statusCode == 201) {
+        return Product.fromJson(responseBody['data']);
+      } else {
+        throw Exception(responseBody);
+      }
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static Future<Product> updateProduct(Product product) async {
+    try {
+      final tokenString = AppConfig.ACCESS_TOKEN;
+      final res = await http.put(Uri.parse('$URLS${product.id}/'), headers: {
+        "Authorization": "Bearer $tokenString"
+      }, body: {
+        'name': product.name.toString(),
+        'price': product.price.toString(),
+        'quantity': product.quantity.toString(),
+        'product_type': product.productType.toString(),
+        'size': product.size.toString(),
+        'description': product.description.toString(),
+        'degree': product.degree.toString(),
+        'gender': product.gender.toString()
+      });
+      final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
       if (res.statusCode == 201) {
         return Product.fromJson(responseBody['data']);
       } else {
@@ -150,16 +177,19 @@ class ProductRequest {
     }
   }
 
-  static Future<int> getRevenue() async {
+
+
+  static Future<double> getRevenue() async {
     try {
       final tokenString = AppConfig.ACCESS_TOKEN;
       final res = await http.get(
-          Uri.parse(AppConfig.SERVER_API_URL + '/statistics/' + "orders/"),
+          Uri.parse('${AppConfig.SERVER_API_URL}/products/myproducts/revenue/'),
           headers: {"Authorization": "Bearer $tokenString"});
-      var revenue = 0;
+      var revenue = 0.0;
       final responseBody = jsonDecode(utf8.decode(res.bodyBytes));
       if (res.statusCode == 200) {
-        //TODO: get api
+        revenue = responseBody['data'];
+        print(responseBody);
         return revenue;
       } else {
         throw Exception(responseBody);

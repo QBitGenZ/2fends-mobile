@@ -130,10 +130,12 @@ class _ListProductDonationState extends State<ListProductDonation> {
       });
 
       final response = await ProductRequest.getMyProducts(page: page);
+      final inproducts = response!.where((product) => product.quantity != product.sold).toList();
+
 
       setState(() {
         isLoading = false;
-        products.addAll(response);
+        products.addAll(inproducts);
         currentPage = currentPage + 1;
       });
     }
@@ -202,8 +204,8 @@ class _ListProductDonationState extends State<ListProductDonation> {
   }
 
   Future<void> _dialogBuilder(BuildContext context, Product product) {
-    print(widget.event.id);
-    var quantity = product.quantity;
+    // print(widget.event.id);
+    var quantity = product.quantity! - product.sold!;
     int quantityController = 1;
     try {
       return showDialog<void>(
@@ -397,7 +399,7 @@ class _ListProductDonationState extends State<ListProductDonation> {
                                     shadowColor: Colors.grey[300],
                                     alignment: Alignment.center,
                                     content: Text(
-                                      "Quyên góp không thành công",
+                                      "Bạn đã quyên góp sản phẩm này hoặc sản phẩm của bạn đã bán hết",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.black,

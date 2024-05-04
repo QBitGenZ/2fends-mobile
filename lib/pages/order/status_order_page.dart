@@ -1,3 +1,4 @@
+import 'package:fends_mobile/constants/recomment_product.dart';
 import 'package:fends_mobile/networks/address_request.dart';
 import 'package:fends_mobile/pages/order/comment_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -102,10 +103,11 @@ class _StatusOrderPageState extends State<StatusOrderPage> {
                       SizedBox(
                         height: 10,
                       ),
-                      _totalRow("Quỹ từ thiện", "${_totalPrice() * 10/100}"),
+                      _totalRow("Quỹ từ thiện", _totalPrice() * 10/100),
+                      _totalRow("Tổng giá trị sản phẩm", _totalPrice()),
                       // _totalRow("Giá vận chuyển", "0"),
                       _totalRow(
-                          "Giá đơn hàng", "${_totalPrice()}", Colors.black),
+                          "Tổng giá trị đơn hàng", _totalPrice()*1.1, Colors.black),
                       const SizedBox(
                         height: 30,
                       ),
@@ -284,7 +286,7 @@ class _StatusOrderPageState extends State<StatusOrderPage> {
             )),
             Expanded(
               child: Text(
-                '${item.product!.price! * item.quantity!.toDouble()} vnd',
+                formatPrice(item.product!.price! * item.quantity!.toDouble()),
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   color: Colors.black,
@@ -301,7 +303,7 @@ class _StatusOrderPageState extends State<StatusOrderPage> {
     );
   }
 
-  Widget _totalRow(String title, String value, [Color? color]) {
+  Widget _totalRow(String title, double value, [Color? color]) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Row(
@@ -319,7 +321,7 @@ class _StatusOrderPageState extends State<StatusOrderPage> {
             ),
           ),
           Text(
-            value + ' vnd',
+            formatPrice(value),
             textAlign: TextAlign.right,
             style: TextStyle(
               color: color ?? Color(0xFF767676),

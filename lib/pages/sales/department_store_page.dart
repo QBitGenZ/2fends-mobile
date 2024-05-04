@@ -1,3 +1,4 @@
+import 'package:fends_mobile/constants/recomment_product.dart';
 import 'package:fends_mobile/networks/product_request.dart';
 import 'package:fends_mobile/networks/statistics.dart';
 import 'package:fends_mobile/pages/sales/add_product_page.dart';
@@ -152,9 +153,9 @@ class _DepartmentStorePageState extends State<DepartmentStorePage> {
                   FutureBuilder(
                       future: ProductRequest.getRevenue(),
                       builder: (context, snapshot) {
-                        var price = snapshot.data ?? 0;
+                        var price = snapshot.data?? 0;
                         return Text(
-                          '$price VND',
+                          '${formatPrice(price)}',
                           style: TextStyle(
                             color: Color(0xFF161414),
                             fontSize: 32,
